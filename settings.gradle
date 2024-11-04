@@ -1,0 +1,29 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.namespace == "com.github.dcendents") {
+                useModule("com.github.dcendents:android-maven-gradle-plugin:1.5")
+            }
+            if (requested.id.namespace == "org.jetbrains.kotlin") {
+                def kotlin_version = "1.8.10"
+                useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
+            }
+        }
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+    }
+}
+rootProject.name = "dora-walletconnect-support"
+include ':lib'
