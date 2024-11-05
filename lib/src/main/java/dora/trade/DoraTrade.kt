@@ -1,7 +1,19 @@
 package dora.trade
 
+import android.app.Application
 import android.content.Context
+import com.walletconnect.android.Core
+import com.walletconnect.android.CoreClient
+import com.walletconnect.android.relay.ConnectionType
 import com.walletconnect.web3.modal.client.Modal
+import com.walletconnect.web3.modal.client.Web3Modal
+import com.walletconnect.web3.modal.client.models.request.Request
+import com.walletconnect.web3.modal.client.models.request.SentRequestResult
+import dora.lifecycle.walletconnect.R
+import dora.trade.activity.WalletConnectActivity
+import dora.util.IntentUtils
+import dora.util.ToastUtils
+import dora.widget.DoraAlertDialog
 
 /**
  * http://doratrade.com
@@ -9,57 +21,200 @@ import com.walletconnect.web3.modal.client.Modal
 object DoraTrade {
 
     private var payListener: PayListener? = null
+    private const val METHOD_SEND_TRANSACTION = "eth_sendTransaction"
 
     /**
      * 朵拉支付初始化应用元信息。
      */
-    @JvmStatic
     @JvmOverloads
-    fun init(context: Context, appName: String, appDesc: String, domainUrl: String, supportChains: Array<Modal.Model.Chain>, listener: PayListener? = null) {
+    fun init(
+        application: Application,
+        appName: String,
+        appDesc: String,
+        domainUrl: String,
+        supportChains: Array<Modal.Model.Chain>,
+        listener: PayListener? = null
+    ) {
         System.loadLibrary("pay-core")
-        initWalletConnect(context, appName, appDesc, domainUrl, supportChains)
+        initWalletConnect(application, appName, appDesc, domainUrl, supportChains)
         listener?.let { setPayListener(it) }
     }
 
-    @JvmStatic
     fun setPayListener(listener: PayListener) {
         // 保存 listener 引用
         payListener = listener
         initPayListener()
     }
 
+    private external fun nativeInitWalletConnect(
+        application: Application,
+        appName: String,
+        appDesc: String,
+        domainUrl: String,
+        supportChains: Array<Modal.Model.Chain>
+    ): Array<String>
+
     /**
      * 初始化钱包连接配置。
      */
-    @JvmStatic
-    private external fun initWalletConnect(context: Context, appName: String, appDesc: String, domainUrl: String, supportChains: Array<Modal.Model.Chain>)
+    private fun initWalletConnect(
+        application: Application,
+        appName: String,
+        appDesc: String,
+        domainUrl: String,
+        supportChains: Array<Modal.Model.Chain>
+    ){
+        val (relayUrl, serverUri, icon, redirect) = nativeInitWalletConnect(application, appName, appDesc, domainUrl, supportChains)
+        val appMetaData = Core.Model.AppMetaData(
+            name = appName,
+            description = appDesc,
+            url = domainUrl,
+            icons = listOf(icon),
+            redirect = redirect
+        )
+        CoreClient.initialize(
+            relayServerUrl = serverUri,
+            connectionType = ConnectionType.AUTOMATIC,
+            application = application,
+            metaData = appMetaData,
+        ) {
+        }
+        Web3Modal.initialize(
+            Modal.Params.Init(core = CoreClient,
+                recommendedWalletsIds = listOf(
+                    "c03dfee351b6fcc421b4494ea33b9d4b92a984f87aa76d1663bb28705e95034a",//Uniswap
+                    "1ae92b26df02f0abca6304df07debccd18262fdf5fe82daa81593582dac9a369",//Rainbow
+                    "20459438007b75f4f4acb98bf29aa3b800550309646d375da5fd4aac6c2a2c66",//TokenPocket
+                    "4622a2b2d6af1c9844944291e5e7351a6aa24cd7b23099efac1b2fd875da31a0",//TrustWallet
+                    "ef333840daf915aafdc4a004525502d6d49d77bd9c65e0642dbaefb3c2893bef",//ImToken
+                    "c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96",//MetaMask
+                    "19177a98252e07ddfc9af2083ba8e07ef627cb6103467ffebb3f8f4205fd7927",//Ledger
+                )
+            ),
+            onSuccess = {},
+            onError = { error -> }
+        )
+        Web3Modal.setChains(supportChains.asList())
+    }
 
     /**
      * 初始化支付监听器。
      */
-    @JvmStatic
-    private external fun initPayListener()
+    private fun initPayListener() {
+        val delegate = ModalDelegateProxy(payListener)
+        Web3Modal.setDelegate(delegate)
+    }
+
+    private external fun nativeGetGasParameters(): Array<String>
+
+    /**
+     * 与冷钱包建立连接。
+     */
+    fun connectWallet(context: Context) {
+        IntentUtils.startActivity(context, WalletConnectActivity::class.java)
+    }
 
     /**
      * 开始支付，使用默认的gasLimit和gasPrice。
      */
-    @JvmStatic
-    fun pay(accessKey: String, orderTitle: String, description: String, fromAccount: String, toAccount: String, tokenValue: String) {
-        return pay(accessKey, orderTitle, description, fromAccount, toAccount, tokenValue, "0x27000", "0x17d7840000")
+    fun pay(
+        context: Context,
+        accessKey: String,
+        orderTitle: String,
+        goodsDesc: String,
+        account: String,
+        tokenValue: String
+    ) {
+        val (gasLimit, gasPrice) = nativeGetGasParameters()
+        pay(
+            context,
+            accessKey,
+            orderTitle,
+            goodsDesc,
+            account,
+            tokenValue,
+            gasLimit,
+            gasPrice
+        )
     }
 
     /**
      * 开始支付。
      */
-    @JvmStatic
-    external fun pay(accessKey: String, orderTitle: String, description: String, fromAccount: String, toAccount: String, tokenValue: String, gasLimit: String, gasPrice: String)
+    fun pay(
+        context: Context,
+        accessKey: String,
+        orderTitle: String,
+        goodsDesc: String,
+        account: String,
+        tokenValue: String,
+        gasLimit: String,
+        gasPrice: String
+    ) {
+        DoraAlertDialog(context).show(goodsDesc) {
+            title(orderTitle)
+            themeColorResId(dora.widget.alertdialog.R.color.colorPrimary)
+            positiveButton(context.getString(R.string.pay))
+            positiveListener {
+                Web3Modal.getAccount()?.let { session ->
+                    sendTransactionRequest(accessKey, session.address, account, tokenValue, gasLimit, gasPrice,
+                        onSuccess = {
+                            ToastUtils.showLong(it.toString())
+                        },
+                        onError = {
+                            ToastUtils.showLong(it.toString())
+                        }
+                    )
+                }
+            }
+            negativeListener {
+                ToastUtils.showShort(R.string.cancel_pay)
+            }
+        }
+    }
 
-    @JvmStatic
+    /**
+     * 发送交易请求。
+     */
+    private fun sendTransactionRequest(
+        accessKey: String,
+        from: String,
+        to: String,
+        value: String,
+        gasLimit: String,
+        gasPrice: String,
+        onSuccess: (SentRequestResult) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        try {
+            val transactionData = nativeBuildTransactionRequest(accessKey, from, to, value, gasLimit, gasPrice)
+            if (transactionData == "") {
+                ToastUtils.showShort("The access key is invalid")
+                return
+            }
+            Web3Modal.request(
+                request = Request(METHOD_SEND_TRANSACTION, transactionData),
+                onSuccess = onSuccess,
+                onError = onError,
+            )
+        } catch (e: Exception) {
+            onError(e)
+        }
+    }
+
+    private external fun nativeBuildTransactionRequest(
+        accessKey: String,
+        from: String,
+        to: String,
+        value: String,
+        gasLimit: String,
+        gasPrice: String
+    ): String
+
     fun onPaySuccess() {
         payListener?.onPaySuccess()
     }
 
-    @JvmStatic
     fun onPayFailure() {
         payListener?.onPayFailure()
     }

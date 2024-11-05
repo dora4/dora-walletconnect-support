@@ -1,0 +1,4 @@
+<resources>
+    <string name="pay">Chi trả</string>
+    <string name="cancel_pay">Hủy thanh toán</string>
+</resources>

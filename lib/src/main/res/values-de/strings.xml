@@ -1,0 +1,4 @@
+<resources>
+    <string name="pay">Zahlen</string>
+    <string name="cancel_pay">Zahlungsstornierung</string>
+</resources>

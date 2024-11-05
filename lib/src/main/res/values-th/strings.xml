@@ -1,0 +1,4 @@
+<resources>
+    <string name="pay">จ่าย</string>
+    <string name="cancel_pay">การยกเลิกการชำระเงิน</string>
+</resources>

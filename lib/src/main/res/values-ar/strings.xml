@@ -1,0 +1,4 @@
+<resources>
+    <string name="pay">يدفع</string>
+    <string name="cancel_pay">إلغاء الدفع</string>
+</resources>

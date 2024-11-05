@@ -1,0 +1,4 @@
+<resources>
+    <string name="pay">지불하다</string>
+    <string name="cancel_pay">결제 취소</string>
+</resources>

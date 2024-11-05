@@ -1,0 +1,4 @@
+<resources>
+    <string name="pay">支払う</string>
+    <string name="cancel_pay">支払いのキャンセル</string>
+</resources>

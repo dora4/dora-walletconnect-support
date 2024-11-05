@@ -24,8 +24,13 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_19
+        targetCompatibility = JavaVersion.VERSION_19
+    }
+    sourceSets {
+        getByName("main") {
+            jniLibs.srcDir("src/main/jniLibs")
+        }
     }
 //    externalNativeBuild {
 //        cmake {
@@ -37,8 +42,9 @@ android {
 
 dependencies {
     implementation("com.github.dora4:dora:1.2.29")
+    implementation("com.github.dora4:dview-alert-dialog:1.18")
     // wallet connect
-    api(platform("com.walletconnect:android-bom:1.30.0"))
+    api(platform("com.walletconnect:android-bom:1.31.4"))
     api("com.walletconnect:android-core")
     api("com.walletconnect:web3modal")
 }
