@@ -1,4 +1,6 @@
 <resources>
     <string name="pay">Zahlen</string>
     <string name="cancel_pay">Zahlungsstornierung</string>
+    <string name="payment_successful">Zahlung erfolgreich</string>
+    <string name="payment_failed">Zahlung fehlgeschlagen</string>
 </resources>

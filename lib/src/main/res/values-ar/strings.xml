@@ -1,4 +1,6 @@
 <resources>
     <string name="pay">يدفع</string>
     <string name="cancel_pay">إلغاء الدفع</string>
+    <string name="payment_successful">تم الدفع بنجاح</string>
+    <string name="payment_failed">فشل الدفع</string>
 </resources>

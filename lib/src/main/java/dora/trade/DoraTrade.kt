@@ -2,6 +2,8 @@ package dora.trade
 
 import android.app.Application
 import android.content.Context
+import android.graphics.Color
+import android.util.Log
 import com.walletconnect.android.Core
 import com.walletconnect.android.CoreClient
 import com.walletconnect.android.relay.ConnectionType
@@ -21,6 +23,7 @@ import dora.widget.DoraAlertDialog
 object DoraTrade {
 
     private var payListener: PayListener? = null
+    private lateinit var appMetaData: Core.Model.AppMetaData
     private const val METHOD_SEND_TRANSACTION = "eth_sendTransaction"
 
     /**
@@ -65,7 +68,7 @@ object DoraTrade {
         supportChains: Array<Modal.Model.Chain>
     ){
         val (relayUrl, serverUri, icon, redirect) = nativeInitWalletConnect(application, appName, appDesc, domainUrl, supportChains)
-        val appMetaData = Core.Model.AppMetaData(
+        appMetaData = Core.Model.AppMetaData(
             name = appName,
             description = appDesc,
             url = domainUrl,
@@ -151,19 +154,21 @@ object DoraTrade {
         gasLimit: String,
         gasPrice: String
     ) {
-        DoraAlertDialog(context).show(goodsDesc) {
+        DoraAlertDialog(context).show(goodsDesc+"\nPayment request is from${appMetaData.name}(${appMetaData.url}).Not related to https://dorafund.com.") {
             title(orderTitle)
-            themeColorResId(dora.widget.alertdialog.R.color.colorPrimary)
+            themeColor(Color.BLACK)
             positiveButton(context.getString(R.string.pay))
             positiveListener {
                 Web3Modal.getAccount()?.let { session ->
                     sendTransactionRequest(accessKey, session.address, account,
                         PayUtils.convertToHexWei(tokenValue), gasLimit, gasPrice,
                         onSuccess = {
-                            ToastUtils.showLong(it.toString())
+                            ToastUtils.showLong(R.string.payment_successful)
+                            Log.d("sendTransactionRequest", it.toString())
                         },
                         onError = {
-                            ToastUtils.showLong(it.toString())
+                            ToastUtils.showLong(R.string.payment_failed)
+                            Log.d("sendTransactionRequest", it.toString())
                         }
                     )
                 }
@@ -188,6 +193,14 @@ object DoraTrade {
         onError: (Throwable) -> Unit
     ) {
         try {
+            if (accessKey == "") {
+                ToastUtils.showShort("The access key is null")
+                return
+            }
+            if (to == "") {
+                ToastUtils.showShort("Account is null")
+                return
+            }
             val transactionData = nativeBuildTransactionRequest(accessKey, from, to, value, gasLimit, gasPrice)
             if (transactionData == "") {
                 ToastUtils.showShort("The access key is invalid")

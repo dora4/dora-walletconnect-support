@@ -1,4 +1,6 @@
 <resources>
     <string name="pay">支払う</string>
     <string name="cancel_pay">支払いのキャンセル</string>
+    <string name="payment_successful">支払いが完了しました</string>
+    <string name="payment_failed">支払いに失敗しました</string>
 </resources>
