@@ -22,6 +22,9 @@ dependencies {
 }
 ```
 
+### SDK要求
+minSdk = 23
+
 #### 使用方式
 
 在AndroidManifest中加入配置。
