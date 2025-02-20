@@ -36,10 +36,10 @@ dependencies {
 在Application类的onCreate()中调用。
 ```kotlin
 // 通过chainId指定支持的以太坊兼容链
-val chains = arrayOf(
-    Web3ModalChainsPresets.ethChains["1"],      // 支持Ethereum
-    Web3ModalChainsPresets.ethChains["137"],    // 支持Polygon
-    Web3ModalChainsPresets.ethChains["42161"]   // 支持Arbitrum
+val chains: Array<Modal.Model.Chain> = arrayOf(
+            Web3ModalChainsPresets.ethChains["1"]!!,      // 支持Ethereum
+            Web3ModalChainsPresets.ethChains["137"]!!,    // 支持Polygon
+            Web3ModalChainsPresets.ethChains["42161"]!!   // 支持Arbitrum
 )
 DoraTrade.init(this, "App Name", "App Description", "https://yourdomain.com", chains)
 ```
