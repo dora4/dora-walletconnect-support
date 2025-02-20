@@ -17,13 +17,15 @@ dependencyResolutionManagement {
 dependencies {
     // 扩展包必须在有主框架dora的情况下使用
     implementation("com.github.dora4:dora:1.2.51")
-    implementation("com.github.dora4:dview-alert-dialog:1.18")
-    implementation("com.github.dora4:dora-walletconnect-support:1.2")
+    implementation("com.github.dora4:dora-walletconnect-support:1.3")
 }
 ```
 
 #### SDK要求
+
+```kotlin
 minSdk = 23
+```
 
 #### 使用方式
 
@@ -69,7 +71,7 @@ DoraTrade.pay(this,
                 "填写朵拉支付的accessKey，如AyAD8J9M0R7H",
                 "填写订单信息，便于框架给你弹窗，以让用户知晓正在支付",
                 "填写商品详细描述，便于框架给你弹窗，以让用户知晓正在支付",
-                "填写收款方的钱包地址，如，0xfF6FC0F28835F2C1FE23B15fb4488d976B06Dcd9",
+                "填写收款方的钱包地址，如0xfF6FC0F28835F2C1FE23B15fb4488d976B06Dcd9",
                 19.8)
 ```
 另外，请录制支付教程给用户看确实能发货。被用户举报诈骗，一经核实，则永久封禁accessKey。
