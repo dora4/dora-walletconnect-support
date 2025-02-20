@@ -46,7 +46,7 @@ val chains: Array<Modal.Model.Chain> = arrayOf(
 )
 DoraTrade.init(this, "App Name", "App Description", "https://yourdomain.com", chains)
 ```
-与冷钱包建立连接。
+在Activity中与冷钱包建立连接。
 ```kotlin
 DoraTrade.connectWallet(this)
 ```
