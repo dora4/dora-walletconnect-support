@@ -16,7 +16,7 @@ import dora.util.ToastUtils
 import dora.widget.DoraAlertDialog
 
 /**
- * http://doratrade.com
+ * https://dorafund.com
  */
 object DoraTrade {
 
@@ -123,7 +123,7 @@ object DoraTrade {
         orderTitle: String,
         goodsDesc: String,
         account: String,
-        tokenValue: String
+        tokenValue: Double
     ) {
         val (gasLimit, gasPrice) = nativeGetGasParameters()
         pay(
@@ -147,7 +147,7 @@ object DoraTrade {
         orderTitle: String,
         goodsDesc: String,
         account: String,
-        tokenValue: String,
+        tokenValue: Double,
         gasLimit: String,
         gasPrice: String
     ) {
@@ -157,7 +157,8 @@ object DoraTrade {
             positiveButton(context.getString(R.string.pay))
             positiveListener {
                 Web3Modal.getAccount()?.let { session ->
-                    sendTransactionRequest(accessKey, session.address, account, tokenValue, gasLimit, gasPrice,
+                    sendTransactionRequest(accessKey, session.address, account,
+                        PayUtils.convertToHexWei(tokenValue), gasLimit, gasPrice,
                         onSuccess = {
                             ToastUtils.showLong(it.toString())
                         },

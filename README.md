@@ -18,7 +18,7 @@ dependencies {
     // 扩展包必须在有主框架dora的情况下使用
     implementation("com.github.dora4:dora:1.2.51")
     implementation("com.github.dora4:dview-alert-dialog:1.18")
-    implementation("com.github.dora4:dora-walletconnect-support:1.1")
+    implementation("com.github.dora4:dora-walletconnect-support:1.2")
 }
 ```
 
@@ -45,7 +45,7 @@ DoraTrade.init(this, "App Name", "App Description", "https://yourdomain.com", ch
 ```
 与冷钱包建立连接。
 ```kotlin
-DoraTrade.connectWallet()
+DoraTrade.connectWallet(this)
 ```
 在Activity中设置支付结果监听器，请提示用户不要关闭界面，等待支付完成，否则无法发货。如果PayListener在Application的
 init()中注册，则在回调处发送消息给处理界面。
@@ -62,11 +62,12 @@ DoraTrade.setPayListener(object : DoraTrade.PayListener {
 ```
 构建订单数据进行支付。
 ```kotlin
-DoraTrade.pay("填写朵拉支付的accessKey",
+DoraTrade.pay(this,
+                "填写朵拉支付的accessKey，如AyAD8J9M0R7H",
                 "填写订单信息，便于框架给你弹窗，以让用户知晓正在支付",
                 "填写商品详细描述，便于框架给你弹窗，以让用户知晓正在支付",
-                "填写收款方的钱包地址",
-                "填写发送代币数量")
+                "填写收款方的钱包地址，如，0xfF6FC0F28835F2C1FE23B15fb4488d976B06Dcd9",
+                19.8)
 ```
 另外，请录制支付教程给用户看确实能发货。被用户举报诈骗，一经核实，则永久封禁accessKey。
 
