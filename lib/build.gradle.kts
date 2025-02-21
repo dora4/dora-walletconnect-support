@@ -16,10 +16,10 @@ android {
             }
         }
         ndk {
-            abiFilters.add("arm64-v8a")//主流手机
-            abiFilters.add("armeabi-v7a")//电视盒子
-            //abiFilters "x86"
-            //abiFilters "x86_64"
+            abiFilters.add("arm64-v8a") // 主流手机
+            abiFilters.add("armeabi-v7a") // 电视盒子
+//            abiFilters.add("x86")
+//            abiFilters.add("x86_64")
         }
     }
 
@@ -65,7 +65,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.dora4"
                 artifactId = "dora-walletconnect-support"
-                version = "1.4"
+                version = "1.5"
             }
         }
     }
