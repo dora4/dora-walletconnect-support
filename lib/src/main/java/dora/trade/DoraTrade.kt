@@ -154,7 +154,7 @@ object DoraTrade {
         gasLimit: String,
         gasPrice: String
     ) {
-        DoraAlertDialog(context).show(goodsDesc+"\nPayment request is from${appMetaData.name}(${appMetaData.url}).Not related to https://dorafund.com.") {
+        DoraAlertDialog(context).show(goodsDesc+"\nPayment request is from ${appMetaData.name}(${appMetaData.url}).Not related to https://dorafund.com.") {
             title(orderTitle)
             themeColor(Color.BLACK)
             positiveButton(context.getString(R.string.pay))

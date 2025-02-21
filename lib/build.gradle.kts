@@ -15,6 +15,12 @@ android {
                 cppFlags += ""
             }
         }
+        ndk {
+            abiFilters.add("arm64-v8a")//主流手机
+            abiFilters.add("armeabi-v7a")//电视盒子
+            //abiFilters "x86"
+            //abiFilters "x86_64"
+        }
     }
 
     buildTypes {
@@ -22,6 +28,9 @@ android {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
+    }
+    kotlinOptions {
+        jvmTarget = "17"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -56,7 +65,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.dora4"
                 artifactId = "dora-walletconnect-support"
-                version = "1.3"
+                version = "1.4"
             }
         }
     }
