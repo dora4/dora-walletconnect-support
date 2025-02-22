@@ -9,7 +9,6 @@ import com.walletconnect.android.CoreClient
 import com.walletconnect.android.relay.ConnectionType
 import com.walletconnect.web3.modal.client.Modal
 import com.walletconnect.web3.modal.client.Web3Modal
-import com.walletconnect.web3.modal.client.models.request.Request
 import com.walletconnect.web3.modal.client.models.request.SentRequestResult
 import dora.lifecycle.walletconnect.R
 import dora.trade.activity.WalletConnectActivity
@@ -24,7 +23,6 @@ object DoraTrade {
 
     private var payListener: PayListener? = null
     private lateinit var appMetaData: Core.Model.AppMetaData
-    private const val METHOD_SEND_TRANSACTION = "eth_sendTransaction"
 
     /**
      * 朵拉支付初始化应用元信息。
@@ -210,7 +208,7 @@ object DoraTrade {
                 ToastUtils.showShort("Account is null")
                 return
             }
-            val status = nativeBuildTransactionRequest(context, accessKey, secretKey, from, to, value, gasLimit, gasPrice, onSuccess, onError)
+            val status = nativeSendTransactionRequest(context, accessKey, secretKey, from, to, value, gasLimit, gasPrice, onSuccess, onError)
             when (status) {
                 0 -> {
                     Log.e("sendTransactionRequest", "OK.")
@@ -227,7 +225,7 @@ object DoraTrade {
         }
     }
 
-    private external fun nativeBuildTransactionRequest(
+    private external fun nativeSendTransactionRequest(
         context: Context,
         accessKey: String,
         secretKey: String,
