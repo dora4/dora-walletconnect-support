@@ -17,7 +17,7 @@ dependencyResolutionManagement {
 dependencies {
     // 扩展包必须在有主框架dora的情况下使用
     implementation("com.github.dora4:dora:1.2.51")
-    implementation("com.github.dora4:dora-walletconnect-support:1.6")
+    implementation("com.github.dora4:dora-walletconnect-support:1.8")
 }
 ```
 
@@ -69,6 +69,7 @@ DoraTrade.setPayListener(object : DoraTrade.PayListener {
 ```kotlin
 DoraTrade.pay(this,
                 "填写朵拉支付的accessKey，如AyAD8J9M0R7H",
+                "填写朵拉支付的32位secretKey",
                 "填写订单信息，便于框架给你弹窗，以让用户知晓正在支付",
                 "填写商品详细描述，便于框架给你弹窗，以让用户知晓正在支付",
                 "填写收款方的钱包地址，如0xfF6FC0F28835F2C1FE23B15fb4488d976B06Dcd9",

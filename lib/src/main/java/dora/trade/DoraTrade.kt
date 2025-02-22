@@ -210,10 +210,17 @@ object DoraTrade {
                 ToastUtils.showShort("Account is null")
                 return
             }
-            val transactionData = nativeBuildTransactionRequest(context, accessKey, secretKey, from, to, value, gasLimit, gasPrice, onSuccess, onError)
-            if (transactionData == "") {
-                ToastUtils.showShort("The access key is invalid")
-                return
+            val status = nativeBuildTransactionRequest(context, accessKey, secretKey, from, to, value, gasLimit, gasPrice, onSuccess, onError)
+            when (status) {
+                0 -> {
+                    Log.e("sendTransactionRequest", "OK.")
+                }
+                -1 -> {
+                    Log.e("sendTransactionRequest", "The access key is invalid.")
+                }
+                -2 -> {
+                    Log.e("sendTransactionRequest", "Payment error, please try again.")
+                }
             }
         } catch (e: Exception) {
             onError(e)
@@ -231,7 +238,7 @@ object DoraTrade {
         gasPrice: String,
         onSuccess: (SentRequestResult) -> Unit,
         onError: (Throwable) -> Unit
-    ): String
+    ): Int
 
     fun onPaySuccess() {
         payListener?.onPaySuccess()
