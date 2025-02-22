@@ -37,6 +37,8 @@ object DoraTrade {
         System.loadLibrary("pay-core")
         appMetaData = nativeInitWalletConnect(application, appName, appDesc, domainUrl, supportChains, {
             error: Core.Model.Error -> Log.e("initWalletConnect", error.toString())
+        }, {
+            error: Modal.Model.Error -> Log.e("initWalletConnect", error.toString())
         })
         listener?.let { setPayListener(it) }
     }
@@ -56,7 +58,8 @@ object DoraTrade {
         appDesc: String,
         domainUrl: String,
         supportChains: Array<Modal.Model.Chain>,
-        onError: (Core.Model.Error) -> Unit
+        onErrorCore: (Core.Model.Error) -> Unit,
+        onErrorModal: (Modal.Model.Error) -> Unit
     ) : Core.Model.AppMetaData
 
     /**
