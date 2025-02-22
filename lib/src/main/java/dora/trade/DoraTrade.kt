@@ -12,8 +12,6 @@ import com.walletconnect.web3.modal.client.Web3Modal
 import com.walletconnect.web3.modal.client.models.request.SentRequestResult
 import dora.lifecycle.walletconnect.R
 import dora.trade.activity.WalletConnectActivity
-import dora.trade.callback.OnErrorCallback
-import dora.trade.callback.OnSuccessCallback
 import dora.util.IntentUtils
 import dora.util.ToastUtils
 import dora.widget.DoraAlertDialog
@@ -144,20 +142,6 @@ object DoraTrade {
         )
     }
 
-    private val onSuccessCallback: OnSuccessCallback = object : OnSuccessCallback {
-        override fun onSuccess(result: SentRequestResult) {
-            ToastUtils.showLong(R.string.payment_successful)
-            Log.d("sendTransactionRequest", result.toString())
-        }
-    }
-
-    private val onErrorCallback: OnErrorCallback = object : OnErrorCallback {
-        override fun onError(error: Throwable) {
-            ToastUtils.showLong(R.string.payment_failed)
-            Log.d("sendTransactionRequest", error.toString())
-        }
-    }
-
     /**
      * 开始支付。
      */
@@ -180,8 +164,14 @@ object DoraTrade {
                 Web3Modal.getAccount()?.let { session ->
                     sendTransactionRequest(context, accessKey, secretKey, session.address, account,
                         PayUtils.convertToHexWei(tokenValue), gasLimit, gasPrice,
-                        onSuccess = onSuccessCallback,
-                        onError = onErrorCallback
+                        onSuccess = {
+                            ToastUtils.showLong(R.string.payment_successful)
+                            Log.d("sendTransactionRequest", it.toString())
+                        },
+                        onError = {
+                            ToastUtils.showLong(R.string.payment_failed)
+                            Log.d("sendTransactionRequest", it.toString())
+                        }
                     )
                 }
             }
@@ -203,8 +193,8 @@ object DoraTrade {
         value: String,
         gasLimit: String,
         gasPrice: String,
-        onSuccess: OnSuccessCallback,
-        onError: OnErrorCallback
+        onSuccess: (SentRequestResult) -> Unit,
+        onError: (Throwable) -> Unit
     ) {
         try {
             if (accessKey == "") {
@@ -222,7 +212,7 @@ object DoraTrade {
             val status = nativeSendTransactionRequest(context, accessKey, secretKey, from, to, value, gasLimit, gasPrice, onSuccess, onError)
             when (status) {
                 0 -> {
-                    Log.e("sendTransactionRequest", "OK.")
+                    Log.i("sendTransactionRequest", "OK.")
                 }
                 -1 -> {
                     Log.e("sendTransactionRequest", "The access key is invalid.")
@@ -232,7 +222,7 @@ object DoraTrade {
                 }
             }
         } catch (e: Exception) {
-            onError.onError(e)
+            onError(e)
         }
     }
 
@@ -245,8 +235,8 @@ object DoraTrade {
         value: String,
         gasLimit: String,
         gasPrice: String,
-        onSuccess: OnSuccessCallback,
-        onError: OnErrorCallback
+        onSuccess: (SentRequestResult) -> Unit,
+        onError: (Throwable) -> Unit
     ): Int
 
     fun onPaySuccess() {
