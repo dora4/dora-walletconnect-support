@@ -123,6 +123,7 @@ object DoraTrade {
     fun pay(
         context: Context,
         accessKey: String,
+        secretKey: String,
         orderTitle: String,
         goodsDesc: String,
         account: String,
@@ -132,6 +133,7 @@ object DoraTrade {
         pay(
             context,
             accessKey,
+            secretKey,
             orderTitle,
             goodsDesc,
             account,
@@ -147,6 +149,7 @@ object DoraTrade {
     fun pay(
         context: Context,
         accessKey: String,
+        secretKey: String,
         orderTitle: String,
         goodsDesc: String,
         account: String,
@@ -160,7 +163,7 @@ object DoraTrade {
             positiveButton(context.getString(R.string.pay))
             positiveListener {
                 Web3Modal.getAccount()?.let { session ->
-                    sendTransactionRequest(accessKey, session.address, account,
+                    sendTransactionRequest(context, accessKey, secretKey, session.address, account,
                         PayUtils.convertToHexWei(tokenValue), gasLimit, gasPrice,
                         onSuccess = {
                             ToastUtils.showLong(R.string.payment_successful)
@@ -183,7 +186,9 @@ object DoraTrade {
      * 发送交易请求。
      */
     private fun sendTransactionRequest(
+        context: Context,
         accessKey: String,
+        secretKey: String,
         from: String,
         to: String,
         value: String,
@@ -197,32 +202,35 @@ object DoraTrade {
                 ToastUtils.showShort("The access key is null")
                 return
             }
+            if (secretKey == "") {
+                ToastUtils.showShort("The secret key is null")
+                return
+            }
             if (to == "") {
                 ToastUtils.showShort("Account is null")
                 return
             }
-            val transactionData = nativeBuildTransactionRequest(accessKey, from, to, value, gasLimit, gasPrice)
+            val transactionData = nativeBuildTransactionRequest(context, accessKey, secretKey, from, to, value, gasLimit, gasPrice, onSuccess, onError)
             if (transactionData == "") {
                 ToastUtils.showShort("The access key is invalid")
                 return
             }
-            Web3Modal.request(
-                request = Request(METHOD_SEND_TRANSACTION, transactionData),
-                onSuccess = onSuccess,
-                onError = onError,
-            )
         } catch (e: Exception) {
             onError(e)
         }
     }
 
     private external fun nativeBuildTransactionRequest(
+        context: Context,
         accessKey: String,
+        secretKey: String,
         from: String,
         to: String,
         value: String,
         gasLimit: String,
-        gasPrice: String
+        gasPrice: String,
+        onSuccess: (SentRequestResult) -> Unit,
+        onError: (Throwable) -> Unit
     ): String
 
     fun onPaySuccess() {
