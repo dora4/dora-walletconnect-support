@@ -52,7 +52,7 @@ DoraTrade.init(this, "App Name", "App Description", "https://yourdomain.com", ch
 ```kotlin
 DoraTrade.connectWallet(this)
 ```
-如果只有一个Activity进行支付，可在Activity中设置冷钱包支付的监听器。如果PayListener在Application的
+（非必须）如果只有一个Activity进行支付，可在Activity中设置冷钱包支付的监听器。如果PayListener在Application的
 init()中注册，则在回调处发送消息给处理界面。
 ```kotlin
 DoraTrade.setPayListener(object : DoraTrade.PayListener {
