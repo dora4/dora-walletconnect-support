@@ -52,8 +52,8 @@ DoraTrade.init(this, "App Name", "App Description", "https://yourdomain.com", ch
 ```kotlin
 DoraTrade.connectWallet(this)
 ```
-在Activity中设置支付结果监听器，请提示用户不要关闭界面，等待支付完成，否则无法发货。如果PayListener在Application的
-init()中注册，则在回调处发送消息给处理界面。后期可能会检测区块链浏览器。
+在Activity中设置冷钱包支付的监听器。如果PayListener在Application的
+init()中注册，则在回调处发送消息给处理界面。
 ```kotlin
 DoraTrade.setPayListener(object : DoraTrade.PayListener {
     override fun onSendPaymentRequest() {
@@ -61,7 +61,7 @@ DoraTrade.setPayListener(object : DoraTrade.PayListener {
     }
 
     override fun onCancelPayment() {
-        // 支付失败，用户点了冷钱包的取消发送
+        // 支付失败，用户点了冷钱包的取消支付
     }
 })
 ```
