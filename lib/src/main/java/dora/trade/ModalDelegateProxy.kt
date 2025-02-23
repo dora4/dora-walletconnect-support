@@ -3,6 +3,9 @@ package dora.trade
 import com.walletconnect.web3.modal.client.Modal
 import com.walletconnect.web3.modal.client.Web3Modal
 
+/**
+ * 支付生命周期处理。
+ */
 class ModalDelegateProxy(val payListener: DoraTrade.PayListener? = null) : Web3Modal.ModalDelegate {
 
     override fun onSessionApproved(approvedSession: Modal.Model.ApprovedSession) {

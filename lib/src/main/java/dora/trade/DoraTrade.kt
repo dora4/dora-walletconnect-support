@@ -43,6 +43,9 @@ object DoraTrade {
         listener?.let { setPayListener(it) }
     }
 
+    /**
+     * 设置支付监听器。
+     */
     fun setPayListener(listener: PayListener) {
         // 保存 listener 引用
         payListener = listener
@@ -71,6 +74,9 @@ object DoraTrade {
         Web3Modal.setDelegate(delegate)
     }
 
+    /**
+     * 获取默认的Gas参数。
+     */
     private external fun nativeGetGasParameters(): Array<String>
 
     /**
@@ -90,7 +96,8 @@ object DoraTrade {
         orderTitle: String,
         goodsDesc: String,
         account: String,
-        tokenValue: Double
+        tokenValue: Double,
+        orderListener: OrderListener
     ) {
         val (gasLimit, gasPrice) = nativeGetGasParameters()
         pay(
@@ -102,7 +109,8 @@ object DoraTrade {
             account,
             tokenValue,
             gasLimit,
-            gasPrice
+            gasPrice,
+            orderListener
         )
     }
 
@@ -118,7 +126,8 @@ object DoraTrade {
         account: String,
         tokenValue: Double,
         gasLimit: String,
-        gasPrice: String
+        gasPrice: String,
+        orderListener: OrderListener
     ) {
         DoraAlertDialog(context).show(goodsDesc+"\nPayment request is from ${appMetaData.name}(${appMetaData.url}).Not related to https://dorafund.com.") {
             title(orderTitle)
@@ -129,11 +138,14 @@ object DoraTrade {
                     sendTransactionRequest(context, accessKey, secretKey, session.address, account,
                         PayUtils.convertToHexWei(tokenValue), gasLimit, gasPrice,
                         onSuccess = {
-                            ToastUtils.showLong(R.string.payment_successful)
+                            if (it is SentRequestResult.WalletConnect) {
+                                // 提取交易hash
+                                val transactionHash = PayUtils.extractTransactionHash(it.params)
+                                transactionHash?.let { orderListener.onPrintOrder(transactionHash) }
+                            }
                             Log.d("sendTransactionRequest", it.toString())
                         },
                         onError = {
-                            ToastUtils.showLong(R.string.payment_failed)
                             Log.e("sendTransactionRequest", it.toString())
                         }
                     )
@@ -190,6 +202,9 @@ object DoraTrade {
         }
     }
 
+    /**
+     * 底层处理发送交易请求。
+     */
     private external fun nativeSendTransactionRequest(
         context: Context,
         accessKey: String,
@@ -203,24 +218,25 @@ object DoraTrade {
         onError: (Throwable) -> Unit
     ): Int
 
-    fun onPaySuccess() {
-        payListener?.onPaySuccess()
-    }
+    interface OrderListener {
 
-    fun onPayFailure() {
-        payListener?.onPayFailure()
+        /**
+         * 生成该笔订单的交易订单号。
+         */
+        fun onPrintOrder(transactionHash: String)
     }
 
     interface PayListener {
 
         /**
-         * 订单支付成功的回调。
+         * 发起支付订单，等待批准。
+         * https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol
          */
-        fun onPaySuccess()
+        fun onSendPaymentRequest(transactionHash: String)
 
         /**
-         * 订单支付失败的回调。
+         * 在用户点击钱包的取消按钮时回调。
          */
-        fun onPayFailure()
+        fun onCancelPayment(transactionHash: String)
     }
 }
