@@ -15,16 +15,6 @@ object PayUtils {
         return "0x" + weiValue.toString(16) // 转换为十六进制字符串
     }
 
-    @JvmStatic
-    fun extractTransactionHash(params: String): String? {
-        return try {
-            val json = JSONObject(params)
-            json.optString("transactionHash", null)
-        } catch (e: Exception) {
-            null
-        }
-    }
-
     /**
      * 查询区块链浏览器该笔订单是否已支付，且已被确认。
      */

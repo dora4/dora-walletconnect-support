@@ -17,7 +17,7 @@ dependencyResolutionManagement {
 dependencies {
     // 扩展包必须在有主框架dora的情况下使用
     implementation("com.github.dora4:dora:1.2.51")
-    implementation("com.github.dora4:dora-walletconnect-support:1.27")
+    implementation("com.github.dora4:dora-walletconnect-support:1.28")
 }
 ```
 
@@ -56,11 +56,11 @@ DoraTrade.connectWallet(this)
 init()中注册，则在回调处发送消息给处理界面。
 ```kotlin
 DoraTrade.setPayListener(object : DoraTrade.PayListener {
-    override fun onSendPaymentRequest(transactionHash: String) {
+    override fun onSendPaymentRequest(orderId: String, transactionHash: String) {
         // 冷钱包已发起支付请求
     }
 
-    override fun onCancelPayment(transactionHash: String) {
+    override fun onCancelPayment(orderId: String, transactionHash: String) {
         // 支付失败，用户点了冷钱包的取消支付
     }
 })
@@ -75,7 +75,7 @@ DoraTrade.pay(this,
                 "填写收款方的钱包地址，如0xfF6FC0F28835F2C1FE23B15fb4488d976B06Dcd9",
                 0.01,
                 object: DoraTrade.OrderListener {
-                    override fun onPrintOrder(transactionHash: String) {
+                    override fun onPrintOrder(orderId: String) {
                         // 在此记录该笔订单的交易订单号，便于以后查询支付状态
                     }
                 })

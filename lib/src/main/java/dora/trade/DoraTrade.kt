@@ -21,6 +21,7 @@ object DoraTrade {
 
     private var payListener: PayListener? = null
     private lateinit var appMetaData: Core.Model.AppMetaData
+    private var transactionMap: Map<Long, String> = hashMapOf()
 
     /**
      * 朵拉支付初始化应用元信息。
@@ -139,9 +140,7 @@ object DoraTrade {
                         PayUtils.convertToHexWei(tokenValue), gasLimit, gasPrice,
                         onSuccess = {
                             if (it is SentRequestResult.WalletConnect) {
-                                // 提取交易hash
-                                val transactionHash = PayUtils.extractTransactionHash(it.params)
-                                transactionHash?.let { orderListener.onPrintOrder(transactionHash) }
+                                 orderListener.onPrintOrder(it.requestId.toString())
                             }
                             Log.d("sendTransactionRequest", it.toString())
                         },
@@ -223,7 +222,7 @@ object DoraTrade {
         /**
          * 生成该笔订单的交易订单号。
          */
-        fun onPrintOrder(transactionHash: String)
+        fun onPrintOrder(orderId: String)
     }
 
     interface PayListener {
@@ -232,11 +231,11 @@ object DoraTrade {
          * 发起支付订单，等待批准。
          * https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol
          */
-        fun onSendPaymentRequest(transactionHash: String)
+        fun onSendPaymentRequest(orderId: String, transactionHash: String)
 
         /**
          * 在用户点击钱包的取消按钮时回调。
          */
-        fun onCancelPayment(transactionHash: String)
+        fun onCancelPayment(orderId: String, transactionHash: String)
     }
 }
