@@ -3,4 +3,6 @@
     <string name="cancel_pay">Cancelamento de pagamento</string>
     <string name="payment_successful">Pagamento bem-sucedido</string>
     <string name="payment_failed">O pagamento falhou</string>
+    <string name="please_complete_the_payment_in_the_wallet">Por favor, conclua o pagamento na carteira.</string>
+    <string name="dorafund_provides_technical_support">dorafund fornece apoio técnico</string>
 </resources>

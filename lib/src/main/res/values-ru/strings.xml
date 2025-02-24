@@ -3,4 +3,6 @@
     <string name="cancel_pay">Отмена платежа</string>
     <string name="payment_successful">Платеж прошел успешно</string>
     <string name="payment_failed">Платеж не прошёл</string>
+    <string name="please_complete_the_payment_in_the_wallet">Пожалуйста, завершите оплату в кошельке.</string>
+    <string name="dorafund_provides_technical_support">dorafund оказывает техническую поддержку</string>
 </resources>

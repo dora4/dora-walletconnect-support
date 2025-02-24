@@ -3,4 +3,6 @@
     <string name="cancel_pay">إلغاء الدفع</string>
     <string name="payment_successful">تم الدفع بنجاح</string>
     <string name="payment_failed">فشل الدفع</string>
+    <string name="please_complete_the_payment_in_the_wallet">يرجى إكمال الدفع في المحفظة.</string>
+    <string name="dorafund_provides_technical_support">توفر دورافاند الدعم الفني</string>
 </resources>

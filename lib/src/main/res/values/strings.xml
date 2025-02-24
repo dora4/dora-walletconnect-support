@@ -1,6 +1,8 @@
 <resources>
     <string name="pay">Pay</string>
     <string name="cancel_pay">Payment Cancellation</string>
-    <string name="payment_successful">支付成功</string>
+    <string name="payment_successful">Payment successful</string>
     <string name="payment_failed">Payment failed</string>
+    <string name="please_complete_the_payment_in_the_wallet">"Please complete the payment in the wallet."</string>
+    <string name="dorafund_provides_technical_support">dorafund provides technical support</string>
 </resources>

@@ -3,4 +3,6 @@
     <string name="cancel_pay">支払いのキャンセル</string>
     <string name="payment_successful">支払いが完了しました</string>
     <string name="payment_failed">支払いに失敗しました</string>
+    <string name="please_complete_the_payment_in_the_wallet">ウォレット内でお支払いを完了してください。</string>
+    <string name="dorafund_provides_technical_support">dorafundは技術サポートを提供します</string>
 </resources>

@@ -3,4 +3,6 @@
     <string name="cancel_pay">付款取消</string>
     <string name="payment_successful">支付成功</string>
     <string name="payment_failed">支付失敗</string>
+    <string name="please_complete_the_payment_in_the_wallet">請在錢包中完成付款。</string>
+    <string name="dorafund_provides_technical_support">dorafund提供技術支持</string>
 </resources>

@@ -3,4 +3,6 @@
     <string name="cancel_pay">Hủy thanh toán</string>
     <string name="payment_successful">Thanh toán thành công</string>
     <string name="payment_failed">Thanh toán không thành công</string>
+    <string name="please_complete_the_payment_in_the_wallet">Vui lòng hoàn tất thanh toán trong ví.</string>
+    <string name="dorafund_provides_technical_support">dorafund cung cấp hỗ trợ kỹ thuật</string>
 </resources>

@@ -21,7 +21,6 @@ object DoraTrade {
 
     private var payListener: PayListener? = null
     private lateinit var appMetaData: Core.Model.AppMetaData
-    private var transactionMap: Map<Long, String> = hashMapOf()
 
     /**
      * 朵拉支付初始化应用元信息。
@@ -130,9 +129,9 @@ object DoraTrade {
         gasPrice: String,
         orderListener: OrderListener
     ) {
-        DoraAlertDialog(context).show(goodsDesc+"\nPayment request is from ${appMetaData.name}(${appMetaData.url}).Not related to https://dorafund.com.") {
+        DoraAlertDialog(context).show("$goodsDesc\n\n${context.getString(R.string.dorafund_provides_technical_support)}") {
             title(orderTitle)
-            themeColor(Color.BLACK)
+            themeColor(Color.parseColor("#389CFF"))
             positiveButton(context.getString(R.string.pay))
             positiveListener {
                 Web3Modal.getAccount()?.let { session ->
@@ -140,12 +139,12 @@ object DoraTrade {
                         PayUtils.convertToHexWei(tokenValue), gasLimit, gasPrice,
                         onSuccess = {
                             if (it is SentRequestResult.WalletConnect) {
-                                 orderListener.onPrintOrder(it.requestId.toString())
+                                ToastUtils.showShort(R.string.please_complete_the_payment_in_the_wallet)
+                                orderListener.onPrintOrder("order${it.requestId}")
                             }
-                            Log.d("sendTransactionRequest", it.toString())
                         },
                         onError = {
-                            Log.e("sendTransactionRequest", it.toString())
+                            ToastUtils.showShort(R.string.payment_failed)
                         }
                     )
                 }
@@ -228,14 +227,13 @@ object DoraTrade {
     interface PayListener {
 
         /**
-         * 发起支付订单，等待批准。
-         * https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol
+         * 转账消息上链，确认中。
          */
-        fun onSendPaymentRequest(orderId: String, transactionHash: String)
+        fun onSendTransactionToBlockchain(orderId: String, transactionHash: String)
 
         /**
-         * 在用户点击钱包的取消按钮时回调。
+         * 支付失败。
          */
-        fun onCancelPayment(orderId: String, transactionHash: String)
+        fun onPayFailure(orderId: String, transactionHash: String)
     }
 }

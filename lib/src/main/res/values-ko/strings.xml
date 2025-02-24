@@ -3,4 +3,6 @@
     <string name="cancel_pay">결제 취소</string>
     <string name="payment_successful">결제 성공</string>
     <string name="payment_failed">결제 실패</string>
+    <string name="please_complete_the_payment_in_the_wallet">지갑에서 결제를 완료해 주세요.</string>
+    <string name="dorafund_provides_technical_support">dorafund는 기술 지원을 제공합니다</string>
 </resources>
