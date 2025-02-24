@@ -1,7 +1,7 @@
 package dora.trade
 
+import androidx.annotation.WorkerThread
 import dora.util.TextUtils
-import org.json.JSONObject
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.methods.response.TransactionReceipt
 import org.web3j.protocol.http.HttpService
@@ -20,6 +20,7 @@ object PayUtils {
      */
     @JvmStatic
     @JvmOverloads
+    @WorkerThread
     fun queryTransactionStatus(transactionHash: String, jsonRpcUrl: String? = null) : Boolean {
         val url = if (TextUtils.isEmpty(jsonRpcUrl)) "https://eth-mainnet.token.im" else jsonRpcUrl
         val web3j: Web3j = Web3j.build(HttpService(url))
