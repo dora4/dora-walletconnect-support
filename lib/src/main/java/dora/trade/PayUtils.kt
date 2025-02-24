@@ -16,7 +16,7 @@ object PayUtils {
     }
 
     /**
-     * 查询区块链浏览器该笔订单是否已支付，且已被确认。
+     * 查询区块链链上数据，该笔订单是否已支付，且已被确认。
      */
     @JvmStatic
     @JvmOverloads
