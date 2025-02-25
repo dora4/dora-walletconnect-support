@@ -2,6 +2,10 @@ dora-walletconnect-support
 ![Release](https://jitpack.io/v/dora4/dora-walletconnect-support.svg)
 --------------------------------
 
+### Docs
+
+https://dora4.github.io/dora-walletconnect-support
+
 #### Gradle依赖配置
 
 添加以下代码到项目根目录下的settings.gradle.kts
