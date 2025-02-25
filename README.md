@@ -6,7 +6,7 @@ dora-walletconnect-support
 
 https://dorafund.com (Used to create accessKey.)
 
-### Docs
+### Developer Docs
 
 https://dora4.github.io/dora-walletconnect-support
 
