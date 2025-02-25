@@ -9,6 +9,16 @@ import java.math.BigDecimal
 
 object PayUtils {
 
+    const val DEFAULT_RPC_ETHEREUM = "https://eth-mainnet.token.im"
+    const val DEFAULT_RPC_ARBITRUM = "https://arbitrum-mainnet.token.im"
+    const val DEFAULT_RPC_POLYGON = "https://polygon-mainnet.token.im"
+    const val DEFAULT_RPC_BSC = "https://bsc-mainnet.token.im"
+    const val DEFAULT_RPC_AVALANCHE = "https://api.avax.network"
+    const val DEFAULT_RPC_OPTIMISM = "https://optimism-mainnet.token.im"
+    const val DEFAULT_RPC_BASE = "https://base-mainnet.token.im"
+    const val DEFAULT_RPC_LINEA = "https://rpc.linea.build"
+    const val DEFAULT_RPC_OKX = "https://exchainrpc.okex.org"
+
     /**
      * 转换double代币数量为十六进制字符串。
      */
@@ -25,7 +35,7 @@ object PayUtils {
     @JvmOverloads
     @WorkerThread
     fun queryTransaction(transactionHash: String, jsonRpcUrl: String? = null) : Boolean {
-        val url = if (TextUtils.isEmpty(jsonRpcUrl)) "https://eth-mainnet.token.im" else jsonRpcUrl
+        val url = if (TextUtils.isEmpty(jsonRpcUrl)) DEFAULT_RPC_ETHEREUM else jsonRpcUrl
         val web3j: Web3j = Web3j.build(HttpService(url))
         val receipt: TransactionReceipt? =
             web3j.ethGetTransactionReceipt(transactionHash).send().result
