@@ -1,4 +1,4 @@
-# dora-walletconnect-support
+# Dora Fund SDK Doc
 ![Release](https://jitpack.io/v/dora4/dora-walletconnect-support.svg)
 
 --------------------------------
