@@ -89,5 +89,3 @@ PayUtils.queryTransaction("Enter the transaction order ID", PayUtils.DEFAULT_RPC
 // Query a transaction on the Arbitrum mainnet
 PayUtils.queryTransaction("Enter the transaction order ID", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
-
-Let me know if you need further refinements! 🚀
