@@ -14,4 +14,8 @@ https://dora4.github.io/dora-walletconnect-support
 
 https://github.com/dora4/dora_samples
 
+### Donate
+EVM Address:0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000
+
+
 
