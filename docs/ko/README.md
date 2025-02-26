@@ -90,16 +90,16 @@ PayUtils.queryTransaction("트랜잭션 주문 ID 입력", PayUtils.DEFAULT_RPC_
 ```
 프로가드 규칙 추가:
 ```pro
-# Web3Modal 클래스 유지
+-keep class org.json.JSONObject { *; }
+-keep class dora.trade.DoraTrade { *; }
+-keep class dora.trade.DoraTrade$PayListener { *; }
 -keep class com.walletconnect.web3.modal.client.Web3Modal { *; }
-# Request 클래스 유지
 -keep class com.walletconnect.web3.modal.client.models.request.Request { *; }
-# Modal$Params$Init 클래스 유지
 -keep class com.walletconnect.web3.modal.client.Modal$Params$Init { *; }
-# AppMetaData 클래스 유지
+-keep class com.walletconnect.web3.modal.client.Modal$Model$SessionRequestResponse { *; }
+-keep class com.walletconnect.web3.modal.client.Modal$Model$JsonRpcResponse$JsonRpcResult { *; }
+-keep class com.walletconnect.web3.modal.client.Modal$Model$JsonRpcResponse$JsonRpcError { *; }
 -keep class com.walletconnect.android.Core$Model$AppMetaData { *; }
-# CoreClient 클래스 유지
 -keep class com.walletconnect.android.CoreClient { *; }
-# ConnectionType 클래스 유지
 -keep class com.walletconnect.android.relay.ConnectionType { *; }
 ```

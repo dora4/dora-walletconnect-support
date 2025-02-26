@@ -91,16 +91,16 @@ PayUtils.queryTransaction("Enter the transaction order ID", PayUtils.DEFAULT_RPC
 ```
 Add proguard rules:
 ```pro
-# Keep the Web3Modal class
+-keep class org.json.JSONObject { *; }
+-keep class dora.trade.DoraTrade { *; }
+-keep class dora.trade.DoraTrade$PayListener { *; }
 -keep class com.walletconnect.web3.modal.client.Web3Modal { *; }
-# Keep the Request class
 -keep class com.walletconnect.web3.modal.client.models.request.Request { *; }
-# Keep the Modal$Params$Init class
 -keep class com.walletconnect.web3.modal.client.Modal$Params$Init { *; }
-# Keep the AppMetaData class
+-keep class com.walletconnect.web3.modal.client.Modal$Model$SessionRequestResponse { *; }
+-keep class com.walletconnect.web3.modal.client.Modal$Model$JsonRpcResponse$JsonRpcResult { *; }
+-keep class com.walletconnect.web3.modal.client.Modal$Model$JsonRpcResponse$JsonRpcError { *; }
 -keep class com.walletconnect.android.Core$Model$AppMetaData { *; }
-# Keep the CoreClient class
 -keep class com.walletconnect.android.CoreClient { *; }
-# Keep the ConnectionType class
 -keep class com.walletconnect.android.relay.ConnectionType { *; }
 ```

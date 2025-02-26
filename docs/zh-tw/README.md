@@ -90,16 +90,16 @@ PayUtils.queryTransaction("輸入交易訂單 ID", PayUtils.DEFAULT_RPC_ARBITRUM
 ```
 添加混淆規則：
 ```pro
-# 保留 Web3Modal 類別
+-keep class org.json.JSONObject { *; }
+-keep class dora.trade.DoraTrade { *; }
+-keep class dora.trade.DoraTrade$PayListener { *; }
 -keep class com.walletconnect.web3.modal.client.Web3Modal { *; }
-# 保留 Request 類別
 -keep class com.walletconnect.web3.modal.client.models.request.Request { *; }
-# 保留 Modal$Params$Init 類別
 -keep class com.walletconnect.web3.modal.client.Modal$Params$Init { *; }
-# 保留 AppMetaData 類別
+-keep class com.walletconnect.web3.modal.client.Modal$Model$SessionRequestResponse { *; }
+-keep class com.walletconnect.web3.modal.client.Modal$Model$JsonRpcResponse$JsonRpcResult { *; }
+-keep class com.walletconnect.web3.modal.client.Modal$Model$JsonRpcResponse$JsonRpcError { *; }
 -keep class com.walletconnect.android.Core$Model$AppMetaData { *; }
-# 保留 CoreClient 類別
 -keep class com.walletconnect.android.CoreClient { *; }
-# 保留 ConnectionType 類別
 -keep class com.walletconnect.android.relay.ConnectionType { *; }
 ```

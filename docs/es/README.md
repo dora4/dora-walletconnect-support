@@ -90,16 +90,16 @@ PayUtils.queryTransaction("Introduce el ID de la orden de transacción", PayUtil
 ```
 Agregar reglas de ofuscación:
 ```pro
-# Mantener la clase Web3Modal
+-keep class org.json.JSONObject { *; }
+-keep class dora.trade.DoraTrade { *; }
+-keep class dora.trade.DoraTrade$PayListener { *; }
 -keep class com.walletconnect.web3.modal.client.Web3Modal { *; }
-# Mantener la clase Request
 -keep class com.walletconnect.web3.modal.client.models.request.Request { *; }
-# Mantener la clase Modal$Params$Init
 -keep class com.walletconnect.web3.modal.client.Modal$Params$Init { *; }
-# Mantener la clase AppMetaData
+-keep class com.walletconnect.web3.modal.client.Modal$Model$SessionRequestResponse { *; }
+-keep class com.walletconnect.web3.modal.client.Modal$Model$JsonRpcResponse$JsonRpcResult { *; }
+-keep class com.walletconnect.web3.modal.client.Modal$Model$JsonRpcResponse$JsonRpcError { *; }
 -keep class com.walletconnect.android.Core$Model$AppMetaData { *; }
-# Mantener la clase CoreClient
 -keep class com.walletconnect.android.CoreClient { *; }
-# Mantener la clase ConnectionType
 -keep class com.walletconnect.android.relay.ConnectionType { *; }
 ```

@@ -90,16 +90,16 @@ PayUtils.queryTransaction("Entrez l'ID de la commande de transaction", PayUtils.
 ```
 Ajouter des règles Proguard :
 ```pro
-# Garder la classe Web3Modal
+-keep class org.json.JSONObject { *; }
+-keep class dora.trade.DoraTrade { *; }
+-keep class dora.trade.DoraTrade$PayListener { *; }
 -keep class com.walletconnect.web3.modal.client.Web3Modal { *; }
-# Garder la classe Request
 -keep class com.walletconnect.web3.modal.client.models.request.Request { *; }
-# Garder la classe Modal$Params$Init
 -keep class com.walletconnect.web3.modal.client.Modal$Params$Init { *; }
-# Garder la classe AppMetaData
+-keep class com.walletconnect.web3.modal.client.Modal$Model$SessionRequestResponse { *; }
+-keep class com.walletconnect.web3.modal.client.Modal$Model$JsonRpcResponse$JsonRpcResult { *; }
+-keep class com.walletconnect.web3.modal.client.Modal$Model$JsonRpcResponse$JsonRpcError { *; }
 -keep class com.walletconnect.android.Core$Model$AppMetaData { *; }
-# Garder la classe CoreClient
 -keep class com.walletconnect.android.CoreClient { *; }
-# Garder la classe ConnectionType
 -keep class com.walletconnect.android.relay.ConnectionType { *; }
 ```
