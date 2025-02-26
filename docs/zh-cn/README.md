@@ -91,6 +91,20 @@ PayUtils.queryTransaction("填写该笔订单的交易订单号", PayUtils.DEFAU
 // 查询Arbitrum主网的交易
 PayUtils.queryTransaction("填写该笔订单的交易订单号", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
-
+添加混淆规则。
+```kotlin
+# 保留 Web3Modal 类
+-keep class com.walletconnect.web3.modal.client.Web3Modal { *; }
+# 保留 Request 类
+-keep class com.walletconnect.web3.modal.client.models.request.Request { *; }
+# 保留 Modal$Params$Init 类
+-keep class com.walletconnect.web3.modal.client.Modal$Params$Init { *; }
+# 保留 AppMetaData 类
+-keep class com.walletconnect.android.Core$Model$AppMetaData { *; }
+# 保留 CoreClient 类
+-keep class com.walletconnect.android.CoreClient { *; }
+# 保留 ConnectionType 类
+-keep class com.walletconnect.android.relay.ConnectionType { *; }
+```
 
 

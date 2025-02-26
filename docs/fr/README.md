@@ -88,3 +88,16 @@ PayUtils.queryTransaction("Entrez l'ID de la commande de transaction", PayUtils.
 // Rechercher une transaction sur le réseau principal Arbitrum
 PayUtils.queryTransaction("Entrez l'ID de la commande de transaction", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
+Ajouter des règles Proguard :
+# Garder la classe Web3Modal
+-keep class com.walletconnect.web3.modal.client.Web3Modal { *; }
+# Garder la classe Request
+-keep class com.walletconnect.web3.modal.client.models.request.Request { *; }
+# Garder la classe Modal$Params$Init
+-keep class com.walletconnect.web3.modal.client.Modal$Params$Init { *; }
+# Garder la classe AppMetaData
+-keep class com.walletconnect.android.Core$Model$AppMetaData { *; }
+# Garder la classe CoreClient
+-keep class com.walletconnect.android.CoreClient { *; }
+# Garder la classe ConnectionType
+-keep class com.walletconnect.android.relay.ConnectionType { *; }

@@ -88,3 +88,16 @@ PayUtils.queryTransaction("輸入交易訂單 ID", PayUtils.DEFAULT_RPC_POLYGON)
 // 查詢 Arbitrum 主網交易
 PayUtils.queryTransaction("輸入交易訂單 ID", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
+添加混淆規則：
+# 保留 Web3Modal 類別
+-keep class com.walletconnect.web3.modal.client.Web3Modal { *; }
+# 保留 Request 類別
+-keep class com.walletconnect.web3.modal.client.models.request.Request { *; }
+# 保留 Modal$Params$Init 類別
+-keep class com.walletconnect.web3.modal.client.Modal$Params$Init { *; }
+# 保留 AppMetaData 類別
+-keep class com.walletconnect.android.Core$Model$AppMetaData { *; }
+# 保留 CoreClient 類別
+-keep class com.walletconnect.android.CoreClient { *; }
+# 保留 ConnectionType 類別
+-keep class com.walletconnect.android.relay.ConnectionType { *; }

@@ -88,3 +88,16 @@ PayUtils.queryTransaction("Introduce el ID de la orden de transacción", PayUtil
 // Consultar una transacción en la red principal de Arbitrum
 PayUtils.queryTransaction("Introduce el ID de la orden de transacción", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
+Agregar reglas de ofuscación:
+# Mantener la clase Web3Modal
+-keep class com.walletconnect.web3.modal.client.Web3Modal { *; }
+# Mantener la clase Request
+-keep class com.walletconnect.web3.modal.client.models.request.Request { *; }
+# Mantener la clase Modal$Params$Init
+-keep class com.walletconnect.web3.modal.client.Modal$Params$Init { *; }
+# Mantener la clase AppMetaData
+-keep class com.walletconnect.android.Core$Model$AppMetaData { *; }
+# Mantener la clase CoreClient
+-keep class com.walletconnect.android.CoreClient { *; }
+# Mantener la clase ConnectionType
+-keep class com.walletconnect.android.relay.ConnectionType { *; }

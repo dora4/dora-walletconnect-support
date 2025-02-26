@@ -89,3 +89,16 @@ PayUtils.queryTransaction("Enter the transaction order ID", PayUtils.DEFAULT_RPC
 // Query a transaction on the Arbitrum mainnet
 PayUtils.queryTransaction("Enter the transaction order ID", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
+Add proguard rules:
+# Keep the Web3Modal class
+-keep class com.walletconnect.web3.modal.client.Web3Modal { *; }
+# Keep the Request class
+-keep class com.walletconnect.web3.modal.client.models.request.Request { *; }
+# Keep the Modal$Params$Init class
+-keep class com.walletconnect.web3.modal.client.Modal$Params$Init { *; }
+# Keep the AppMetaData class
+-keep class com.walletconnect.android.Core$Model$AppMetaData { *; }
+# Keep the CoreClient class
+-keep class com.walletconnect.android.CoreClient { *; }
+# Keep the ConnectionType class
+-keep class com.walletconnect.android.relay.ConnectionType { *; }
