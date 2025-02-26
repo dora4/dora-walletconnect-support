@@ -71,7 +71,7 @@ DoraTrade.pay(this,
                 "輸入 32 位 DoraPay secretKey，請勿與任何人分享，包括我們的員工",
                 "輸入訂單信息，以便框架彈出窗口通知用戶支付",
                 "輸入商品詳情，以便框架彈出窗口通知用戶支付",
-                "輸入收款方錢包地址，例如 0xfF6FC0F28835F2C1FE23B15fb4488d976B06Dcd9",
+                "輸入收款方錢包地址，例如 0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000",
                 0.01,
                 object: DoraTrade.OrderListener {
                     override fun onPrintOrder(orderId: String) {

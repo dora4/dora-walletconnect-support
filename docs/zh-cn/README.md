@@ -73,7 +73,7 @@ DoraTrade.pay(this,
                 "填写朵拉支付的32位secretKey，不要泄露给任何人，包括我们的工作人员",
                 "填写订单信息，便于框架给你弹窗，以让用户知晓正在支付",
                 "填写商品详细描述，便于框架给你弹窗，以让用户知晓正在支付",
-                "填写收款方的钱包地址，如0xfF6FC0F28835F2C1FE23B15fb4488d976B06Dcd9",
+                "填写收款方的钱包地址，如0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000",
                 0.01,
                 object: DoraTrade.OrderListener {
                     override fun onPrintOrder(orderId: String) {

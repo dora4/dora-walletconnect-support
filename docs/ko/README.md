@@ -71,7 +71,7 @@ DoraTrade.pay(this,
                 "32자리 DoraPay secretKey를 입력하세요. 이는 우리 직원 포함 누구와도 공유하지 마세요.",
                 "주문 정보를 입력하세요. 프레임워크가 팝업을 띄워 사용자에게 결제를 안내합니다.",
                 "상품 정보를 입력하세요. 프레임워크가 팝업을 띄워 사용자에게 결제를 안내합니다.",
-                "수취인의 지갑 주소를 입력하세요. 예: 0xfF6FC0F28835F2C1FE23B15fb4488d976B06Dcd9",
+                "수취인의 지갑 주소를 입력하세요. 예: 0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000",
                 0.01,
                 object: DoraTrade.OrderListener {
                     override fun onPrintOrder(orderId: String) {

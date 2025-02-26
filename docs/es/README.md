@@ -71,7 +71,7 @@ DoraTrade.pay(this,
                 "Introduce la clave secreta de 32 caracteres de DoraPay. No la compartas con nadie, incluido nuestro personal.",
                 "Introduce la información del pedido para que el framework muestre una ventana emergente informando al usuario sobre el pago.",
                 "Introduce los detalles del producto para que el framework muestre una ventana emergente informando al usuario sobre el pago.",
-                "Introduce la dirección de la billetera del destinatario, por ejemplo, 0xfF6FC0F28835F2C1FE23B15fb4488d976B06Dcd9",
+                "Introduce la dirección de la billetera del destinatario, por ejemplo, 0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000",
                 0.01,
                 object: DoraTrade.OrderListener {
                     override fun onPrintOrder(orderId: String) {

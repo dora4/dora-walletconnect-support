@@ -72,7 +72,7 @@ DoraTrade.pay(this,
                 "Enter the 32-character DoraPay secretKey. Do not share it with anyone, including our staff",
                 "Enter the order information, so the framework can display a popup informing the user about the payment",
                 "Enter the product details, so the framework can display a popup informing the user about the payment",
-                "Enter the recipient's wallet address, e.g., 0xfF6FC0F28835F2C1FE23B15fb4488d976B06Dcd9",
+                "Enter the recipient's wallet address, e.g., 0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000",
                 0.01,
                 object: DoraTrade.OrderListener {
                     override fun onPrintOrder(orderId: String) {
