@@ -89,6 +89,7 @@ PayUtils.queryTransaction("Entrez l'ID de la commande de transaction", PayUtils.
 PayUtils.queryTransaction("Entrez l'ID de la commande de transaction", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
 Ajouter des règles Proguard :
+```pro
 # Garder la classe Web3Modal
 -keep class com.walletconnect.web3.modal.client.Web3Modal { *; }
 # Garder la classe Request
@@ -101,3 +102,4 @@ Ajouter des règles Proguard :
 -keep class com.walletconnect.android.CoreClient { *; }
 # Garder la classe ConnectionType
 -keep class com.walletconnect.android.relay.ConnectionType { *; }
+```

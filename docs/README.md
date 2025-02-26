@@ -90,6 +90,7 @@ PayUtils.queryTransaction("Enter the transaction order ID", PayUtils.DEFAULT_RPC
 PayUtils.queryTransaction("Enter the transaction order ID", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
 Add proguard rules:
+```pro
 # Keep the Web3Modal class
 -keep class com.walletconnect.web3.modal.client.Web3Modal { *; }
 # Keep the Request class
@@ -102,3 +103,4 @@ Add proguard rules:
 -keep class com.walletconnect.android.CoreClient { *; }
 # Keep the ConnectionType class
 -keep class com.walletconnect.android.relay.ConnectionType { *; }
+```

@@ -89,6 +89,7 @@ PayUtils.queryTransaction("Introduce el ID de la orden de transacción", PayUtil
 PayUtils.queryTransaction("Introduce el ID de la orden de transacción", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
 Agregar reglas de ofuscación:
+```pro
 # Mantener la clase Web3Modal
 -keep class com.walletconnect.web3.modal.client.Web3Modal { *; }
 # Mantener la clase Request
@@ -101,3 +102,4 @@ Agregar reglas de ofuscación:
 -keep class com.walletconnect.android.CoreClient { *; }
 # Mantener la clase ConnectionType
 -keep class com.walletconnect.android.relay.ConnectionType { *; }
+```

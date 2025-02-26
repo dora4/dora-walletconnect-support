@@ -92,7 +92,7 @@ PayUtils.queryTransaction("填写该笔订单的交易订单号", PayUtils.DEFAU
 PayUtils.queryTransaction("填写该笔订单的交易订单号", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
 添加混淆规则。
-```kotlin
+```pro
 # 保留 Web3Modal 类
 -keep class com.walletconnect.web3.modal.client.Web3Modal { *; }
 # 保留 Request 类

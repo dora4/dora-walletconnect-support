@@ -89,6 +89,7 @@ PayUtils.queryTransaction("輸入交易訂單 ID", PayUtils.DEFAULT_RPC_POLYGON)
 PayUtils.queryTransaction("輸入交易訂單 ID", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
 添加混淆規則：
+```pro
 # 保留 Web3Modal 類別
 -keep class com.walletconnect.web3.modal.client.Web3Modal { *; }
 # 保留 Request 類別
@@ -101,3 +102,4 @@ PayUtils.queryTransaction("輸入交易訂單 ID", PayUtils.DEFAULT_RPC_ARBITRUM
 -keep class com.walletconnect.android.CoreClient { *; }
 # 保留 ConnectionType 類別
 -keep class com.walletconnect.android.relay.ConnectionType { *; }
+```

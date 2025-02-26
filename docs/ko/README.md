@@ -89,6 +89,7 @@ PayUtils.queryTransaction("트랜잭션 주문 ID 입력", PayUtils.DEFAULT_RPC_
 PayUtils.queryTransaction("트랜잭션 주문 ID 입력", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
 프로가드 규칙 추가:
+```pro
 # Web3Modal 클래스 유지
 -keep class com.walletconnect.web3.modal.client.Web3Modal { *; }
 # Request 클래스 유지
@@ -101,3 +102,4 @@ PayUtils.queryTransaction("트랜잭션 주문 ID 입력", PayUtils.DEFAULT_RPC_
 -keep class com.walletconnect.android.CoreClient { *; }
 # ConnectionType 클래스 유지
 -keep class com.walletconnect.android.relay.ConnectionType { *; }
+```
