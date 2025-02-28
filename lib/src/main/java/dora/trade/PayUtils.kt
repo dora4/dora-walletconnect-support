@@ -1,6 +1,7 @@
 package dora.trade
 
 import androidx.annotation.WorkerThread
+import com.walletconnect.web3.modal.client.Web3Modal
 import dora.util.TextUtils
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.methods.response.TransactionReceipt
@@ -29,14 +30,21 @@ object PayUtils {
     }
 
     /**
-     * 查询区块链链上数据，该笔订单是否被区块链成功确认。
+     * 查询区块链链上数据，该笔订单是否被区块链成功确认，使用当前选中的链的json-rpc地址，默认使用以太坊的。
      */
     @JvmStatic
-    @JvmOverloads
     @WorkerThread
-    fun queryTransaction(transactionHash: String, jsonRpcUrl: String? = null) : Boolean {
-        val url = if (TextUtils.isEmpty(jsonRpcUrl)) DEFAULT_RPC_ETHEREUM else jsonRpcUrl
-        val web3j: Web3j = Web3j.build(HttpService(url))
+    fun queryTransaction(transactionHash: String) : Boolean {
+        return queryTransaction(transactionHash, Web3Modal.getAccount()?.chain?.rpcUrl ?: DEFAULT_RPC_ETHEREUM)
+    }
+
+    /**
+     * 查询区块链链上数据，该笔订单是否被区块链成功确认，自定义json-rpc地址。
+     */
+    @JvmStatic
+    @WorkerThread
+    fun queryTransaction(transactionHash: String, jsonRpcUrl: String) : Boolean {
+        val web3j: Web3j = Web3j.build(HttpService(jsonRpcUrl))
         val receipt: TransactionReceipt? =
             web3j.ethGetTransactionReceipt(transactionHash).send().result
         return receipt != null && receipt.status.equals("0x1")
