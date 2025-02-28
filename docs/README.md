@@ -82,12 +82,14 @@ DoraTrade.pay(this,
 ```
 Query the order payment status:
 ```kotlin
-// Query a transaction on the Ethereum mainnet
-PayUtils.queryTransaction("Enter the transaction order ID")
-// Query a transaction on the Polygon mainnet
-PayUtils.queryTransaction("Enter the transaction order ID", PayUtils.DEFAULT_RPC_POLYGON)
-// Query a transaction on the Arbitrum mainnet
-PayUtils.queryTransaction("Enter the transaction order ID", PayUtils.DEFAULT_RPC_ARBITRUM)
+// Query the transaction of the currently selected chain  
+PayUtils.queryTransaction("Fill in the transaction hash of this order")
+// Query the transaction on the Ethereum mainnet  
+PayUtils.queryTransaction("Fill in the transaction hash of this order", PayUtils.DEFAULT_RPC_ETHEREUM)
+// Query the transaction on the Polygon mainnet  
+PayUtils.queryTransaction("Fill in the transaction hash of this order", PayUtils.DEFAULT_RPC_POLYGON)
+// Query the transaction on the Arbitrum mainnet  
+PayUtils.queryTransaction("Fill in the transaction hash of this order", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
 Add proguard rules:
 ```pro

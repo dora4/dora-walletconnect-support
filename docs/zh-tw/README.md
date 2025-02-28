@@ -81,12 +81,14 @@ DoraTrade.pay(this,
 ```
 查詢訂單支付狀態：
 ```kotlin
-// 查詢 Ethereum 主網交易
-PayUtils.queryTransaction("輸入交易訂單 ID")
-// 查詢 Polygon 主網交易
-PayUtils.queryTransaction("輸入交易訂單 ID", PayUtils.DEFAULT_RPC_POLYGON)
-// 查詢 Arbitrum 主網交易
-PayUtils.queryTransaction("輸入交易訂單 ID", PayUtils.DEFAULT_RPC_ARBITRUM)
+// 查詢當前選中鏈的交易
+PayUtils.queryTransaction("填寫該筆訂單的交易哈希")
+// 查詢Ethereum主網的交易
+PayUtils.queryTransaction("填寫該筆訂單的交易哈希", PayUtils.DEFAULT_RPC_ETHEREUM)
+// 查詢Polygon主網的交易
+PayUtils.queryTransaction("填寫該筆訂單的交易哈希", PayUtils.DEFAULT_RPC_POLYGON)
+// 查詢Arbitrum主網的交易
+PayUtils.queryTransaction("填寫該筆訂單的交易哈希", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
 添加混淆規則：
 ```pro

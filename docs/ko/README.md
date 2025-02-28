@@ -81,12 +81,14 @@ DoraTrade.pay(this,
 ```
 주문 결제 상태를 조회하세요:
 ```kotlin
-// Ethereum 메인넷에서 거래 조회
-PayUtils.queryTransaction("트랜잭션 주문 ID 입력")
-// Polygon 메인넷에서 거래 조회
-PayUtils.queryTransaction("트랜잭션 주문 ID 입력", PayUtils.DEFAULT_RPC_POLYGON)
-// Arbitrum 메인넷에서 거래 조회
-PayUtils.queryTransaction("트랜잭션 주문 ID 입력", PayUtils.DEFAULT_RPC_ARBITRUM)
+// 현재 선택된 체인의 거래 조회
+PayUtils.queryTransaction("이 주문의 거래 해시를 입력하세요")
+// Ethereum 메인넷의 거래 조회
+PayUtils.queryTransaction("이 주문의 거래 해시를 입력하세요", PayUtils.DEFAULT_RPC_ETHEREUM)
+// Polygon 메인넷의 거래 조회
+PayUtils.queryTransaction("이 주문의 거래 해시를 입력하세요", PayUtils.DEFAULT_RPC_POLYGON)
+// Arbitrum 메인넷의 거래 조회
+PayUtils.queryTransaction("이 주문의 거래 해시를 입력하세요", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
 프로가드 규칙 추가:
 ```pro
