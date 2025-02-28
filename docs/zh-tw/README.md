@@ -18,7 +18,7 @@ dependencyResolutionManagement {
 dependencies {
     // 擴展包必須與主框架 "dora" 一起使用
     implementation("com.github.dora4:dora:1.2.51")
-    implementation("com.github.dora4:dora-walletconnect-support:1.36")
+    implementation("com.github.dora4:dora-walletconnect-support:1.38")
 }
 ```
 
@@ -93,6 +93,7 @@ PayUtils.queryTransaction("輸入交易訂單 ID", PayUtils.DEFAULT_RPC_ARBITRUM
 -keep class org.json.JSONObject { *; }
 -keep class dora.trade.DoraTrade { *; }
 -keep class dora.trade.DoraTrade$PayListener { *; }
+-keep class org.web3j.** { *; }
 -keep class com.walletconnect.web3.modal.client.Web3Modal { *; }
 -keep class com.walletconnect.web3.modal.client.models.request.Request { *; }
 -keep class com.walletconnect.web3.modal.client.Modal$Params$Init { *; }

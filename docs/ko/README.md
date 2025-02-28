@@ -18,7 +18,7 @@ dependencyResolutionManagement {
 dependencies {
     // 확장 패키지는 메인 프레임워크 "dora"와 함께 사용해야 합니다.
     implementation("com.github.dora4:dora:1.2.51")
-    implementation("com.github.dora4:dora-walletconnect-support:1.36")
+    implementation("com.github.dora4:dora-walletconnect-support:1.38")
 }
 ```
 
@@ -93,6 +93,7 @@ PayUtils.queryTransaction("트랜잭션 주문 ID 입력", PayUtils.DEFAULT_RPC_
 -keep class org.json.JSONObject { *; }
 -keep class dora.trade.DoraTrade { *; }
 -keep class dora.trade.DoraTrade$PayListener { *; }
+-keep class org.web3j.** { *; }
 -keep class com.walletconnect.web3.modal.client.Web3Modal { *; }
 -keep class com.walletconnect.web3.modal.client.models.request.Request { *; }
 -keep class com.walletconnect.web3.modal.client.Modal$Params$Init { *; }

@@ -18,7 +18,7 @@ dependencyResolutionManagement {
 dependencies {
     // 扩展包必须在有主框架dora的情况下使用
     implementation("com.github.dora4:dora:1.2.51")
-    implementation("com.github.dora4:dora-walletconnect-support:1.36")
+    implementation("com.github.dora4:dora-walletconnect-support:1.38")
 }
 ```
 
@@ -96,6 +96,7 @@ PayUtils.queryTransaction("填写该笔订单的交易订单号", PayUtils.DEFAU
 -keep class org.json.JSONObject { *; }
 -keep class dora.trade.DoraTrade { *; }
 -keep class dora.trade.DoraTrade$PayListener { *; }
+-keep class org.web3j.** { *; }
 -keep class com.walletconnect.web3.modal.client.Web3Modal { *; }
 -keep class com.walletconnect.web3.modal.client.models.request.Request { *; }
 -keep class com.walletconnect.web3.modal.client.Modal$Params$Init { *; }

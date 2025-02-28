@@ -18,7 +18,7 @@ Ajoutez le code suivant dans le fichier `build.gradle.kts` du module `app` :
 dependencies {
     // Le package d'extension doit être utilisé avec le framework principal "dora"
     implementation("com.github.dora4:dora:1.2.51")
-    implementation("com.github.dora4:dora-walletconnect-support:1.36")
+    implementation("com.github.dora4:dora-walletconnect-support:1.38")
 }
 ```
 
@@ -93,6 +93,7 @@ Ajouter des règles Proguard :
 -keep class org.json.JSONObject { *; }
 -keep class dora.trade.DoraTrade { *; }
 -keep class dora.trade.DoraTrade$PayListener { *; }
+-keep class org.web3j.** { *; }
 -keep class com.walletconnect.web3.modal.client.Web3Modal { *; }
 -keep class com.walletconnect.web3.modal.client.models.request.Request { *; }
 -keep class com.walletconnect.web3.modal.client.Modal$Params$Init { *; }
