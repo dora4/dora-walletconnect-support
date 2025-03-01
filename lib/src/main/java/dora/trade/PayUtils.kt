@@ -2,7 +2,6 @@ package dora.trade
 
 import androidx.annotation.WorkerThread
 import com.walletconnect.web3.modal.client.Web3Modal
-import dora.util.TextUtils
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.methods.response.TransactionReceipt
 import org.web3j.protocol.http.HttpService

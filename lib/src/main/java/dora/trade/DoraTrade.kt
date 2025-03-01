@@ -87,6 +87,36 @@ object DoraTrade {
     }
 
     /**
+     * 捐赠，无需支付结果的回调监听。
+     */
+    fun donate(
+        context: Context,
+        accessKey: String,
+        secretKey: String,
+        orderTitle: String,
+        goodsDesc: String,
+        account: String,
+        tokenValue: Double
+    ) {
+        val (gasLimit, gasPrice) = nativeGetGasParameters()
+        pay(
+            context,
+            accessKey,
+            secretKey,
+            orderTitle,
+            goodsDesc,
+            account,
+            tokenValue,
+            gasLimit,
+            gasPrice,
+            object : OrderListener {
+                override fun onPrintOrder(orderId: String) {
+                }
+            }
+        )
+    }
+
+    /**
      * 开始支付，使用默认的gasLimit和gasPrice。
      */
     fun pay(
