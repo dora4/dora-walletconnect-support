@@ -18,7 +18,7 @@ dependencyResolutionManagement {
 dependencies {
     // 확장 패키지는 메인 프레임워크 "dora"와 함께 사용해야 합니다.
     implementation("com.github.dora4:dora:1.2.51")
-    implementation("com.github.dora4:dora-walletconnect-support:1.38")
+    implementation("com.github.dora4:dora-walletconnect-support:1.40")
 }
 ```
 
