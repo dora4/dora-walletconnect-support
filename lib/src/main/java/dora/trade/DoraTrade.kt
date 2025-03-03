@@ -87,6 +87,22 @@ object DoraTrade {
     }
 
     /**
+     * 断开与冷钱包的连接。
+     */
+    fun disconnectWallet() {
+        disconnectWallet(onSuccess = {}, onError = {})
+    }
+
+    /**
+     * 断开与冷钱包的连接。
+     */
+    fun disconnectWallet(onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
+        if (Web3Modal.getAccount() != null) {
+            Web3Modal.disconnect(onSuccess, onError)
+        }
+    }
+
+    /**
      * 捐赠，无需支付结果的回调监听。
      */
     fun donate(
