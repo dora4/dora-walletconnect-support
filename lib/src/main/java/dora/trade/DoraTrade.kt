@@ -126,7 +126,11 @@ object DoraTrade {
             gasLimit,
             gasPrice,
             object : OrderListener {
-                override fun onPrintOrder(orderId: String) {
+                override fun onPrintOrder(
+                    orderId: String,
+                    chain: Modal.Model.Chain,
+                    tokenValue: Double
+                ) {
                 }
             }
         )
@@ -186,7 +190,7 @@ object DoraTrade {
                         onSuccess = {
                             if (it is SentRequestResult.WalletConnect) {
                                 ToastUtils.showShort(R.string.please_complete_the_payment_in_the_wallet)
-                                orderListener.onPrintOrder("order${it.requestId}")
+                                orderListener.onPrintOrder("order${it.requestId}", session.chain, tokenValue)
                             }
                         },
                         onError = {
@@ -267,7 +271,7 @@ object DoraTrade {
         /**
          * 生成该笔订单的交易订单号。
          */
-        fun onPrintOrder(orderId: String)
+        fun onPrintOrder(orderId: String, chain: Modal.Model.Chain, tokenValue: Double)
     }
 
     interface PayListener {
