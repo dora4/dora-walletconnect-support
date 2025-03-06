@@ -85,13 +85,13 @@ DoraTrade.pay(this,
 
 ```kotlin
 // 查询当前选中链的交易
-PayUtils.queryTransaction("填写该笔订单的交易哈希")
+PayUtils.queryTransactionByHash("填写该笔订单的交易哈希")
 // 查询Ethereum主网的交易
-PayUtils.queryTransaction("填写该笔订单的交易哈希", PayUtils.DEFAULT_RPC_ETHEREUM)
+PayUtils.queryTransactionByHash("填写该笔订单的交易哈希", PayUtils.DEFAULT_RPC_ETHEREUM)
 // 查询Polygon主网的交易
-PayUtils.queryTransaction("填写该笔订单的交易哈希", PayUtils.DEFAULT_RPC_POLYGON)
+PayUtils.queryTransactionByHash("填写该笔订单的交易哈希", PayUtils.DEFAULT_RPC_POLYGON)
 // 查询Arbitrum主网的交易
-PayUtils.queryTransaction("填写该笔订单的交易哈希", PayUtils.DEFAULT_RPC_ARBITRUM)
+PayUtils.queryTransactionByHash("填写该笔订单的交易哈希", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
 添加混淆规则。
 ```pro

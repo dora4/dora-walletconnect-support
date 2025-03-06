@@ -18,7 +18,7 @@ Add the following code to the `build.gradle.kts` file in the `app` module:
 dependencies {
     // The extension package must be used with the main framework "dora"
     implementation("com.github.dora4:dora:1.2.51")
-    implementation("com.github.dora4:dora-walletconnect-support:1.42")
+    implementation("com.github.dora4:dora-walletconnect-support:1.43")
 }
 ```
 
@@ -83,13 +83,13 @@ DoraTrade.pay(this,
 Query the order payment status:
 ```kotlin
 // Query the transaction of the currently selected chain  
-PayUtils.queryTransaction("Fill in the transaction hash of this order")
+PayUtils.queryTransactionByHash("Fill in the transaction hash of this order")
 // Query the transaction on the Ethereum mainnet  
-PayUtils.queryTransaction("Fill in the transaction hash of this order", PayUtils.DEFAULT_RPC_ETHEREUM)
+PayUtils.queryTransactionByHash("Fill in the transaction hash of this order", PayUtils.DEFAULT_RPC_ETHEREUM)
 // Query the transaction on the Polygon mainnet  
-PayUtils.queryTransaction("Fill in the transaction hash of this order", PayUtils.DEFAULT_RPC_POLYGON)
+PayUtils.queryTransactionByHash("Fill in the transaction hash of this order", PayUtils.DEFAULT_RPC_POLYGON)
 // Query the transaction on the Arbitrum mainnet  
-PayUtils.queryTransaction("Fill in the transaction hash of this order", PayUtils.DEFAULT_RPC_ARBITRUM)
+PayUtils.queryTransactionByHash("Fill in the transaction hash of this order", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
 Add proguard rules:
 ```pro

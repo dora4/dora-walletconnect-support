@@ -82,13 +82,13 @@ DoraTrade.pay(this,
 Interrogez l'état du paiement de la commande :
 ```kotlin
 // Rechercher la transaction de la chaîne actuellement sélectionnée
-PayUtils.queryTransaction("Remplissez le hachage de la transaction de cette commande")
+PayUtils.queryTransactionByHash("Remplissez le hachage de la transaction de cette commande")
 // Rechercher la transaction sur le réseau principal Ethereum
-PayUtils.queryTransaction("Remplissez le hachage de la transaction de cette commande", PayUtils.DEFAULT_RPC_ETHEREUM)
+PayUtils.queryTransactionByHash("Remplissez le hachage de la transaction de cette commande", PayUtils.DEFAULT_RPC_ETHEREUM)
 // Rechercher la transaction sur le réseau principal Polygon
-PayUtils.queryTransaction("Remplissez le hachage de la transaction de cette commande", PayUtils.DEFAULT_RPC_POLYGON)
+PayUtils.queryTransactionByHash("Remplissez le hachage de la transaction de cette commande", PayUtils.DEFAULT_RPC_POLYGON)
 // Rechercher la transaction sur le réseau principal Arbitrum
-PayUtils.queryTransaction("Remplissez le hachage de la transaction de cette commande", PayUtils.DEFAULT_RPC_ARBITRUM)
+PayUtils.queryTransactionByHash("Remplissez le hachage de la transaction de cette commande", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
 Ajouter des règles Proguard :
 ```pro

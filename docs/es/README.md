@@ -82,13 +82,13 @@ DoraTrade.pay(this,
 Consulta el estado del pago de la orden:
 ```kotlin
 // Consultar la transacción de la cadena seleccionada actualmente
-PayUtils.queryTransaction("Rellena el hash de la transacción de este pedido")
+PayUtils.queryTransactionByHash("Rellena el hash de la transacción de este pedido")
 // Consultar la transacción en la red principal de Ethereum
-PayUtils.queryTransaction("Rellena el hash de la transacción de este pedido", PayUtils.DEFAULT_RPC_ETHEREUM)
+PayUtils.queryTransactionByHash("Rellena el hash de la transacción de este pedido", PayUtils.DEFAULT_RPC_ETHEREUM)
 // Consultar la transacción en la red principal de Polygon
-PayUtils.queryTransaction("Rellena el hash de la transacción de este pedido", PayUtils.DEFAULT_RPC_POLYGON)
+PayUtils.queryTransactionByHash("Rellena el hash de la transacción de este pedido", PayUtils.DEFAULT_RPC_POLYGON)
 // Consultar la transacción en la red principal de Arbitrum
-PayUtils.queryTransaction("Rellena el hash de la transacción de este pedido", PayUtils.DEFAULT_RPC_ARBITRUM)
+PayUtils.queryTransactionByHash("Rellena el hash de la transacción de este pedido", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
 Agregar reglas de ofuscación:
 ```pro

@@ -3,6 +3,7 @@ package dora.trade
 import androidx.annotation.WorkerThread
 import com.walletconnect.web3.modal.client.Web3Modal
 import org.web3j.protocol.Web3j
+import org.web3j.protocol.core.methods.response.Transaction
 import org.web3j.protocol.core.methods.response.TransactionReceipt
 import org.web3j.protocol.http.HttpService
 import java.math.BigDecimal
@@ -29,23 +30,75 @@ object PayUtils {
     }
 
     /**
-     * 查询区块链链上数据，该笔订单是否被区块链成功确认，使用当前选中的链的json-rpc地址，默认使用以太坊的。
+     * 查询区块链链上数据，该笔订单是否上链，使用当前选中的链的json-rpc地址，默认使用以太坊的。
      */
     @JvmStatic
     @WorkerThread
+    @Deprecated(replaceWith = ReplaceWith("queryTransactionByHash"),
+        message = "use queryTransactionByHash() instead.")
     fun queryTransaction(transactionHash: String) : Boolean {
         return queryTransaction(transactionHash, Web3Modal.getAccount()?.chain?.rpcUrl ?: DEFAULT_RPC_ETHEREUM)
     }
 
     /**
-     * 查询区块链链上数据，该笔订单是否被区块链成功确认，自定义json-rpc地址。
+     * 查询区块链链上数据，该笔订单是否上链，自定义json-rpc地址。
      */
     @JvmStatic
     @WorkerThread
+    @Deprecated(replaceWith = ReplaceWith("queryTransactionByHash"),
+        message = "use queryTransactionByHash() instead.")
     fun queryTransaction(transactionHash: String, jsonRpcUrl: String) : Boolean {
         val web3j: Web3j = Web3j.build(HttpService(jsonRpcUrl))
         val receipt: TransactionReceipt? =
             web3j.ethGetTransactionReceipt(transactionHash).send().result
         return receipt != null && receipt.status.equals("0x1")
+    }
+
+    /**
+     * 查询区块链链上数据，该笔订单是否被区块链成功确认，使用当前选中的链的json-rpc地址，默认使用以太坊的。
+     *
+     * @since 1.43
+     */
+    @JvmStatic
+    @WorkerThread
+    fun queryTransactionByHash(transactionHash: String) : Boolean {
+        return queryTransactionByHash(transactionHash, Web3Modal.getAccount()?.chain?.rpcUrl ?: DEFAULT_RPC_ETHEREUM)
+    }
+
+    /**
+     * 查询区块链链上数据，该笔订单是否被区块链成功确认，自定义json-rpc地址。
+     *
+     * @since 1.43
+     */
+    @JvmStatic
+    @WorkerThread
+    fun queryTransactionByHash(transactionHash: String, jsonRpcUrl: String) : Boolean {
+        val web3j: Web3j = Web3j.build(HttpService(jsonRpcUrl))
+        val receipt: TransactionReceipt? =
+            web3j.ethGetTransactionReceipt(transactionHash).send().result
+        return receipt != null && receipt.blockNumber != null
+    }
+
+    /**
+     * 查询区块链链上数据，该笔订单的交易详情，使用当前选中的链的json-rpc地址，默认使用以太坊的。
+     *
+     * @since 1.43
+     */
+    @JvmStatic
+    @WorkerThread
+    fun queryTransactionDetail(transactionHash: String): Transaction? {
+        return queryTransactionDetail(transactionHash, Web3Modal.getAccount()?.chain?.rpcUrl ?: DEFAULT_RPC_ETHEREUM)
+    }
+
+    /**
+     * 查询区块链链上数据，该笔订单的交易详情，自定义json-rpc地址。
+     *
+     * @since 1.43
+     */
+    @JvmStatic
+    @WorkerThread
+    fun queryTransactionDetail(transactionHash: String, jsonRpcUrl: String) : Transaction? {
+        val web3j: Web3j = Web3j.build(HttpService(jsonRpcUrl))
+        return web3j.ethGetTransactionByHash(transactionHash).send().transaction.orElse(null)
     }
 }

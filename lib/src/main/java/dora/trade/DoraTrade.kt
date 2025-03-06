@@ -147,7 +147,7 @@ object DoraTrade {
         goodsDesc: String,
         account: String,
         tokenValue: Double,
-        orderListener: OrderListener
+//        orderListener: OrderListener
     ) {
         val (gasLimit, gasPrice) = nativeGetGasParameters()
         pay(
