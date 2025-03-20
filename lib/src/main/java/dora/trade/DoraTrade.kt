@@ -277,7 +277,7 @@ object DoraTrade {
     interface PayListener {
 
         /**
-         * 转账消息上链，确认中。
+         * 转账消息准备上链。
          */
         fun onSendTransactionToBlockchain(orderId: String, transactionHash: String)
 
