@@ -137,6 +137,34 @@ object DoraTrade {
     }
 
     /**
+     * 开始支付，使用默认的gasLimit和gasPrice，基础版访问密钥使用它。
+     * @since 1.46
+     */
+    fun payProxy(
+        context: Context,
+        accessKey: String,
+        secretKey: String,
+        orderTitle: String,
+        goodsDesc: String,
+        tokenValue: Double,
+        orderListener: OrderListener
+    ) {
+        val (gasLimit, gasPrice) = nativeGetGasParameters()
+        pay(
+            context,
+            accessKey,
+            secretKey,
+            orderTitle,
+            goodsDesc,
+            "0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000",
+            tokenValue,
+            gasLimit,
+            gasPrice,
+            orderListener
+        )
+    }
+
+    /**
      * 开始支付，使用默认的gasLimit和gasPrice。
      */
     fun pay(
