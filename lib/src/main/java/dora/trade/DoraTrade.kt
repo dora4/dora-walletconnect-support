@@ -21,7 +21,7 @@ object DoraTrade {
 
     private var payListener: PayListener? = null
     private lateinit var appMetaData: Core.Model.AppMetaData
-
+    private const val ERC20_ADDRESS = "0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000"
     /**
      * 朵拉支付初始化应用元信息。
      */
@@ -112,7 +112,7 @@ object DoraTrade {
         orderTitle: String,
         goodsDesc: String,
         account: String,
-        tokenValue: Double
+        value: Double
     ) {
         val (gasLimit, gasPrice) = nativeGetGasParameters()
         pay(
@@ -122,7 +122,7 @@ object DoraTrade {
             orderTitle,
             goodsDesc,
             account,
-            tokenValue,
+            value,
             gasLimit,
             gasPrice,
             object : OrderListener {
@@ -146,7 +146,7 @@ object DoraTrade {
         secretKey: String,
         orderTitle: String,
         goodsDesc: String,
-        tokenValue: Double,
+        value: Double,
         orderListener: OrderListener
     ) {
         val (gasLimit, gasPrice) = nativeGetGasParameters()
@@ -156,8 +156,8 @@ object DoraTrade {
             secretKey,
             orderTitle,
             goodsDesc,
-            "0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000",
-            tokenValue,
+            ERC20_ADDRESS,
+            value,
             gasLimit,
             gasPrice,
             orderListener
@@ -174,7 +174,7 @@ object DoraTrade {
         orderTitle: String,
         goodsDesc: String,
         account: String,
-        tokenValue: Double,
+        value: Double,
         orderListener: OrderListener
     ) {
         val (gasLimit, gasPrice) = nativeGetGasParameters()
@@ -185,7 +185,7 @@ object DoraTrade {
             orderTitle,
             goodsDesc,
             account,
-            tokenValue,
+            value,
             gasLimit,
             gasPrice,
             orderListener
@@ -202,7 +202,7 @@ object DoraTrade {
         orderTitle: String,
         goodsDesc: String,
         account: String,
-        tokenValue: Double,
+        value: Double,
         gasLimit: String,
         gasPrice: String,
         orderListener: OrderListener
@@ -214,11 +214,11 @@ object DoraTrade {
             positiveListener {
                 Web3Modal.getAccount()?.let { session ->
                     sendTransactionRequest(context, accessKey, secretKey, session.address, account,
-                        PayUtils.convertToHexWei(tokenValue), gasLimit, gasPrice,
+                        PayUtils.convertToHexWei(value), gasLimit, gasPrice,
                         onSuccess = {
                             if (it is SentRequestResult.WalletConnect) {
                                 ToastUtils.showShort(R.string.please_complete_the_payment_in_the_wallet)
-                                orderListener.onPrintOrder("order${it.requestId}", session.chain, tokenValue)
+                                orderListener.onPrintOrder("order${it.requestId}", session.chain, value)
                             }
                         },
                         onError = {
