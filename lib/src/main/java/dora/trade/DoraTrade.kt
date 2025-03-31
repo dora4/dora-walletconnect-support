@@ -263,14 +263,26 @@ object DoraTrade {
             }
             val status = nativeSendTransactionRequest(context, accessKey, secretKey, from, to, value, gasLimit, gasPrice, onSuccess, onError)
             when (status) {
-                0 -> {
+                0 -> {  // 成功
                     Log.i("sendTransactionRequest", "OK.")
                 }
-                -1 -> {
+                -1 -> { // 访问密钥无效
                     Log.e("sendTransactionRequest", "The access key is invalid.")
                 }
-                -2 -> {
+                -2 -> { // 支付调用失败
                     Log.e("sendTransactionRequest", "Payment error, please try again.")
+                }
+                -3 -> { // 单笔额度超额
+                    Log.e("sendTransactionRequest", "Single transaction limit exceeded.")
+                }
+                -4 -> { // 月额度超额
+                    Log.e("sendTransactionRequest", "Monthly limit exceeded.")
+                }
+                -5 -> { // 不支持的chainId
+                    Log.e("sendTransactionRequest", "Unsupported chainId.")
+                }
+                -6 -> { // 代币价格获取失败
+                    Log.e("sendTransactionRequest", "Failed to fetch token price.")
                 }
             }
         } catch (e: Exception) {
