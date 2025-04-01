@@ -28,6 +28,10 @@ class ModalDelegateProxy(val payListener: DoraTrade.PayListener? = null) : Web3M
         onSessionExtendNative(session)
     }
 
+    @Deprecated(
+        "Use onSessionEvent(Modal.Model.Event) instead. Using both will result in duplicate events.",
+        replaceWith = ReplaceWith("onEvent(event)")
+    )
     override fun onSessionEvent(sessionEvent: Modal.Model.SessionEvent) {
         onSessionEventNative(sessionEvent)
     }
@@ -52,15 +56,15 @@ class ModalDelegateProxy(val payListener: DoraTrade.PayListener? = null) : Web3M
         onRequestExpiredNative(request)
     }
 
-    external fun onSessionApprovedNative(approvedSession: Modal.Model.ApprovedSession)
-    external fun onSessionRejectedNative(rejectedSession: Modal.Model.RejectedSession)
-    external fun onSessionRequestResponseNative(response: Modal.Model.SessionRequestResponse)
-    external fun onSessionUpdateNative(updatedSession: Modal.Model.UpdatedSession)
-    external fun onSessionExtendNative(session: Modal.Model.Session)
-    external fun onSessionEventNative(sessionEvent: Modal.Model.SessionEvent)
-    external fun onSessionDeleteNative(deletedSession: Modal.Model.DeletedSession)
-//    external fun onConnectionStateChangeNative(state: Modal.Model.ConnectionState)
-    external fun onErrorNative(error: Modal.Model.Error)
-    external fun onProposalExpiredNative(proposal: Modal.Model.ExpiredProposal)
-    external fun onRequestExpiredNative(request: Modal.Model.ExpiredRequest)
+    private external fun onSessionApprovedNative(approvedSession: Modal.Model.ApprovedSession)
+    private external fun onSessionRejectedNative(rejectedSession: Modal.Model.RejectedSession)
+    private external fun onSessionRequestResponseNative(response: Modal.Model.SessionRequestResponse)
+    private external fun onSessionUpdateNative(updatedSession: Modal.Model.UpdatedSession)
+    private external fun onSessionExtendNative(session: Modal.Model.Session)
+    private external fun onSessionEventNative(sessionEvent: Modal.Model.SessionEvent)
+    private external fun onSessionDeleteNative(deletedSession: Modal.Model.DeletedSession)
+//   private external fun onConnectionStateChangeNative(state: Modal.Model.ConnectionState)
+    private external fun onErrorNative(error: Modal.Model.Error)
+    private external fun onProposalExpiredNative(proposal: Modal.Model.ExpiredProposal)
+    private external fun onRequestExpiredNative(request: Modal.Model.ExpiredRequest)
 }
