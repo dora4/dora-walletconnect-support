@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.graphics.Color
 import android.util.Log
+import androidx.annotation.ColorInt
 import com.walletconnect.android.Core
 import com.walletconnect.web3.modal.client.Modal
 import com.walletconnect.web3.modal.client.Web3Modal
@@ -21,7 +22,45 @@ object DoraTrade {
 
     private var payListener: PayListener? = null
     private lateinit var appMetaData: Core.Model.AppMetaData
+    private const val SDK_THEME_COLOR = "#389CFF"
+    private var themeColor: Int = Color.parseColor(SDK_THEME_COLOR)
     private const val ERC20_ADDRESS = "0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000"
+
+    /**
+     * 成功。
+     */
+    private const val STATUS_CODE_OK = 0
+
+    /**
+     * 访问密钥无效。
+     */
+    private const val STATUS_CODE_ACCESS_KEY_IS_INVALID = -1
+
+    /**
+     * 支付调用失败。
+     */
+    private const val STATUS_CODE_PAYMENT_ERROR = -2
+
+    /**
+     * 单笔额度超额。
+     */
+    private const val STATUS_CODE_SINGLE_TRANSACTION_LIMIT = -3
+
+    /**
+     * 月额度超额。
+     */
+    private const val STATUS_CODE_MONTHLY_LIMIT = -4
+
+    /**
+     * 不支持的chainId。
+     */
+    private const val STATUS_CODE_UNSUPPORTED_CHAIN_ID = -5
+
+    /**
+     * 代币价格获取失败。
+     */
+    private const val STATUS_CODE_FAILED_TO_FETCH_TOKEN_PRICE = -6
+
     /**
      * 朵拉支付初始化应用元信息。
      */
@@ -32,6 +71,7 @@ object DoraTrade {
         appDesc: String,
         domainUrl: String,
         supportChains: Array<Modal.Model.Chain>,
+        @ColorInt themeColor: Int? = Color.parseColor(SDK_THEME_COLOR),
         listener: PayListener? = null
     ) {
         System.loadLibrary("pay-core")
@@ -40,6 +80,9 @@ object DoraTrade {
         }, {
              Log.e("initWalletConnect", it.toString())
         }, {})
+        if (themeColor != null) {
+            this.themeColor = themeColor
+        }
         listener?.let { setPayListener(it) }
     }
 
@@ -137,6 +180,40 @@ object DoraTrade {
     }
 
     /**
+     * 捐赠，无需支付结果的回调监听。
+     * @since 1.75
+     */
+    fun donateProxy(
+        context: Context,
+        accessKey: String,
+        secretKey: String,
+        orderTitle: String,
+        goodsDesc: String,
+        value: Double
+    ) {
+        val (gasLimit, gasPrice) = nativeGetGasParameters()
+        pay(
+            context,
+            accessKey,
+            secretKey,
+            orderTitle,
+            goodsDesc,
+            ERC20_ADDRESS,
+            value,
+            gasLimit,
+            gasPrice,
+            object : OrderListener {
+                override fun onPrintOrder(
+                    orderId: String,
+                    chain: Modal.Model.Chain,
+                    tokenValue: Double
+                ) {
+                }
+            }
+        )
+    }
+
+    /**
      * 开始支付，使用默认的gasLimit和gasPrice，基础版访问密钥使用它。
      * @since 1.46
      */
@@ -209,7 +286,7 @@ object DoraTrade {
     ) {
         DoraAlertDialog(context).show("$goodsDesc\n\n${context.getString(R.string.dorafund_provides_technical_support)}") {
             title(orderTitle)
-            themeColor(Color.parseColor("#389CFF"))
+            themeColor(themeColor)
             positiveButton(context.getString(R.string.pay))
             positiveListener {
                 Web3Modal.getAccount()?.let { session ->
@@ -263,25 +340,25 @@ object DoraTrade {
             }
             val status = nativeSendTransactionRequest(context, accessKey, secretKey, from, to, value, gasLimit, gasPrice, onSuccess, onError)
             when (status) {
-                0 -> {  // 成功
+                STATUS_CODE_OK -> {  // 成功
                     Log.i("sendTransactionRequest", "OK.")
                 }
-                -1 -> { // 访问密钥无效
+                STATUS_CODE_ACCESS_KEY_IS_INVALID -> { // 访问密钥无效
                     Log.e("sendTransactionRequest", "The access key is invalid.")
                 }
-                -2 -> { // 支付调用失败
+                STATUS_CODE_PAYMENT_ERROR -> { // 支付调用失败
                     Log.e("sendTransactionRequest", "Payment error, please try again.")
                 }
-                -3 -> { // 单笔额度超额
+                STATUS_CODE_SINGLE_TRANSACTION_LIMIT -> { // 单笔额度超额
                     Log.e("sendTransactionRequest", "Single transaction limit exceeded.")
                 }
-                -4 -> { // 月额度超额
+                STATUS_CODE_MONTHLY_LIMIT -> { // 月额度超额
                     Log.e("sendTransactionRequest", "Monthly limit exceeded.")
                 }
-                -5 -> { // 不支持的chainId
+                STATUS_CODE_UNSUPPORTED_CHAIN_ID -> { // 不支持的chainId
                     Log.e("sendTransactionRequest", "Unsupported chainId.")
                 }
-                -6 -> { // 代币价格获取失败
+                STATUS_CODE_FAILED_TO_FETCH_TOKEN_PRICE -> { // 代币价格获取失败
                     Log.e("sendTransactionRequest", "Failed to fetch token price.")
                 }
             }

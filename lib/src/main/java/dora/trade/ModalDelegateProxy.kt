@@ -41,7 +41,7 @@ class ModalDelegateProxy(val payListener: DoraTrade.PayListener? = null) : Web3M
     }
 
     override fun onConnectionStateChange(state: Modal.Model.ConnectionState) {
-//        onConnectionStateChangeNative(state)
+        onConnectionStateChangeNative(state)
     }
 
     override fun onError(error: Modal.Model.Error) {
@@ -63,7 +63,7 @@ class ModalDelegateProxy(val payListener: DoraTrade.PayListener? = null) : Web3M
     private external fun onSessionExtendNative(session: Modal.Model.Session)
     private external fun onSessionEventNative(sessionEvent: Modal.Model.SessionEvent)
     private external fun onSessionDeleteNative(deletedSession: Modal.Model.DeletedSession)
-//   private external fun onConnectionStateChangeNative(state: Modal.Model.ConnectionState)
+    private external fun onConnectionStateChangeNative(state: Modal.Model.ConnectionState)
     private external fun onErrorNative(error: Modal.Model.Error)
     private external fun onProposalExpiredNative(proposal: Modal.Model.ExpiredProposal)
     private external fun onRequestExpiredNative(request: Modal.Model.ExpiredRequest)
