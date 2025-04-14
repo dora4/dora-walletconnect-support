@@ -18,7 +18,7 @@ Añade el siguiente código en el archivo `build.gradle.kts` del módulo `app`:
 dependencies {
     // El paquete de extensión debe usarse con el framework principal "dora"
     implementation("com.github.dora4:dora:1.2.51")
-    implementation("com.github.dora4:dora-walletconnect-support:1.75")
+    implementation("com.github.dora4:dora-walletconnect-support:1.76")
 }
 ```
 
@@ -59,7 +59,7 @@ DoraTrade.setPayListener(object : DoraTrade.PayListener {
         // La transacción ha sido enviada a la blockchain y está pendiente de confirmación
     }
 
-    override fun onPayFailure(orderId: String, transactionHash: String) {
+    override fun onPayFailure(orderId: String, errorMsg: String) {
         // Pago fallido
     }
 })

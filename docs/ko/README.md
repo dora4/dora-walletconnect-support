@@ -18,7 +18,7 @@ dependencyResolutionManagement {
 dependencies {
     // 확장 패키지는 메인 프레임워크 "dora"와 함께 사용해야 합니다.
     implementation("com.github.dora4:dora:1.2.51")
-    implementation("com.github.dora4:dora-walletconnect-support:1.75")
+    implementation("com.github.dora4:dora-walletconnect-support:1.76")
 }
 ```
 
@@ -59,7 +59,7 @@ DoraTrade.setPayListener(object : DoraTrade.PayListener {
         // 트랜잭션이 블록체인에 전송되었으며 확인 대기 중
     }
 
-    override fun onPayFailure(orderId: String, transactionHash: String) {
+    override fun onPayFailure(orderId: String, errorMsg: String) {
         // 결제 실패
     }
 })

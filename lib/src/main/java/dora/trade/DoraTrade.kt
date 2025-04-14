@@ -20,10 +20,22 @@ import dora.widget.DoraAlertDialog
  */
 object DoraTrade {
 
+    /**
+     * 冷钱包支付的回调接口。
+     */
     private var payListener: PayListener? = null
+
+    /**
+     * 应用的基本信息。
+     */
     private lateinit var appMetaData: Core.Model.AppMetaData
     private const val SDK_THEME_COLOR = "#389CFF"
+
+    /**
+     * 主题色，用于弹窗的主色调。
+     */
     private var themeColor: Int = Color.parseColor(SDK_THEME_COLOR)
+
     private const val ERC20_ADDRESS = "0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000"
 
     /**
@@ -87,6 +99,13 @@ object DoraTrade {
     }
 
     /**
+     * 设置主题色，如用于换肤等场景。
+     */
+    fun setThemeColor(@ColorInt themeColor: Int) {
+        this.themeColor = themeColor
+    }
+
+    /**
      * 设置支付监听器。
      */
     fun setPayListener(listener: PayListener) {
@@ -147,40 +166,6 @@ object DoraTrade {
 
     /**
      * 捐赠，无需支付结果的回调监听。
-     */
-    fun donate(
-        context: Context,
-        accessKey: String,
-        secretKey: String,
-        orderTitle: String,
-        goodsDesc: String,
-        account: String,
-        value: Double
-    ) {
-        val (gasLimit, gasPrice) = nativeGetGasParameters()
-        pay(
-            context,
-            accessKey,
-            secretKey,
-            orderTitle,
-            goodsDesc,
-            account,
-            value,
-            gasLimit,
-            gasPrice,
-            object : OrderListener {
-                override fun onPrintOrder(
-                    orderId: String,
-                    chain: Modal.Model.Chain,
-                    tokenValue: Double
-                ) {
-                }
-            }
-        )
-    }
-
-    /**
-     * 捐赠，无需支付结果的回调监听。
      * @since 1.75
      */
     fun donateProxy(
@@ -199,6 +184,40 @@ object DoraTrade {
             orderTitle,
             goodsDesc,
             ERC20_ADDRESS,
+            value,
+            gasLimit,
+            gasPrice,
+            object : OrderListener {
+                override fun onPrintOrder(
+                    orderId: String,
+                    chain: Modal.Model.Chain,
+                    tokenValue: Double
+                ) {
+                }
+            }
+        )
+    }
+
+    /**
+     * 捐赠，无需支付结果的回调监听。
+     */
+    fun donate(
+        context: Context,
+        accessKey: String,
+        secretKey: String,
+        orderTitle: String,
+        goodsDesc: String,
+        account: String,
+        value: Double
+    ) {
+        val (gasLimit, gasPrice) = nativeGetGasParameters()
+        pay(
+            context,
+            accessKey,
+            secretKey,
+            orderTitle,
+            goodsDesc,
+            account,
             value,
             gasLimit,
             gasPrice,
@@ -383,6 +402,9 @@ object DoraTrade {
         onError: (Throwable) -> Unit
     ): Int
 
+    /**
+     * 调用支付时，用于生成订单。
+     */
     interface OrderListener {
 
         /**
@@ -391,6 +413,9 @@ object DoraTrade {
         fun onPrintOrder(orderId: String, chain: Modal.Model.Chain, tokenValue: Double)
     }
 
+    /**
+     * 冷钱包支付的回调接口。
+     */
     interface PayListener {
 
         /**
@@ -401,6 +426,6 @@ object DoraTrade {
         /**
          * 支付失败。
          */
-        fun onPayFailure(orderId: String, transactionHash: String)
+        fun onPayFailure(orderId: String, errorMsg: String)
     }
 }

@@ -18,7 +18,7 @@ dependencyResolutionManagement {
 dependencies {
     // 扩展包必须在有主框架dora的情况下使用
     implementation("com.github.dora4:dora:1.2.51")
-    implementation("com.github.dora4:dora-walletconnect-support:1.75")
+    implementation("com.github.dora4:dora-walletconnect-support:1.76")
 }
 ```
 
@@ -61,7 +61,7 @@ DoraTrade.setPayListener(object : DoraTrade.PayListener {
         // 转账消息上链，确认中
     }
 
-    override fun onPayFailure(orderId: String, transactionHash: String) {
+    override fun onPayFailure(orderId: String, errorMsg: String) {
         // 支付失败
     }
 })
