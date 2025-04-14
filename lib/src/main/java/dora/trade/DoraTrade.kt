@@ -319,6 +319,7 @@ object DoraTrade {
                         },
                         onError = {
                             ToastUtils.showShort(R.string.payment_failed)
+                            Log.e("sendTransactionRequest", it.toString())
                         }
                     )
                 }
@@ -410,7 +411,7 @@ object DoraTrade {
         /**
          * 生成该笔订单的交易订单号。
          */
-        fun onPrintOrder(orderId: String, chain: Modal.Model.Chain, tokenValue: Double)
+        fun onPrintOrder(orderId: String, chain: Modal.Model.Chain, value: Double)
     }
 
     /**

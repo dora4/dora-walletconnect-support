@@ -3,8 +3,8 @@ package dora.lifecycle.config
 import android.app.Application
 import android.content.Context
 import androidx.fragment.app.FragmentManager
-import dora.lifecycle.activity.WalletConnectActivityLifecycle
 import dora.lifecycle.application.ApplicationLifecycleCallbacks
+import dora.lifecycle.application.WalletConnectAppLifecycle
 
 class WalletConnectGlobalConfig : GlobalConfig {
 
@@ -12,13 +12,13 @@ class WalletConnectGlobalConfig : GlobalConfig {
         context: Context,
         lifecycles: MutableList<ApplicationLifecycleCallbacks>
     ) {
+        lifecycles.add(WalletConnectAppLifecycle())
     }
 
     override fun injectActivityLifecycle(
         context: Context,
         lifecycles: MutableList<Application.ActivityLifecycleCallbacks>
     ) {
-        lifecycles.add(WalletConnectActivityLifecycle())
     }
 
     override fun injectFragmentLifecycle(
