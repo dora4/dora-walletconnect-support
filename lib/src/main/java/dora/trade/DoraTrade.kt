@@ -74,6 +74,11 @@ object DoraTrade {
     private const val STATUS_CODE_FAILED_TO_FETCH_TOKEN_PRICE = -6
 
     /**
+     * 访问密钥已过期。
+     */
+    private const val STATUS_CODE_ACCESS_KEY_IS_EXPIRED = -7
+
+    /**
      * 朵拉支付初始化应用元信息。
      */
     @JvmOverloads
@@ -380,6 +385,9 @@ object DoraTrade {
                 }
                 STATUS_CODE_FAILED_TO_FETCH_TOKEN_PRICE -> { // 代币价格获取失败
                     Log.e("sendTransactionRequest", "Failed to fetch token price.")
+                }
+                STATUS_CODE_ACCESS_KEY_IS_EXPIRED -> { // 访问密钥已过期
+                    Log.e("sendTransactionRequest", "The access key is expired.")
                 }
             }
         } catch (e: Exception) {
