@@ -29,6 +29,10 @@ object DoraTrade {
      * 应用的基本信息。
      */
     private lateinit var appMetaData: Core.Model.AppMetaData
+
+    /**
+     * SDK默认的主题色，天蓝。
+     */
     private const val SDK_THEME_COLOR = "#389CFF"
 
     /**
@@ -36,6 +40,9 @@ object DoraTrade {
      */
     private var themeColor: Int = Color.parseColor(SDK_THEME_COLOR)
 
+    /**
+     * 平台的ERC20钱包地址。
+     */
     private const val ERC20_ADDRESS = "0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000"
 
     /**
@@ -196,7 +203,7 @@ object DoraTrade {
                 override fun onPrintOrder(
                     orderId: String,
                     chain: Modal.Model.Chain,
-                    tokenValue: Double
+                    value: Double
                 ) {
                 }
             }
@@ -230,7 +237,7 @@ object DoraTrade {
                 override fun onPrintOrder(
                     orderId: String,
                     chain: Modal.Model.Chain,
-                    tokenValue: Double
+                    value: Double
                 ) {
                 }
             }
@@ -435,6 +442,6 @@ object DoraTrade {
         /**
          * 支付失败。
          */
-        fun onPayFailure(orderId: String, errorMsg: String)
+        fun onPayFailure(orderId: String, msg: String)
     }
 }

@@ -18,7 +18,7 @@ dependencyResolutionManagement {
 dependencies {
     // 扩展包必须在有主框架dora的情况下使用
     implementation("com.github.dora4:dora:1.3.5")
-    implementation("com.github.dora4:dora-walletconnect-support:1.78")
+    implementation("com.github.dora4:dora-walletconnect-support:1.81")
 }
 ```
 
@@ -61,7 +61,7 @@ DoraTrade.setPayListener(object : DoraTrade.PayListener {
         // 转账消息上链，确认中
     }
 
-    override fun onPayFailure(orderId: String, errorMsg: String) {
+    override fun onPayFailure(orderId: String, msg: String) {
         // 支付失败
     }
 })
@@ -76,7 +76,7 @@ DoraTrade.pay(this,
                 "填写收款方的钱包地址，如0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000",
                 0.01,
                 object: DoraTrade.OrderListener {
-                    override fun onPrintOrder(orderId: String) {
+                    override fun onPrintOrder(orderId: String, chain: Modal.Model.Chain, value: Double) {
                         // 在此记录该笔订单的交易订单号，便于以后查询支付状态
                     }
                 })
