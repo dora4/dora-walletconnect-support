@@ -2,7 +2,7 @@ dora-walletconnect-support
 ![Release](https://jitpack.io/v/dora4/dora-walletconnect-support.svg)
 --------------------------------
 
-<img width="1024" alt="截屏2025-04-26 03 10 07" src="https://github.com/user-attachments/assets/f3bef60e-d3ae-4233-b40e-a39e61da0e9b" />
+<img width="728" alt="截屏2025-04-26 03 10 07" src="https://github.com/user-attachments/assets/f3bef60e-d3ae-4233-b40e-a39e61da0e9b" />
 
 ### Website
 
