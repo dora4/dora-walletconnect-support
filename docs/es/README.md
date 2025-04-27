@@ -17,8 +17,8 @@ Añade el siguiente código en el archivo `build.gradle.kts` del módulo `app`:
 ```kotlin
 dependencies {
     // El paquete de extensión debe usarse con el framework principal "dora"
-    implementation("com.github.dora4:dora:1.3.5")
-    implementation("com.github.dora4:dora-walletconnect-support:1.81")
+    implementation("com.github.dora4:dora:1.3.7")
+    implementation("com.github.dora4:dora-walletconnect-support:1.82")
 }
 ```
 

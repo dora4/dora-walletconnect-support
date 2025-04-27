@@ -113,16 +113,15 @@ object DoraTrade {
     /**
      * 设置主题色，如用于换肤等场景。
      */
-    fun setThemeColor(@ColorInt themeColor: Int) {
-        this.themeColor = themeColor
+    fun setThemeColor(@ColorInt color: Int) {
+        this.themeColor = color
     }
 
     /**
      * 设置支付监听器。
      */
     fun setPayListener(listener: PayListener) {
-        // 保存 listener 引用
-        payListener = listener
+        this.payListener = listener
         initPayListener()
     }
 
@@ -315,6 +314,7 @@ object DoraTrade {
         gasPrice: String,
         orderListener: OrderListener
     ) {
+        if (payListener == null) throw PaymentException("No PayListener is set.")
         DoraAlertDialog(context).show("$goodsDesc\n\n${context.getString(R.string.dorafund_provides_technical_support)}") {
             title(orderTitle)
             themeColor(themeColor)
