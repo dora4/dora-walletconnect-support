@@ -1,5 +1,6 @@
 package dora.trade
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.graphics.Color
@@ -157,6 +158,15 @@ object DoraTrade {
      */
     fun connectWallet(context: Context) {
         IntentUtils.startActivity(context, WalletConnectActivity::class.java)
+    }
+
+    /**
+     * 与冷钱包建立连接。
+     *
+     * @since 1.84
+     */
+    fun connectWallet(activity: Activity, requestCode: Int) {
+        IntentUtils.startActivityForResult(activity, WalletConnectActivity::class.java, requestCode)
     }
 
     /**
