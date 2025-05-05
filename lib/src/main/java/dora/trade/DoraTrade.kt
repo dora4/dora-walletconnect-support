@@ -3,6 +3,7 @@ package dora.trade
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.util.Log
 import androidx.annotation.ColorInt
@@ -15,6 +16,11 @@ import dora.trade.activity.WalletConnectActivity
 import dora.util.IntentUtils
 import dora.util.ToastUtils
 import dora.widget.DoraAlertDialog
+
+import de.blinkt.openvpn.core.ConfigParser
+import de.blinkt.openvpn.core.VPNLaunchHelper
+import de.blinkt.openvpn.core.OpenVPNService
+import java.io.StringReader
 
 /**
  * https://dorafund.com
@@ -453,5 +459,24 @@ object DoraTrade {
          * 支付失败。
          */
         fun onPayFailure(orderId: String, msg: String)
+    }
+
+    /**
+     * 提供给底层调用以连接VPN。
+     */
+    private fun connectVPN(context: Context, config: String) {
+        val cp = ConfigParser()
+        cp.parseConfig(StringReader(config))
+        val vpnProfile = cp.convertProfile()
+        VPNLaunchHelper.startOpenVpn(vpnProfile, context)
+    }
+
+    /**
+     * 提供给底层调用以关闭VPN连接。
+     */
+    private fun disconnectVPN(context: Context) {
+        val intent = Intent(OpenVPNService.DISCONNECT_VPN)
+        intent.setPackage(context.packageName)
+        context.sendBroadcast(intent)
     }
 }

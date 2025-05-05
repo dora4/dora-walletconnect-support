@@ -9,4 +9,6 @@
         <item name="android:windowAnimationStyle">@android:style/Animation.Translucent
         </item> <!-- 窗口样式Dialog -->
     </style>
+    <style name="blinkt.dialog" parent="android:Theme.DeviceDefault.Light.Dialog" />
+
 </resources>

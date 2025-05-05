@@ -30,6 +30,9 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
     }
+    buildFeatures {
+        aidl = true
+    }
     kotlinOptions {
         jvmTarget = "17"
     }
@@ -42,6 +45,7 @@ android {
             jniLibs.srcDir("src/main/jniLibs")
         }
     }
+
 //    externalNativeBuild {
 //        cmake {
 //            path = file("src/main/cpp/CMakeLists.txt")
@@ -67,7 +71,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.dora4"
                 artifactId = "dora-walletconnect-support"
-                version = "1.84"
+                version = "1.85"
             }
         }
     }
