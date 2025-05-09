@@ -81,7 +81,7 @@ public class StatusListener implements VpnStatus.LogListener {
                     /* Set up logging to Logcat with a context) */
 
 //                    if (BuildConfig.DEBUG || BuildConfig.FLAVOR.equals("skeleton")) {
-//                        VpnStatus.addLogListener(StatusListener.this);
+                        VpnStatus.addLogListener(StatusListener.this);
 //                    }
 
 
@@ -100,7 +100,7 @@ public class StatusListener implements VpnStatus.LogListener {
 
     };
 
-    void init(Context c) {
+    public void init(Context c) {
 
         Intent intent = new Intent(c, OpenVPNStatusService.class);
         intent.setAction(OpenVPNService.START_SERVICE);

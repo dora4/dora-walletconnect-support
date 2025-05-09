@@ -139,14 +139,14 @@
             </intent-filter>
         </receiver>
         -->
-        <activity android:name="de.blinkt.openvpn.api.RemoteAction" />
-        <activity-alias
-            android:name="de.blinkt.openvpn.api.ConnectVPN"
-            android:exported="true"
-            android:targetActivity="de.blinkt.openvpn.api.RemoteAction" />
-        <activity-alias
-            android:name="de.blinkt.openvpn.api.DisconnectVPN"
-            android:exported="true"
-            android:targetActivity="de.blinkt.openvpn.api.RemoteAction" />
+<!--        <activity android:name="de.blinkt.openvpn.api.RemoteAction" />-->
+<!--        <activity-alias-->
+<!--            android:name="de.blinkt.openvpn.api.ConnectVPN"-->
+<!--            android:exported="true"-->
+<!--            android:targetActivity="de.blinkt.openvpn.api.RemoteAction" />-->
+<!--        <activity-alias-->
+<!--            android:name="de.blinkt.openvpn.api.DisconnectVPN"-->
+<!--            android:exported="true"-->
+<!--            android:targetActivity="de.blinkt.openvpn.api.RemoteAction" />-->
     </application>
 </manifest>
