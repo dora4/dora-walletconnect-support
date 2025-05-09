@@ -252,7 +252,6 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
 
     private void showNotification(final String msg, String tickerText, @NonNull String channel,
                                   long when, ConnectionStatus status, Intent intent) {
-        VpnStatus.logInfo("showNotification");
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         int icon = getIconByConnectionStatus(status);
         NotificationCompat.Builder nbuilder = new NotificationCompat.Builder(this, channel);
@@ -286,30 +285,21 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         if (when != 0)
             nbuilder.setWhen(when);
 
-        // Try to set the priority available since API 16 (Jellybean)
         jbNotificationExtras(priority, nbuilder);
         addVpnActionsToNotification(nbuilder);
 
         lpNotificationExtras(nbuilder, NotificationCompat.CATEGORY_SERVICE);
 
-        // If using Android 8.0 and above, add the notification channel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            nbuilder.setChannelId(channel);  // Set the notification channel for Android O and above
+            nbuilder.setChannelId(channel);
             if (mProfile != null)
                 nbuilder.setShortcutId(mProfile.getUUIDString());
         }
-
         if (tickerText != null && !tickerText.equals(""))
             nbuilder.setTicker(tickerText);
-        VpnStatus.logInfo("nbuilder = " + nbuilder);
-
-        Notification notification = nbuilder.build();  // Build the notification
-        VpnStatus.logInfo("notification = " + notification);
-
+        Notification notification = nbuilder.build();
         int notificationId = channel.hashCode();
-
-        VpnStatus.logInfo("notificationId = " + notificationId);
-        mNotificationManager.notify(notificationId, notification);  // Notify the user
+        mNotificationManager.notify(notificationId, notification);
         VpnStatus.logInfo("startForeground");
         startForeground(notificationId, notification);  // Start the foreground service with the notification
 
@@ -525,8 +515,12 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
                 VpnStatus.getLastCleanLogMessage(this), NOTIFICATION_CHANNEL_NEWSTATUS_ID, 0, ConnectionStatus.LEVEL_START, null);
 
         VpnProfile profile = ProfileManager.getInstance(this).getProfileByName("embed_profile");
-        new Thread(() -> startOpenVPNByProfile(profile, startId)).start();
-
+        if (profile != null) {
+            VpnStatus.logInfo("start profile:"+profile.getUUIDString());
+            new Thread(() -> startOpenVPNByProfile(profile, startId)).start();
+        } else {
+            VpnStatus.logInfo("embed_profile not found");
+        }
         return START_STICKY;
     }
 
@@ -585,6 +579,7 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
 
         try {
             mProfile.writeConfigFile(this);
+            VpnStatus.logInfo("writeConfigFile");
         } catch (IOException e) {
             VpnStatus.logException("Error writing config file", e);
             endVpnService();
@@ -607,12 +602,14 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         mStarting = true;
         // Stop the previous session by interrupting the thread.
 
+        VpnStatus.logInfo("stopOldOpenVPNProcess");
         stopOldOpenVPNProcess();
         // An old running VPN should now be exited
         mStarting = false;
 
         // Start a new session by creating a new thread.
         boolean useOpenVPN3 = VpnProfile.doUseOpenVPN3(this);
+        VpnStatus.logInfo("useOpenVPN3:" + useOpenVPN3);
 
         // Open the Management Interface
         if (!useOpenVPN3) {

@@ -817,11 +817,14 @@ public class VpnProfile implements Serializable, Cloneable {
     }
 
     public void writeConfigFile(Context context) throws IOException {
-        FileWriter cfg = new FileWriter(VPNLaunchHelper.getConfigFilePath(context));
-        cfg.write(getConfigFile(context, false));
+        String configFilePath = VPNLaunchHelper.getConfigFilePath(context);
+        VpnStatus.logError("configFilePath:"+configFilePath);
+        FileWriter cfg = new FileWriter(configFilePath);
+        String configFile = getConfigFile(context, false);
+        VpnStatus.logError("configFile:"+configFile);
+        cfg.write(configFile);
         cfg.flush();
         cfg.close();
-
     }
 
     public Intent getStartServiceIntent(Context context) {
