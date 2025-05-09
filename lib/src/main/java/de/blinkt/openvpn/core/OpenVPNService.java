@@ -252,6 +252,7 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
 
     private void showNotification(final String msg, String tickerText, @NonNull String channel,
                                   long when, ConnectionStatus status, Intent intent) {
+        VpnStatus.logInfo("showNotification");
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         int icon = getIconByConnectionStatus(status);
         NotificationCompat.Builder nbuilder = new NotificationCompat.Builder(this, channel);
@@ -300,16 +301,21 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
 
         if (tickerText != null && !tickerText.equals(""))
             nbuilder.setTicker(tickerText);
+        VpnStatus.logInfo("nbuilder = " + nbuilder);
 
         Notification notification = nbuilder.build();  // Build the notification
+        VpnStatus.logInfo("notification = " + notification);
 
         int notificationId = channel.hashCode();
 
+        VpnStatus.logInfo("notificationId = " + notificationId);
         mNotificationManager.notify(notificationId, notification);  // Notify the user
-
+        VpnStatus.logInfo("startForeground");
         startForeground(notificationId, notification);  // Start the foreground service with the notification
 
         if (lastChannel != null && !channel.equals(lastChannel)) {
+            VpnStatus.logInfo("cancelNotification");
+
             // Cancel old notification
             mNotificationManager.cancel(lastChannel.hashCode());
         }
