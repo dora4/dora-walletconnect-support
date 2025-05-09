@@ -524,9 +524,8 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         showNotification(VpnStatus.getLastCleanLogMessage(this),
                 VpnStatus.getLastCleanLogMessage(this), NOTIFICATION_CHANNEL_NEWSTATUS_ID, 0, ConnectionStatus.LEVEL_START, null);
 
-
-        /* start the OpenVPN process itself in a background thread */
-        new Thread(() -> startOpenVPN(intent, startId)).start();
+        VpnProfile profile = ProfileManager.getInstance(this).getProfileByName("embed_profile");
+        new Thread(() -> startOpenVPNByProfile(profile, startId)).start();
 
         return START_STICKY;
     }
@@ -573,6 +572,89 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
             mProfile.checkForRestart(this);
         }
         return mProfile;
+    }
+
+    private void startOpenVPNByProfile(VpnProfile profile, int startId) {
+        if (profile == null) {
+            stopSelf(startId);
+            return;
+        }
+
+        ProfileManager.setConnectedVpnProfile(this, profile);
+        VpnStatus.setConnectedVPNProfile(profile.getUUIDString());
+
+        try {
+            profile.writeConfigFile(this);
+        } catch (IOException e) {
+            VpnStatus.logException("Error writing config file", e);
+            endVpnService();
+            return;
+        }
+        String nativeLibraryDirectory = getApplicationInfo().nativeLibraryDir;
+        String tmpDir;
+        try {
+            tmpDir = getApplication().getCacheDir().getCanonicalPath();
+        } catch (IOException e) {
+            e.printStackTrace();
+            tmpDir = "/tmp";
+        }
+
+        // Write OpenVPN binary
+        String[] argv = VPNLaunchHelper.buildOpenvpnArgv(this);
+
+
+        // Set a flag that we are starting a new VPN
+        mStarting = true;
+        // Stop the previous session by interrupting the thread.
+
+        stopOldOpenVPNProcess();
+        // An old running VPN should now be exited
+        mStarting = false;
+
+        // Start a new session by creating a new thread.
+        boolean useOpenVPN3 = VpnProfile.doUseOpenVPN3(this);
+
+        // Open the Management Interface
+        if (!useOpenVPN3) {
+            // start a Thread that handles incoming messages of the management socket
+            OpenVpnManagementThread ovpnManagementThread = new OpenVpnManagementThread(profile, this);
+            if (ovpnManagementThread.openManagementInterface(this)) {
+                Thread mSocketManagerThread = new Thread(ovpnManagementThread, "OpenVPNManagementThread");
+                mSocketManagerThread.start();
+                mManagement = ovpnManagementThread;
+                VpnStatus.logInfo("started Socket Thread");
+            } else {
+                endVpnService();
+                return;
+            }
+        }
+
+        Runnable processThread;
+        if (useOpenVPN3) {
+            OpenVPNManagement mOpenVPN3 = instantiateOpenVPN3Core();
+            processThread = (Runnable) mOpenVPN3;
+            mManagement = mOpenVPN3;
+        } else {
+            processThread = new OpenVPNThread(this, argv, nativeLibraryDirectory, tmpDir);
+            mOpenVPNThread = processThread;
+        }
+
+        synchronized (mProcessLock) {
+            mProcessThread = new Thread(processThread, "OpenVPNProcessThread");
+            mProcessThread.start();
+        }
+
+        new Handler(getMainLooper()).post(new Runnable() {
+                                              @Override
+                                              public void run() {
+                                                  if (mDeviceStateReceiver != null)
+                                                      unregisterDeviceStateReceiver();
+
+                                                  registerDeviceStateReceiver(mManagement);
+                                              }
+                                          }
+
+        );
     }
 
     private void startOpenVPN(Intent intent, int startId) {
