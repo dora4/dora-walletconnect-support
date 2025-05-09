@@ -579,12 +579,12 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
             stopSelf(startId);
             return;
         }
-
-        ProfileManager.setConnectedVpnProfile(this, profile);
-        VpnStatus.setConnectedVPNProfile(profile.getUUIDString());
+        mProfile = profile;
+        ProfileManager.setConnectedVpnProfile(this, mProfile);
+        VpnStatus.setConnectedVPNProfile(mProfile.getUUIDString());
 
         try {
-            profile.writeConfigFile(this);
+            mProfile.writeConfigFile(this);
         } catch (IOException e) {
             VpnStatus.logException("Error writing config file", e);
             endVpnService();
