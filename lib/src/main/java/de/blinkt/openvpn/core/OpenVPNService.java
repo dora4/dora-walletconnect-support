@@ -40,7 +40,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -1316,12 +1318,9 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         String channel = NOTIFICATION_CHANNEL_USERREQ_ID;
         String method = info.split(":", 2)[0];
 
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManagerCompat mNotificationManager = NotificationManagerCompat.from(this);
 
-        Notification.Builder nbuilder = new Notification.Builder(this);
-        nbuilder.setAutoCancel(true);
         int icon = android.R.drawable.ic_dialog_info;
-        nbuilder.setSmallIcon(icon);
 
         Intent intent;
         int reason;
@@ -1330,8 +1329,7 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
             case "OPEN_URL": {
                 reason = R.string.openurl_requested;
                 String url = info.split(":", 2)[1];
-                intent = getWebAuthIntent(url, false, nbuilder);
-
+                intent = getWebAuthIntent(url, false, null);
                 break;
             }
             case "WEB_AUTH": {
@@ -1351,52 +1349,48 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
                     }
                 }
 
-                intent = getWebAuthIntent(url, external, nbuilder);
+                intent = getWebAuthIntent(url, external, null);
                 break;
             }
-            case "CR_TEXT":
+            case "CR_TEXT": {
                 String challenge = info.split(":", 2)[1];
                 reason = R.string.crtext_requested;
-                nbuilder.setContentTitle(getString(reason));
-                nbuilder.setContentText(challenge);
 
                 intent = new Intent();
                 intent.setComponent(new ComponentName(this, getPackageName() + ".activities.CredentialsPopup"));
-
                 intent.putExtra(EXTRA_CHALLENGE_TXT, challenge);
 
                 break;
+            }
             default:
                 VpnStatus.logError("Unknown SSO method found: " + method);
                 return;
         }
 
-        // updateStateString trigger the notification of the VPN to be refreshed, save this intent
-        // to have that notification also this intent to be set
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+
         VpnStatus.updateStateString("USER_INPUT", "waiting for user input", reason, LEVEL_WAITING_FOR_USER_INPUT, intent);
-        nbuilder.setContentIntent(pIntent);
 
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channel)
+                .setSmallIcon(icon)
+                .setAutoCancel(true)
+                .setContentIntent(pIntent)
+                .setPriority(NotificationCompat.PRIORITY_MAX);
 
-        // Try to set the priority available since API 16 (Jellybean)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-            jbNotificationExtras(PRIORITY_MAX, nbuilder);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            lpNotificationExtras(nbuilder, Notification.CATEGORY_STATUS);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //noinspection NewApi
-            nbuilder.setChannelId(channel);
+        if (method.equals("CR_TEXT")) {
+            builder.setContentTitle(getString(reason))
+                    .setContentText(info.split(":", 2)[1]);
+        } else {
+            builder.setContentTitle(getString(reason))
+                    .setContentText(getString(R.string.tap_to_continue));
         }
-
-        @SuppressWarnings("deprecation")
-        Notification notification = nbuilder.getNotification();
-
 
         int notificationId = channel.hashCode();
 
-        mNotificationManager.notify(notificationId, notification);
+        if (ActivityCompat.checkSelfPermission(this, permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mNotificationManager.notify(notificationId, builder.build());
     }
 
 
