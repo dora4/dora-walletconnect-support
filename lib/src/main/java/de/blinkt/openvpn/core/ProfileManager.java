@@ -126,7 +126,6 @@ public class ProfileManager {
 
     public void addProfile(VpnProfile profile) {
         profiles.put(profile.getUUID().toString(), profile);
-
     }
 
     public static void setTemporaryProfile(Context c, VpnProfile tmp) {
@@ -174,7 +173,7 @@ public class ProfileManager {
         for (String vpnentry : vlist) {
             ObjectInputStream vpnfile=null;
             try {
-                 vpnfile = new ObjectInputStream(context.openFileInput(vpnentry + ".vp"));
+                vpnfile = new ObjectInputStream(context.openFileInput(vpnentry + ".vp"));
                 VpnProfile vp = ((VpnProfile) vpnfile.readObject());
 
                 // Sanity check
