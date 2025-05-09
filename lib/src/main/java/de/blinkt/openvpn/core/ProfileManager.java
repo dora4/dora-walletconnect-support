@@ -100,7 +100,9 @@ public class ProfileManager {
     }
 
     public VpnProfile getProfileByName(String name) {
-        for (VpnProfile vpnp : profiles.values()) {
+        if (instance == null)
+            return null;
+        for (VpnProfile vpnp : instance.getProfiles()) {
             if (vpnp.getName().equals(name)) {
                 return vpnp;
             }
