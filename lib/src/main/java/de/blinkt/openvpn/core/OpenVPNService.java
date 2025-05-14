@@ -51,6 +51,7 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.Vector;
@@ -300,11 +301,9 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         Notification notification = nbuilder.build();
         int notificationId = channel.hashCode();
         mNotificationManager.notify(notificationId, notification);
-        VpnStatus.logInfo("startForeground");
         startForeground(notificationId, notification);  // Start the foreground service with the notification
 
         if (lastChannel != null && !channel.equals(lastChannel)) {
-            VpnStatus.logInfo("cancelNotification");
 
             // Cancel old notification
             mNotificationManager.cancel(lastChannel.hashCode());
@@ -598,14 +597,13 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
 
         // Write OpenVPN binary
         String[] argv = VPNLaunchHelper.buildOpenvpnArgv(this);
-        VpnStatus.logInfo("argv:"+argv);
+        VpnStatus.logInfo("argv: " + Arrays.toString(argv));
 
 
         // Set a flag that we are starting a new VPN
         mStarting = true;
         // Stop the previous session by interrupting the thread.
 
-        VpnStatus.logInfo("stopOldOpenVPNProcess");
         stopOldOpenVPNProcess();
         // An old running VPN should now be exited
         mStarting = false;
