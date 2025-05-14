@@ -32,6 +32,11 @@ object DoraTrade {
     private lateinit var appMetaData: Core.Model.AppMetaData
 
     /**
+     * 钱包事件的回调对象。
+     */
+    private lateinit var modalDelegate: ModalDelegateProxy
+
+    /**
      * SDK默认的主题色，天蓝。
      */
     private const val SDK_THEME_COLOR = "#389CFF"
@@ -144,14 +149,23 @@ object DoraTrade {
      * 初始化支付监听器。
      */
     private fun initPayListener() {
-        val delegate = ModalDelegateProxy(payListener)
-        Web3Modal.setDelegate(delegate)
+        modalDelegate = ModalDelegateProxy(payListener)
+        Web3Modal.setDelegate(modalDelegate)
     }
 
     /**
-     * 获取默认的Gas参数。
+     * 获取底层返回的推荐的Gas参数。
      */
     private external fun nativeGetGasParameters(): Array<String>
+
+    /**
+     * 检测钱包是否已连接上。
+     *
+     * @since 1.101
+     */
+    fun isWalletConnected() : Boolean {
+        return Web3Modal.getAccount() != null
+    }
 
     /**
      * 与冷钱包建立连接。
@@ -161,7 +175,7 @@ object DoraTrade {
     }
 
     /**
-     * 与冷钱包建立连接。
+     * 与冷钱包建立连接，用于连接上钱包后立马支付的场景。
      *
      * @since 1.84
      */
