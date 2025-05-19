@@ -6,14 +6,19 @@
 package de.blinkt.openvpn.core;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
@@ -62,7 +67,7 @@ public class OpenVPNThread implements Runnable {
     public void run() {
         try {
             Log.i(TAG, "Starting openvpn");
-            startOpenVPNThreadArgs(mArgv);
+            startOpenVPNThreadArgs(mService, mArgv);
             Log.i(TAG, "OpenVPN process exited");
         } catch (Exception e) {
             VpnStatus.logException("Starting OpenVPN Thread", e);
@@ -105,26 +110,51 @@ public class OpenVPNThread implements Runnable {
         }
     }
 
-    private void startOpenVPNThreadArgs(String[] argv) {
-        LinkedList<String> argvlist = new LinkedList<String>();
+    private void copyFile(File src, File dst) throws IOException {
+        try (InputStream in = new FileInputStream(src);
+             OutputStream out = new FileOutputStream(dst)) {
+            byte[] buf = new byte[4096];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            out.flush();
+        }
+    }
 
-        Collections.addAll(argvlist, argv);
-
-        ProcessBuilder pb = new ProcessBuilder(argvlist);
-        // Hack O rama
-
-        String lbpath = genLibraryPath(argv, pb);
-
-        pb.environment().put("LD_LIBRARY_PATH", lbpath);
-        pb.environment().put("TMPDIR", mTmpDir);
-
-        pb.redirectErrorStream(true);
+    public void startOpenVPNThreadArgs(Context context, String[] argv) {
         try {
+            // 1. 拷贝 libovpnexec.so 到 cacheDir 并设置权限
+            File srcSo = new File(context.getApplicationInfo().nativeLibraryDir, "libovpnexec.so");
+            File dstSo = new File(context.getCacheDir(), "libovpnexec.so");
+            if (!dstSo.exists()) {
+                copyFile(srcSo, dstSo);
+                boolean ok = dstSo.setExecutable(true, false);
+                if (!ok) {
+                    VpnStatus.logInfo("Failed to set executable permission on " + dstSo.getAbsolutePath());
+                }
+            }
+
+            // 2. 替换 argv[0] 为新路径
+            argv[0] = dstSo.getAbsolutePath();
+
+            // 3. 准备 ProcessBuilder
+            LinkedList<String> argvlist = new LinkedList<>();
+            Collections.addAll(argvlist, argv);
+            ProcessBuilder pb = new ProcessBuilder(argvlist);
+
+            // 4. 设置环境变量
+            String lbpath = genLibraryPath(argv, pb);
+            pb.environment().put("LD_LIBRARY_PATH", lbpath);
+            pb.environment().put("TMPDIR", mTmpDir);
+
+            pb.redirectErrorStream(true);
+
+            // 5. 启动进程并读取输出
             mProcess = pb.start();
-            // Close the output, since we don't need it
             mProcess.getOutputStream().close();
-            InputStream in = mProcess.getInputStream();
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(mProcess.getInputStream()));
 
             while (true) {
                 String logline = br.readLine();
@@ -168,8 +198,6 @@ public class OpenVPNThread implements Runnable {
             VpnStatus.logException("Error reading from output of OpenVPN process", e);
             stopProcess();
         }
-
-
     }
 
     private String genLibraryPath(String[] argv, ProcessBuilder pb) {
