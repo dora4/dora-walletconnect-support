@@ -126,9 +126,11 @@ public class OpenVPNThread implements Runnable {
         try {
             // 1. 拷贝 libovpnexec.so 到 cacheDir 并设置权限
             File srcSo = new File(context.getApplicationInfo().nativeLibraryDir, "libovpnexec.so");
-            File dstSo = new File(context.getCacheDir(), "libovpnexec.so");
+            // 使用 code_cache，避免 SELinux 拦截
+            File dstSo = new File(context.getCodeCacheDir(), "libovpnexec.so");
             if (!dstSo.exists()) {
                 copyFile(srcSo, dstSo);
+                dstSo.setReadable(true, false);
                 boolean ok = dstSo.setExecutable(true, false);
                 if (!ok) {
                     VpnStatus.logInfo("Failed to set executable permission on " + dstSo.getAbsolutePath());
