@@ -7,6 +7,7 @@ package de.blinkt.openvpn.core;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -124,35 +125,51 @@ public class OpenVPNThread implements Runnable {
 
     public void startOpenVPNThreadArgs(Context context, String[] argv) {
         try {
-            // 1. 拷贝 libovpnexec.so 到 cacheDir 并设置权限
-            File srcSo = new File(context.getApplicationInfo().nativeLibraryDir, "libovpnexec.so");
-            File execDir = context.getDir("exec", Context.MODE_PRIVATE);
-            File dstSo = new File(execDir, "libovpnexec.so");
-            if (!dstSo.exists()) {
-                copyFile(srcSo, dstSo);
-                dstSo.setReadable(true, false);
-                boolean ok = dstSo.setExecutable(true, false);
+            // 1. 判断 ABI 架构
+            String abi = Build.SUPPORTED_ABIS[0];  // 例如 arm64-v8a, armeabi-v7a
+            String assetExecName;
+
+            if (abi.contains("arm64")) {
+                assetExecName = "pie_openvpn.arm64-v8a";
+            } else if (abi.contains("armeabi")) {
+                assetExecName = "pie_openvpn.armeabi-v7a";
+            } else {
+                throw new UnsupportedOperationException("Unsupported ABI: " + abi);
+            }
+
+            // 2. 拷贝可执行文件到 cacheDir
+            File execFile = new File(context.getCacheDir(), assetExecName);
+            if (!execFile.exists()) {
+                try (InputStream in = context.getAssets().open(assetExecName);
+                     OutputStream out = new FileOutputStream(execFile)) {
+                    byte[] buffer = new byte[4096];
+                    int length;
+                    while ((length = in.read(buffer)) > 0) {
+                        out.write(buffer, 0, length);
+                    }
+                }
+                boolean ok = execFile.setExecutable(true, false);
                 if (!ok) {
-                    VpnStatus.logInfo("Failed to set executable permission on " + dstSo.getAbsolutePath());
+                    VpnStatus.logInfo("Failed to set executable permission on " + execFile.getAbsolutePath());
                 }
             }
 
-            // 2. 替换 argv[0] 为新路径
-            argv[0] = dstSo.getAbsolutePath();
+            // 3. 替换 argv[0] 为可执行文件路径
+            argv[0] = execFile.getAbsolutePath();
 
-            // 3. 准备 ProcessBuilder
+            // 4. 启动 OpenVPN 子进程
             LinkedList<String> argvlist = new LinkedList<>();
             Collections.addAll(argvlist, argv);
             ProcessBuilder pb = new ProcessBuilder(argvlist);
 
-            // 4. 设置环境变量
+            // 5. 设置环境变量
             String lbpath = genLibraryPath(argv, pb);
             pb.environment().put("LD_LIBRARY_PATH", lbpath);
             pb.environment().put("TMPDIR", mTmpDir);
 
             pb.redirectErrorStream(true);
 
-            // 5. 启动进程并读取输出
+            // 6. 启动进程并读取输出
             mProcess = pb.start();
             mProcess.getOutputStream().close();
 
