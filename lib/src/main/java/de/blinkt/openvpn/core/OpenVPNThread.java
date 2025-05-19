@@ -126,7 +126,8 @@ public class OpenVPNThread implements Runnable {
         try {
             // 1. 拷贝 libovpnexec.so 到 cacheDir 并设置权限
             File srcSo = new File(context.getApplicationInfo().nativeLibraryDir, "libovpnexec.so");
-            File dstSo = new File(context.getCacheDir(), "libovpnexec.so");
+            File execDir = context.getDir("exec", Context.MODE_PRIVATE);
+            File dstSo = new File(execDir, "libovpnexec.so");
             if (!dstSo.exists()) {
                 copyFile(srcSo, dstSo);
                 dstSo.setReadable(true, false);
