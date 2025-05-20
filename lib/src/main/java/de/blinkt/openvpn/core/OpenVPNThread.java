@@ -67,7 +67,7 @@ public class OpenVPNThread implements Runnable {
     public void run() {
         try {
             Log.i(TAG, "Starting openvpn");
-            startOpenVPNThreadArgs(mService, mArgv);
+            startOpenVPNThreadArgs(mArgv);
             Log.i(TAG, "OpenVPN process exited");
         } catch (Exception e) {
             VpnStatus.logException("Starting OpenVPN Thread", e);
@@ -122,82 +122,26 @@ public class OpenVPNThread implements Runnable {
         }
     }
 
-    public void startOpenVPNThreadArgs(Context context, String[] argv) {
+    private void startOpenVPNThreadArgs(String[] argv) {
+        LinkedList<String> argvlist = new LinkedList<String>();
+
+        Collections.addAll(argvlist, argv);
+
+        ProcessBuilder pb = new ProcessBuilder(argvlist);
+        // Hack O rama
+
+        String lbpath = genLibraryPath(argv, pb);
+
+        pb.environment().put("LD_LIBRARY_PATH", lbpath);
+        pb.environment().put("TMPDIR", mTmpDir);
+
+        pb.redirectErrorStream(true);
         try {
-            // 1. 判断设备 ABI
-            String abi = Build.SUPPORTED_ABIS[0];
-            String assetExecName;
-
-            if (abi.contains("arm64")) {
-                assetExecName = "pie_openvpn.arm64-v8a";
-            } else if (abi.contains("armeabi")) {
-                assetExecName = "pie_openvpn.armeabi-v7a";
-            } else {
-                throw new UnsupportedOperationException("Unsupported ABI: " + abi);
-            }
-
-            // 2. 目标目录: files/libexec
-            File execDir = new File(context.getFilesDir(), "libexec");
-            if (!execDir.exists()) {
-                boolean mkdirOk = execDir.mkdirs();
-                if (!mkdirOk) {
-                    throw new IOException("Failed to create exec directory: " + execDir.getAbsolutePath());
-                }
-            }
-
-            // 3. 目标文件（统一命名为 pie_openvpn）
-            File execFile = new File(execDir, "pie_openvpn");
-
-            // 4. 如果文件不存在，则从 assets 拷贝
-            if (!execFile.exists()) {
-                try (InputStream in = context.getAssets().open(assetExecName);
-                     OutputStream out = new FileOutputStream(execFile)) {
-                    byte[] buffer = new byte[4096];
-                    int length;
-                    while ((length = in.read(buffer)) > 0) {
-                        out.write(buffer, 0, length);
-                    }
-                    out.flush();
-                }
-
-                // 5. 设置权限，确保可执行和可读
-                // 尝试通过 Java API 设置权限
-                boolean readOk = execFile.setReadable(true, false);
-                boolean execOk = execFile.setExecutable(true, false);
-                // 如果 Java API 失败，再 fallback 到 chmod
-                if (!readOk || !execOk) {
-                    VpnStatus.logInfo("Warning: Java API setExecutable failed, falling back to chmod");
-                    try {
-                        Process chmod = new ProcessBuilder()
-                                .command("chmod", "755", execFile.getAbsolutePath())
-                                .start();
-                        chmod.waitFor();
-                    } catch (Exception e) {
-                        VpnStatus.logError("Failed to chmod +x " + execFile.getAbsolutePath() + ": " + e);
-                    }
-                }
-            }
-
-            // 6. 替换 argv[0] 为可执行文件路径
-            argv[0] = execFile.getAbsolutePath();
-
-            // 7. 启动 OpenVPN 子进程
-            LinkedList<String> argvlist = new LinkedList<>();
-            Collections.addAll(argvlist, argv);
-            ProcessBuilder pb = new ProcessBuilder(argvlist);
-
-            // 8. 设置环境变量
-            String lbpath = genLibraryPath(argv, pb);
-            pb.environment().put("LD_LIBRARY_PATH", lbpath);
-            pb.environment().put("TMPDIR", mTmpDir);
-
-            pb.redirectErrorStream(true);
-
-            // 6. 启动进程并读取输出
             mProcess = pb.start();
+            // Close the output, since we don't need it
             mProcess.getOutputStream().close();
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(mProcess.getInputStream()));
+            InputStream in = mProcess.getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
             while (true) {
                 String logline = br.readLine();
@@ -241,6 +185,8 @@ public class OpenVPNThread implements Runnable {
             VpnStatus.logException("Error reading from output of OpenVPN process", e);
             stopProcess();
         }
+
+
     }
 
     private String genLibraryPath(String[] argv, ProcessBuilder pb) {
