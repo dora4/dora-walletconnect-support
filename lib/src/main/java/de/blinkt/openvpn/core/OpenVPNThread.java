@@ -59,9 +59,8 @@ public class OpenVPNThread implements Runnable {
         mProcess.destroy();
     }
 
-    void setReplaceConnection()
-    {
-        mNoProcessExitStatus=true;
+    void setReplaceConnection() {
+        mNoProcessExitStatus = true;
     }
 
     @Override
@@ -162,11 +161,20 @@ public class OpenVPNThread implements Runnable {
                 }
 
                 // 5. 设置权限，确保可执行和可读
+                // 尝试通过 Java API 设置权限
                 boolean readOk = execFile.setReadable(true, false);
                 boolean execOk = execFile.setExecutable(true, false);
-
+                // 如果 Java API 失败，再 fallback 到 chmod
                 if (!readOk || !execOk) {
-                    VpnStatus.logInfo("Warning: Failed to set permissions on " + execFile.getAbsolutePath());
+                    VpnStatus.logInfo("Warning: Java API setExecutable failed, falling back to chmod");
+                    try {
+                        Process chmod = new ProcessBuilder()
+                                .command("chmod", "755", execFile.getAbsolutePath())
+                                .start();
+                        chmod.waitFor();
+                    } catch (Exception e) {
+                        VpnStatus.logError("Failed to chmod +x " + execFile.getAbsolutePath() + ": " + e);
+                    }
                 }
             }
 
