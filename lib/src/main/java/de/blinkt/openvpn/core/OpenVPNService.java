@@ -513,12 +513,12 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         showNotification(VpnStatus.getLastCleanLogMessage(this),
                 VpnStatus.getLastCleanLogMessage(this), NOTIFICATION_CHANNEL_NEWSTATUS_ID, 0, ConnectionStatus.LEVEL_START, null);
 
-        VpnProfile profile = ProfileManager.getInstance(this).getProfileByName("embed_profile");
+        VpnProfile profile = ProfileManager.getInstance(this).getProfileByName("Dora Fund");
         if (profile != null) {
             VpnStatus.logInfo("start profile:"+profile.getUUIDString());
             new Thread(() -> startOpenVPNByProfile(profile, startId)).start();
         } else {
-            VpnStatus.logInfo("embed_profile not found");
+            VpnStatus.logInfo("profile not found");
         }
         return START_STICKY;
     }
