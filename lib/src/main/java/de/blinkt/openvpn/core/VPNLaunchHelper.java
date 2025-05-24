@@ -60,9 +60,9 @@ public class VPNLaunchHelper {
         return args.toArray(new String[0]);
     }
 
-    static String[] buildOpenvpnArgv(Context c, String cmd) {
+    static String[] buildOpenvpnArgv(Context c, String exec) {
         Vector<String> args = new Vector<>();
-        args.add(cmd);
+        args.add(exec);
         args.add("--config");
         args.add(getConfigFilePath(c));
         return args.toArray(new String[0]);
