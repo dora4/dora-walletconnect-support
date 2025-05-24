@@ -6,19 +6,14 @@
 package de.blinkt.openvpn.core;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.os.Build;
 import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
@@ -110,52 +105,52 @@ public class OpenVPNThread implements Runnable {
     }
 
     private void startOpenVPNThreadArgs(String[] argv) {
-        Context context = mService;
-
-        // 1. 根据 ABI 选 asset 名
-        String abi = Build.SUPPORTED_ABIS[0];
-        String assetName = abi.contains("arm64")
-                ? "pie_openvpn.arm64-v8a"
-                : (abi.contains("armeabi") ? "pie_openvpn.armeabi-v7a" : null);
-        if (assetName == null)
-            throw new UnsupportedOperationException("Unsupported ABI: " + abi);
-
-        // 2. 准备目录 files/libexec
-        File execDir = new File(context.getFilesDir(), "libexec");
-        if (!execDir.exists() && !execDir.mkdirs()) {
-            throw new IllegalStateException("Cannot mkdir " + execDir);
-        }
-
-        // 3. 目标可执行文件
-        File execFile = new File(execDir, "pie_openvpn");
-
-        // 4. 如果不存在就从 APK 拷贝并 chmod
-        if (!execFile.exists()) {
-            try (InputStream in = context.getAssets().open(assetName);
-                 OutputStream out = new FileOutputStream(execFile)) {
-                byte[] buf = new byte[4*1024];
-                int r;
-                while ((r = in.read(buf)) > 0) out.write(buf, 0, r);
-                out.flush();
-            } catch (IOException ioe) {
-                throw new RuntimeException("Failed to copy " + assetName, ioe);
-            }
-            // 5. 赋予 755 权限
-            boolean ok1 = execFile.setReadable(true, false);
-            boolean ok2 = execFile.setExecutable(true, false);
-            if (!ok1 || !ok2) {
-                try {
-                    Process c = new ProcessBuilder("chmod", "755", execFile.getAbsolutePath())
-                            .start();
-                    c.waitFor();
-                } catch (Exception e) {
-                    Log.w(TAG, "Chmod fallback failed", e);
-                }
-            }
-        }
-
-        // 6. 用真正可执行文件替换 argv[0]
-        argv[0] = execFile.getAbsolutePath();
+//        Context context = mService;
+//
+//        // 1. 根据 ABI 选 asset 名
+//        String abi = Build.SUPPORTED_ABIS[0];
+//        String assetName = abi.contains("arm64")
+//                ? "pie_openvpn.arm64-v8a"
+//                : (abi.contains("armeabi") ? "pie_openvpn.armeabi-v7a" : null);
+//        if (assetName == null)
+//            throw new UnsupportedOperationException("Unsupported ABI: " + abi);
+//
+//        // 2. 准备目录 files/libexec
+//        File execDir = new File(context.getFilesDir(), "libexec");
+//        if (!execDir.exists() && !execDir.mkdirs()) {
+//            throw new IllegalStateException("Cannot mkdir " + execDir);
+//        }
+//
+//        // 3. 目标可执行文件
+//        File execFile = new File(execDir, "pie_openvpn");
+//
+//        // 4. 如果不存在就从 APK 拷贝并 chmod
+//        if (!execFile.exists()) {
+//            try (InputStream in = context.getAssets().open(assetName);
+//                 OutputStream out = new FileOutputStream(execFile)) {
+//                byte[] buf = new byte[4*1024];
+//                int r;
+//                while ((r = in.read(buf)) > 0) out.write(buf, 0, r);
+//                out.flush();
+//            } catch (IOException ioe) {
+//                throw new RuntimeException("Failed to copy " + assetName, ioe);
+//            }
+//            // 5. 赋予 755 权限
+//            boolean ok1 = execFile.setReadable(true, false);
+//            boolean ok2 = execFile.setExecutable(true, false);
+//            if (!ok1 || !ok2) {
+//                try {
+//                    Process c = new ProcessBuilder("chmod", "755", execFile.getAbsolutePath())
+//                            .start();
+//                    c.waitFor();
+//                } catch (Exception e) {
+//                    Log.w(TAG, "Chmod fallback failed", e);
+//                }
+//            }
+//        }
+//
+//        // 6. 用真正可执行文件替换 argv[0]
+//        argv[0] = execFile.getAbsolutePath();
 
 
         LinkedList<String> argvlist = new LinkedList<String>();

@@ -60,6 +60,14 @@ public class VPNLaunchHelper {
         return args.toArray(new String[0]);
     }
 
+    static String[] buildOpenvpnArgv(Context c, String cmd) {
+        Vector<String> args = new Vector<>();
+        args.add(cmd);
+        args.add("--config");
+        args.add(getConfigFilePath(c));
+        return args.toArray(new String[0]);
+    }
+
     private static boolean writeMiniVPNBinary(Context context, String abi, File mvpnout) {
         try {
             InputStream mvpn;

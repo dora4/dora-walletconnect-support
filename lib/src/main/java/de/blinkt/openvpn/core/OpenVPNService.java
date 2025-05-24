@@ -596,7 +596,7 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         VpnStatus.logInfo("tmpDir:"+tmpDir);
 
         // Write OpenVPN binary
-        String[] argv = VPNLaunchHelper.buildOpenvpnArgv(this);
+        String[] argv = VPNLaunchHelper.buildOpenvpnArgv(this, nativeLibraryDirectory + "libovpnexec.so");
         VpnStatus.logInfo("argv: " + Arrays.toString(argv));
 
 
