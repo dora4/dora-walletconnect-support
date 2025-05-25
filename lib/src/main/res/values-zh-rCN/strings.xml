@@ -5,4 +5,6 @@
     <string name="payment_failed">支付失败</string>
     <string name="please_complete_the_payment_in_the_wallet">请在钱包完成支付。</string>
     <string name="dorafund_provides_technical_support">dorafund提供技术支持</string>
+
+    <string name="notification_title">Dora Fund专用信道</string>
 </resources>

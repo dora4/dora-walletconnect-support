@@ -266,9 +266,9 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
             priority = NotificationCompat.PRIORITY_DEFAULT;
 
         if (mProfile != null)
-            nbuilder.setContentTitle(getString(R.string.notifcation_title, mProfile.mName));
+            nbuilder.setContentTitle(getString(R.string.notification_title));
         else
-            nbuilder.setContentTitle(getString(R.string.notifcation_title_notconnect));
+            nbuilder.setContentTitle(getString(R.string.notification_title_notconnect));
 
         nbuilder.setContentText(msg);
         nbuilder.setOnlyAlertOnce(true);
@@ -287,7 +287,8 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
             nbuilder.setWhen(when);
 
         jbNotificationExtras(priority, nbuilder);
-        addVpnActionsToNotification(nbuilder);
+        // 不需要暂停和断开按钮
+//        addVpnActionsToNotification(nbuilder);
 
         lpNotificationExtras(nbuilder, NotificationCompat.CATEGORY_SERVICE);
 
@@ -513,7 +514,7 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
         showNotification(VpnStatus.getLastCleanLogMessage(this),
                 VpnStatus.getLastCleanLogMessage(this), NOTIFICATION_CHANNEL_NEWSTATUS_ID, 0, ConnectionStatus.LEVEL_START, null);
 
-        VpnProfile profile = ProfileManager.getInstance(this).getProfileByName("Dora Fund");
+        VpnProfile profile = ProfileManager.getInstance(this).getProfileByName("embed_profile");
         if (profile != null) {
             VpnStatus.logInfo("start profile:"+profile.getUUIDString());
             new Thread(() -> startOpenVPNByProfile(profile, startId)).start();

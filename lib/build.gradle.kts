@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.fir.expressions.builder.buildArgumentList
+
 plugins {
     id("com.android.library")
     id("kotlin-android")
@@ -40,18 +42,18 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    sourceSets {
-        getByName("main") {
-            jniLibs.srcDir("src/main/jniLibs")
-        }
-    }
-
-//    externalNativeBuild {
-//        cmake {
-//            path = file("src/main/cpp/CMakeLists.txt")
-//            version = "3.22.1"
+//    sourceSets {
+//        getByName("main") {
+//            jniLibs.srcDir("src/main/jniLibs")
 //        }
 //    }
+
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.22.1"
+        }
+    }
 }
 
 dependencies {
@@ -71,7 +73,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.dora4"
                 artifactId = "dora-walletconnect-support"
-                version = "1.118"
+                version = "1.119"
             }
         }
     }
