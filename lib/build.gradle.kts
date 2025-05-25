@@ -73,7 +73,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.dora4"
                 artifactId = "dora-walletconnect-support"
-                version = "1.122"
+                version = "1.123"
             }
         }
     }
