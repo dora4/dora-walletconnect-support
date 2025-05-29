@@ -287,8 +287,7 @@ public class OpenVPNService extends VpnService implements StateListener, Callbac
             nbuilder.setWhen(when);
 
         jbNotificationExtras(priority, nbuilder);
-        // 不需要暂停和断开按钮
-//        addVpnActionsToNotification(nbuilder);
+        addVpnActionsToNotification(nbuilder);
 
         lpNotificationExtras(nbuilder, NotificationCompat.CATEGORY_SERVICE);
 
