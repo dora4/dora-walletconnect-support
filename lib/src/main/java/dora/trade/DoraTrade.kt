@@ -468,13 +468,13 @@ object DoraTrade {
 
     /**
      * 连接VPN。
-     * @since 1.159
+     * @since 1.160
      */
-    external fun connectVPN(context: Context)
+    external fun connectVPN(context: Context, accessKey: String, secretKey: String)
 
     /**
      * 断开VPN连接。
-     * @since 1.159
+     * @since 1.160
      */
     external fun disconnectVPN(context: Context)
 
