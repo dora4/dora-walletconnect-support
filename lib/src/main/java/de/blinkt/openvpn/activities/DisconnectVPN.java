@@ -6,7 +6,6 @@
 package de.blinkt.openvpn.activities;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,6 +13,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.view.View;
 
 import de.blinkt.openvpn.LaunchVPN;
 import dora.lifecycle.walletconnect.R;
@@ -21,6 +21,8 @@ import de.blinkt.openvpn.core.IOpenVPNServiceInternal;
 import de.blinkt.openvpn.core.OpenVPNService;
 import de.blinkt.openvpn.core.ProfileManager;
 import de.blinkt.openvpn.core.VpnStatus;
+import dora.trade.DoraTrade;
+import dora.widget.DoraAlertDialog;
 
 /**
  * Created by arne on 13.10.13.
@@ -61,15 +63,37 @@ public class DisconnectVPN extends Activity implements DialogInterface.OnClickLi
     }
 
     private void showDisconnectDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.title_cancel);
-        builder.setMessage(R.string.cancel_connection_query);
-        builder.setNegativeButton(android.R.string.cancel, this);
-        builder.setPositiveButton(R.string.cancel_connection, this);
-        builder.setNeutralButton(R.string.reconnect, this);
-        builder.setOnCancelListener(this);
-
-        builder.show();
+        DoraAlertDialog dialog = new DoraAlertDialog(this);
+        dialog.title(getString(R.string.title_cancel));
+        dialog.message(getString(R.string.cancel_connection_query));
+        dialog.themeColor(DoraTrade.INSTANCE.getThemeColor());
+        dialog.positiveButton(getString(R.string.cancel_connection));
+        dialog.negativeButton(getString(R.string.reconnect));
+        dialog.positiveListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ProfileManager.setConntectedVpnProfileDisconnected(DisconnectVPN.this);
+                if (mService != null) {
+                    try {
+                        mService.stopVPN(false);
+                    } catch (RemoteException e) {
+                        VpnStatus.logException(e);
+                    }
+                }
+                finish();
+            }
+        });
+        dialog.negativeListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DisconnectVPN.this, LaunchVPN.class);
+                intent.putExtra(LaunchVPN.EXTRA_KEY, VpnStatus.getLastConnectedVPNProfile());
+                intent.setAction(Intent.ACTION_MAIN);
+                startActivity(intent);
+                finish();
+            }
+        });
+        dialog.show();
     }
 
     @Override

@@ -64,7 +64,7 @@
     <string name="cancel_connection_long">Disconnect VPN</string>
     <string name="clear_log">clear log</string>
     <string name="title_cancel">Cancel Confirmation</string>
-    <string name="cancel_connection_query">Disconnect the connected VPN/cancel the connection attempt?</string>
+    <string name="cancel_connection_query">Disconnect the Dora Fund dedicated channel?</string>
     <string name="remove_vpn">Remove VPN</string>
     <string name="check_remote_tlscert">Checks whether the server uses a certificate with TLS Server extensions (--remote-cert-tls server)</string>
     <string name="check_remote_tlscert_title">Expect TLS server certificate</string>
@@ -174,7 +174,7 @@
     <string name="owner_fix">Fix ownership of /dev/tun</string>
     <string name="generated_config_summary">Shows the generated OpenVPN Configuration File</string>
     <string name="edit_profile_title">Editing \"%s\"</string>
-    <string name="building_configration">Building configuration…</string>
+    <string name="building_configration">Preparing to connect to the dedicated channel…</string>
     <string name="netchange_summary">Turning this option on will force a reconnect if the network state is changed (e.g. WiFi to/from mobile)</string>
     <string name="netchange">Reconnect on network change</string>
     <string name="netstatus">Network Status: %s</string>
@@ -243,7 +243,7 @@
     <string name="state_connecting">Connecting</string>
     <string name="state_wait">Waiting for server reply</string>
     <string name="state_auth">Authenticating</string>
-    <string name="state_get_config">Getting client configuration</string>
+    <string name="state_get_config">Retrieving channel configuration.</string>
     <string name="state_assign_ip">Assigning IP addresses</string>
     <string name="state_add_routes">Adding routes</string>
     <string name="state_connected">Connected</string>
@@ -290,7 +290,7 @@
     <string name="save_password">Save Password</string>
     <string name="pauseVPN">Pause</string>
     <string name="resumevpn">Resume</string>
-    <string name="state_userpause">VPN pause requested by user</string>
+    <string name="state_userpause">The dedicated channel has been paused by the user.</string>
     <string name="state_screenoff">VPN paused - screen off</string>
     <string name="device_specific">Device specifics Hacks</string>
     <string name="cannotparsecert">Cannot display certificate information</string>

@@ -124,6 +124,13 @@ object DoraTrade {
     }
 
     /**
+     * 获取当前的主题色。
+     */
+    fun getThemeColor(): Int {
+        return this.themeColor
+    }
+
+    /**
      * 设置支付监听器。
      */
     fun setPayListener(listener: PayListener) {

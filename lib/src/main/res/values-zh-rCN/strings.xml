@@ -7,4 +7,15 @@
     <string name="dorafund_provides_technical_support">dorafund提供技术支持</string>
 
     <string name="notification_title">Dora Fund专用信道</string>
+    <string name="building_configration">正在准备连接到专用信道…</string>
+    <string name="notification_title_notconnect">无法连接到专用信道</string>
+    <string name="state_connecting">连接中</string>
+    <string name="state_wait">等待网关回复</string>
+    <string name="state_auth_pending">认证中</string>
+    <string name="state_get_config">正在获取信道配置</string>
+    <string name="pauseVPN">暂停</string>
+    <string name="resumevpn">恢复</string>
+    <string name="title_cancel">断开确认</string>
+    <string name="state_userpause">专用信道已由用户暂停</string>
+    <string name="cancel_connection_query">断开Dora Fund专用信道？</string>
 </resources>
