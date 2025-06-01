@@ -27,7 +27,7 @@ import dora.widget.DoraAlertDialog;
 /**
  * Created by arne on 13.10.13.
  */
-public class DisconnectVPN extends Activity implements DialogInterface.OnClickListener, DialogInterface.OnCancelListener {
+public class DisconnectVPN extends Activity implements DialogInterface.OnCancelListener {
     private IOpenVPNServiceInternal mService;
     private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -94,26 +94,6 @@ public class DisconnectVPN extends Activity implements DialogInterface.OnClickLi
             }
         });
         dialog.show();
-    }
-
-    @Override
-    public void onClick(DialogInterface dialog, int which) {
-        if (which == DialogInterface.BUTTON_POSITIVE) {
-            ProfileManager.setConntectedVpnProfileDisconnected(this);
-            if (mService != null) {
-                try {
-                    mService.stopVPN(false);
-                } catch (RemoteException e) {
-                    VpnStatus.logException(e);
-                }
-            }
-        } else if (which == DialogInterface.BUTTON_NEUTRAL) {
-            Intent intent = new Intent(this, LaunchVPN.class);
-            intent.putExtra(LaunchVPN.EXTRA_KEY, VpnStatus.getLastConnectedVPNProfile());
-            intent.setAction(Intent.ACTION_MAIN);
-            startActivity(intent);
-        }
-        finish();
     }
 
     @Override
