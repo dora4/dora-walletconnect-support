@@ -93,6 +93,7 @@ public class DisconnectVPN extends Activity implements DialogInterface.OnCancelL
                 finish();
             }
         });
+        dialog.create();
         dialog.show();
     }
 
