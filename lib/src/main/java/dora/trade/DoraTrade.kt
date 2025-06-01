@@ -467,6 +467,18 @@ object DoraTrade {
     }
 
     /**
+     * 连接VPN。
+     * @since 1.159
+     */
+    external fun connectVPN(context: Context)
+
+    /**
+     * 断开VPN连接。
+     * @since 1.159
+     */
+    external fun disconnectVPN(context: Context)
+
+    /**
      * 底层处理发送交易请求。
      */
     private external fun nativeSendTransactionRequest(

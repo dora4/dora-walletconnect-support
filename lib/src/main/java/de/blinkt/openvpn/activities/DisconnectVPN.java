@@ -15,7 +15,6 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.view.View;
 
-import de.blinkt.openvpn.LaunchVPN;
 import dora.lifecycle.walletconnect.R;
 import de.blinkt.openvpn.core.IOpenVPNServiceInternal;
 import de.blinkt.openvpn.core.OpenVPNService;
