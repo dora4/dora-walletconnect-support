@@ -65,7 +65,7 @@
             android:excludeFromRecents="true"
             android:noHistory="true"
             android:taskAffinity=".DisconnectVPN"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.WalletConnect" />
 
         <service
             android:name="de.blinkt.openvpn.core.OpenVPNService"
@@ -104,34 +104,34 @@
             </intent-filter>
         </activity>
 
-<!--        <receiver android:name="de.blinkt.openvpn.OnBootReceiver"-->
-<!--            android:exported="true">-->
-<!--            <intent-filter android:priority="999">-->
-<!--                <action android:name="android.intent.action.BOOT_COMPLETED" />-->
-<!--                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />-->
-<!--            </intent-filter>-->
-<!--        </receiver>-->
+        <receiver android:name="de.blinkt.openvpn.OnBootReceiver"
+            android:exported="true">
+            <intent-filter android:priority="999">
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name="dora.trade.activity.WalletConnectActivity"
             android:theme="@style/Theme.WalletConnect"
             android:exported="true"/>
 
-<!--        <activity-->
-<!--            android:name="de.blinkt.openvpn.LaunchVPN"-->
-<!--            android:autoRemoveFromRecents="true"-->
-<!--            android:excludeFromRecents="true"-->
-<!--            android:label="@string/vpn_launch_title"-->
-<!--            android:taskAffinity=".LaunchVPN"-->
-<!--            android:theme="@style/blinkt.dialog"-->
-<!--            android:exported="true">-->
+        <activity
+            android:name="de.blinkt.openvpn.LaunchVPN"
+            android:autoRemoveFromRecents="true"
+            android:excludeFromRecents="true"
+            android:label="@string/vpn_launch_title"
+            android:taskAffinity=".LaunchVPN"
+            android:theme="@style/Theme.WalletConnect"
+            android:exported="true">
 
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->
 
 <!--                <category android:name="android.intent.category.DEFAULT" />-->
 <!--            </intent-filter>-->
-<!--        </activity>-->
+        </activity>
         <!--
         <receiver android:name="de.blinkt.openvpn.core.GetRestrictionReceiver">
             <intent-filter>
@@ -139,14 +139,14 @@
             </intent-filter>
         </receiver>
         -->
-<!--        <activity android:name="de.blinkt.openvpn.api.RemoteAction" />-->
-<!--        <activity-alias-->
-<!--            android:name="de.blinkt.openvpn.api.ConnectVPN"-->
-<!--            android:exported="true"-->
-<!--            android:targetActivity="de.blinkt.openvpn.api.RemoteAction" />-->
-<!--        <activity-alias-->
-<!--            android:name="de.blinkt.openvpn.api.DisconnectVPN"-->
-<!--            android:exported="true"-->
-<!--            android:targetActivity="de.blinkt.openvpn.api.RemoteAction" />-->
+        <activity android:name="de.blinkt.openvpn.api.RemoteAction" />
+        <activity-alias
+            android:name="de.blinkt.openvpn.api.ConnectVPN"
+            android:exported="true"
+            android:targetActivity="de.blinkt.openvpn.api.RemoteAction" />
+        <activity-alias
+            android:name="de.blinkt.openvpn.api.DisconnectVPN"
+            android:exported="true"
+            android:targetActivity="de.blinkt.openvpn.api.RemoteAction" />
     </application>
 </manifest>
