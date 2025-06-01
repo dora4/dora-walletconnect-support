@@ -67,8 +67,6 @@ public class DisconnectVPN extends Activity implements DialogInterface.OnCancelL
         dialog.title(getString(R.string.title_cancel));
         dialog.message(getString(R.string.cancel_connection_query));
         dialog.themeColor(DoraTrade.INSTANCE.getThemeColor());
-        dialog.positiveButton(getString(R.string.cancel_connection));
-        dialog.negativeButton(getString(R.string.reconnect));
         dialog.positiveListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,10 +84,10 @@ public class DisconnectVPN extends Activity implements DialogInterface.OnCancelL
         dialog.negativeListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DisconnectVPN.this, LaunchVPN.class);
-                intent.putExtra(LaunchVPN.EXTRA_KEY, VpnStatus.getLastConnectedVPNProfile());
-                intent.setAction(Intent.ACTION_MAIN);
-                startActivity(intent);
+//                Intent intent = new Intent(DisconnectVPN.this, LaunchVPN.class);
+//                intent.putExtra(LaunchVPN.EXTRA_KEY, VpnStatus.getLastConnectedVPNProfile());
+//                intent.setAction(Intent.ACTION_MAIN);
+//                startActivity(intent);
                 finish();
             }
         });
