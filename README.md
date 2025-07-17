@@ -2,7 +2,7 @@ dora-walletconnect-support
 ![Release](https://jitpack.io/v/dora4/dora-walletconnect-support.svg)
 --------------------------------
 
-![dorachat_ETH_wallet_connect_and_payment_cartoon_style_illustrat_10ca0a34-9a52-4266-9556-3ec33e56f583](https://github.com/user-attachments/assets/da582dda-e5a4-4946-a2ad-3cb9fbee5f20)
+![dorachat_ETH_wallet_connect_and_payment_cartoon_style_illustrat_a97a5f3e-1711-4368-a344-2ba11b682995](https://github.com/user-attachments/assets/3f61fbec-b8b4-4636-a9eb-96eb7a327feb)
 
 ### Website
 
