@@ -10,11 +10,11 @@ android {
 
     defaultConfig {
         minSdk = 23
-        externalNativeBuild {
-            cmake {
-                cppFlags += ""
-            }
-        }
+//        externalNativeBuild {
+//            cmake {
+//                cppFlags += ""
+//            }
+//        }
         ndk {
             abiFilters.add("arm64-v8a") // 主流手机
             abiFilters.add("armeabi-v7a") // 电视盒子
