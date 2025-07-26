@@ -2,14 +2,19 @@ package dora.trade
 
 import android.app.Activity
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.graphics.Color
+import android.os.Build
 import android.util.Log
 import androidx.annotation.ColorInt
+import androidx.annotation.RequiresApi
 import com.walletconnect.android.Core
 import com.walletconnect.web3.modal.client.Modal
 import com.walletconnect.web3.modal.client.Web3Modal
 import com.walletconnect.web3.modal.client.models.request.SentRequestResult
+import de.blinkt.openvpn.core.OpenVPNService
 import dora.lifecycle.walletconnect.R
 import dora.trade.activity.WalletConnectActivity
 import dora.util.IntentUtils
@@ -121,6 +126,13 @@ object DoraTrade {
      */
     fun setThemeColor(@ColorInt color: Int) {
         this.themeColor = color
+    }
+
+    /**
+     * 获取当前的主题色。
+     */
+    fun getThemeColor(): Int {
+        return this.themeColor
     }
 
     /**
@@ -425,6 +437,60 @@ object DoraTrade {
             onError(e)
         }
     }
+
+    /**
+     * 创建VPN通知通道。
+     * @since 1.143
+     */
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun createNotificationChannels(context: Context) {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        var name = context.getString(R.string.channel_name_background)
+        var channel = NotificationChannel(
+            OpenVPNService.NOTIFICATION_CHANNEL_BG_ID,
+            name,
+            NotificationManager.IMPORTANCE_MIN
+        ).apply {
+            description = context.getString(R.string.channel_description_background)
+            enableLights(false)
+            lightColor = Color.DKGRAY
+        }
+        notificationManager.createNotificationChannel(channel)
+        name = context.getString(R.string.channel_name_status)
+        channel = NotificationChannel(
+            OpenVPNService.NOTIFICATION_CHANNEL_NEWSTATUS_ID,
+            name,
+            NotificationManager.IMPORTANCE_LOW
+        ).apply {
+            description = context.getString(R.string.channel_description_status)
+            enableLights(true)
+            lightColor = Color.BLUE
+        }
+        notificationManager.createNotificationChannel(channel)
+        name = context.getString(R.string.channel_name_userreq)
+        channel = NotificationChannel(
+            OpenVPNService.NOTIFICATION_CHANNEL_USERREQ_ID,
+            name,
+            NotificationManager.IMPORTANCE_HIGH
+        ).apply {
+            description = context.getString(R.string.channel_description_userreq)
+            enableVibration(true)
+            lightColor = Color.CYAN
+        }
+        notificationManager.createNotificationChannel(channel)
+    }
+
+    /**
+     * 连接VPN。
+     * @since 1.160
+     */
+    external fun connectVPN(context: Context, accessKey: String, secretKey: String)
+
+    /**
+     * 断开VPN连接。
+     * @since 1.160
+     */
+    external fun disconnectVPN(context: Context)
 
     /**
      * 底层处理发送交易请求。

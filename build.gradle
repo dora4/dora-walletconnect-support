@@ -2,13 +2,3 @@ plugins {
     id 'com.android.library' version '8.1.0' apply false
     id 'org.jetbrains.kotlin.android' version '1.7.20' apply false
 }
-
-allprojects {
-    configurations.configureEach {
-        resolutionStrategy.eachDependency {
-            if (requested.group == "org.bouncycastle" && requested.name == "bcprov-jdk15on") {
-                useTarget("org.bouncycastle:bcprov-jdk18on:1.77")
-            }
-        }
-    }
-}
