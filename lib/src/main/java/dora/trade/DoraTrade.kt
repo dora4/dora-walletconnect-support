@@ -173,7 +173,7 @@ object DoraTrade {
     /**
      * 检测钱包是否已连接上。
      *
-     * @since 1.101
+     * @since 1.161
      */
     fun isWalletConnected() : Boolean {
         return Web3Modal.getAccount() != null
