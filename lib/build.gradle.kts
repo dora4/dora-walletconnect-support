@@ -57,7 +57,7 @@ android {
 
 dependencies {
     implementation("com.github.dora4:dora:1.3.14")
-    api("com.github.dora4:dview-alert-dialog:1.24")
+    api("com.github.dora4:dview-alert-dialog:1.25")
     // wallet connect
     api(platform("com.walletconnect:android-bom:1.31.4"))
     api("com.walletconnect:android-core")
@@ -72,7 +72,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.dora4"
                 artifactId = "dora-walletconnect-support"
-                version = "1.161"
+                version = "2.0"
             }
         }
     }

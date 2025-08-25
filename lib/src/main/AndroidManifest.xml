@@ -114,7 +114,7 @@
         </receiver>
 
         <activity
-            android:name="dora.trade.activity.WalletConnectActivity"
+            android:name="dora.pay.activity.WalletConnectActivity"
             android:theme="@style/Theme.WalletConnect"
             android:exported="true"/>
 

@@ -18,7 +18,7 @@ Añade el siguiente código en el archivo `build.gradle.kts` del módulo `app`:
 dependencies {
     // El paquete de extensión debe usarse con el framework principal "dora"
     implementation("com.github.dora4:dora:1.3.14")
-    implementation("com.github.dora4:dora-walletconnect-support:1.160")
+    implementation("com.github.dora4:dora-walletconnect-support:2.0")
 }
 ```
 
@@ -46,15 +46,15 @@ val chains: Array<Modal.Model.Chain> = arrayOf(
             Web3ModalChainsPresets.ethChains["137"]!!,    // Soporta Polygon
             Web3ModalChainsPresets.ethChains["42161"]!!   // Soporta Arbitrum
 )
-DoraTrade.init(this, "Nombre de la aplicación", "Descripción de la aplicación", "https://yourdomain.com", chains)
+DoraFund.init(this, "Nombre de la aplicación", "Descripción de la aplicación", "https://yourdomain.com", chains)
 ```
 Establece la conexión con la billetera fría en una `Activity`:
 ```kotlin
-DoraTrade.connectWallet(this)
+DoraFund.connectWallet(this)
 ```
 (Opcional) Si solo una `Activity` maneja los pagos, puedes configurar un oyente de pago de billetera fría en esa `Activity`. Si `PayListener` está registrado en el método `init()` de `Application`, puedes enviar mensajes dentro del callback para notificar a la interfaz de procesamiento.
 ```kotlin
-DoraTrade.setPayListener(object : DoraTrade.PayListener {
+DoraFund.setPayListener(object : DoraFund.PayListener {
     override fun onSendTransactionToBlockchain(orderId: String, transactionHash: String) {
         // La transacción ha sido enviada a la blockchain y está pendiente de confirmación
     }
@@ -66,14 +66,14 @@ DoraTrade.setPayListener(object : DoraTrade.PayListener {
 ```
 Construye los datos de la orden y procede con el pago:
 ```kotlin
-DoraTrade.pay(this,
+DoraFund.pay(this,
                 "Introduce la clave de acceso de DoraPay, por ejemplo, AyAD8J9M0R7H",
                 "Introduce la clave secreta de 32 caracteres de DoraPay. No la compartas con nadie, incluido nuestro personal.",
                 "Introduce la información del pedido para que el framework muestre una ventana emergente informando al usuario sobre el pago.",
                 "Introduce los detalles del producto para que el framework muestre una ventana emergente informando al usuario sobre el pago.",
                 "Introduce la dirección de la billetera del destinatario, por ejemplo, 0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000",
                 0.01,
-                object: DoraTrade.OrderListener {
+                object: DoraFund.OrderListener {
                     override fun onPrintOrder(orderId: String, chain: Modal.Model.Chain, value: Double) {
                         // Registra este ID de transacción para futuras consultas sobre el estado del pago
                     }
@@ -82,19 +82,19 @@ DoraTrade.pay(this,
 Consulta el estado del pago de la orden:
 ```kotlin
 // Consultar la transacción de la cadena seleccionada actualmente
-PayUtils.queryTransactionByHash("Rellena el hash de la transacción de este pedido")
+PayUtils.queryTransaction("Rellena el hash de la transacción de este pedido")
 // Consultar la transacción en la red principal de Ethereum
-PayUtils.queryTransactionByHash("Rellena el hash de la transacción de este pedido", PayUtils.DEFAULT_RPC_ETHEREUM)
+PayUtils.queryTransaction("Rellena el hash de la transacción de este pedido", PayUtils.DEFAULT_RPC_ETHEREUM)
 // Consultar la transacción en la red principal de Polygon
-PayUtils.queryTransactionByHash("Rellena el hash de la transacción de este pedido", PayUtils.DEFAULT_RPC_POLYGON)
+PayUtils.queryTransaction("Rellena el hash de la transacción de este pedido", PayUtils.DEFAULT_RPC_POLYGON)
 // Consultar la transacción en la red principal de Arbitrum
-PayUtils.queryTransactionByHash("Rellena el hash de la transacción de este pedido", PayUtils.DEFAULT_RPC_ARBITRUM)
+PayUtils.queryTransaction("Rellena el hash de la transacción de este pedido", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
 Agregar reglas de ofuscación:
 ```pro
 -keep class org.json.JSONObject { *; }
--keep class dora.trade.DoraTrade { *; }
--keep class dora.trade.DoraTrade$PayListener { *; }
+-keep class dora.pay.DoraFund { *; }
+-keep class dora.pay.DoraFund$PayListener { *; }
 -keep class org.web3j.** { *; }
 -keep class com.walletconnect.web3.modal.client.Web3Modal { *; }
 -keep class com.walletconnect.web3.modal.client.models.request.Request { *; }

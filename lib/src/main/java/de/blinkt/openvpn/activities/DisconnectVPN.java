@@ -20,7 +20,7 @@ import de.blinkt.openvpn.core.IOpenVPNServiceInternal;
 import de.blinkt.openvpn.core.OpenVPNService;
 import de.blinkt.openvpn.core.ProfileManager;
 import de.blinkt.openvpn.core.VpnStatus;
-import dora.trade.DoraTrade;
+import dora.pay.DoraFund;
 import dora.widget.DoraAlertDialog;
 
 /**
@@ -65,7 +65,7 @@ public class DisconnectVPN extends Activity implements DialogInterface.OnCancelL
         DoraAlertDialog dialog = new DoraAlertDialog(this);
         dialog.title(getString(R.string.warm_prompt));
         dialog.message(getString(R.string.cancel_connection_query));
-        dialog.themeColor(DoraTrade.INSTANCE.getThemeColor());
+        dialog.themeColor(DoraFund.INSTANCE.getThemeColor());
         dialog.positiveListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1,4 +1,4 @@
-package dora.trade.activity
+package dora.pay.activity
 
 import android.annotation.SuppressLint
 import android.app.Activity

@@ -1,4 +1,4 @@
-package dora.trade
+package dora.pay
 
 import androidx.annotation.WorkerThread
 import com.walletconnect.web3.modal.client.Web3Modal
@@ -22,6 +22,7 @@ object PayUtils {
 
     /**
      * 转换double代币数量为十六进制字符串。
+     * @since 2.0
      */
     @JvmStatic
     fun convertToHexWei(amount: Double): String {
@@ -30,49 +31,22 @@ object PayUtils {
     }
 
     /**
-     * 查询区块链链上数据，该笔订单是否上链，使用当前选中的链的json-rpc地址，默认使用以太坊的。
+     * 查询区块链链上数据，该笔订单是否被区块链成功确认，使用当前选中的链的json-rpc地址，默认使用以太坊的。
+     * @since 2.0
      */
     @JvmStatic
     @WorkerThread
-    @Deprecated(replaceWith = ReplaceWith("queryTransactionByHash"),
-        message = "use queryTransactionByHash() instead.")
     fun queryTransaction(transactionHash: String) : Boolean {
         return queryTransaction(transactionHash, Web3Modal.getAccount()?.chain?.rpcUrl ?: DEFAULT_RPC_ETHEREUM)
     }
 
     /**
-     * 查询区块链链上数据，该笔订单是否上链，自定义json-rpc地址。
-     */
-    @JvmStatic
-    @WorkerThread
-    @Deprecated(replaceWith = ReplaceWith("queryTransactionByHash"),
-        message = "use queryTransactionByHash() instead.")
-    fun queryTransaction(transactionHash: String, jsonRpcUrl: String) : Boolean {
-        val web3j: Web3j = Web3j.build(HttpService(jsonRpcUrl))
-        val receipt: TransactionReceipt? =
-            web3j.ethGetTransactionReceipt(transactionHash).send().result
-        return receipt != null && receipt.status.equals("0x1")
-    }
-
-    /**
-     * 查询区块链链上数据，该笔订单是否被区块链成功确认，使用当前选中的链的json-rpc地址，默认使用以太坊的。
-     *
-     * @since 1.43
-     */
-    @JvmStatic
-    @WorkerThread
-    fun queryTransactionByHash(transactionHash: String) : Boolean {
-        return queryTransactionByHash(transactionHash, Web3Modal.getAccount()?.chain?.rpcUrl ?: DEFAULT_RPC_ETHEREUM)
-    }
-
-    /**
      * 查询区块链链上数据，该笔订单是否被区块链成功确认，自定义json-rpc地址。
-     *
-     * @since 1.43
+     * @since 2.0
      */
     @JvmStatic
     @WorkerThread
-    fun queryTransactionByHash(transactionHash: String, jsonRpcUrl: String) : Boolean {
+    fun queryTransaction(transactionHash: String, jsonRpcUrl: String) : Boolean {
         val web3j: Web3j = Web3j.build(HttpService(jsonRpcUrl))
         val receipt: TransactionReceipt? =
             web3j.ethGetTransactionReceipt(transactionHash).send().result
@@ -81,8 +55,7 @@ object PayUtils {
 
     /**
      * 查询区块链链上数据，该笔订单的交易详情，使用当前选中的链的json-rpc地址，默认使用以太坊的。
-     *
-     * @since 1.43
+     * @since 2.0
      */
     @JvmStatic
     @WorkerThread
@@ -92,8 +65,7 @@ object PayUtils {
 
     /**
      * 查询区块链链上数据，该笔订单的交易详情，自定义json-rpc地址。
-     *
-     * @since 1.43
+     * @since 2.0
      */
     @JvmStatic
     @WorkerThread

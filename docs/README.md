@@ -18,7 +18,7 @@ Add the following code to the `build.gradle.kts` file in the `app` module:
 dependencies {
     // The extension package must be used with the main framework "dora"
     implementation("com.github.dora4:dora:1.3.14")
-    implementation("com.github.dora4:dora-walletconnect-support:1.160")
+    implementation("com.github.dora4:dora-walletconnect-support:2.0")
 }
 ```
 
@@ -47,15 +47,15 @@ val chains: Array<Modal.Model.Chain> = arrayOf(
             Web3ModalChainsPresets.ethChains["137"]!!,    // Supports Polygon
             Web3ModalChainsPresets.ethChains["42161"]!!   // Supports Arbitrum
 )
-DoraTrade.init(this, "App Name", "App Description", "https://yourdomain.com", chains)
+DoraFund.init(this, "App Name", "App Description", "https://yourdomain.com", chains)
 ```
 Establish a connection with the cold wallet in an `Activity`:
 ```kotlin
-DoraTrade.connectWallet(this)
+DoraFund.connectWallet(this)
 ```
 (Optional) If only a single `Activity` handles payments, you can set a cold wallet payment listener in that `Activity`. If `PayListener` is registered in the `init()` method of the `Application`, you can send messages in the callback to notify the processing interface.
 ```kotlin
-DoraTrade.setPayListener(object : DoraTrade.PayListener {
+DoraFund.setPayListener(object : DoraFund.PayListener {
     override fun onSendTransactionToBlockchain(orderId: String, transactionHash: String) {
         // Transaction sent to the blockchain, pending confirmation
     }
@@ -67,14 +67,14 @@ DoraTrade.setPayListener(object : DoraTrade.PayListener {
 ```
 Construct order data to proceed with the payment:
 ```kotlin
-DoraTrade.pay(this,
+DoraFund.pay(this,
                 "Enter the DoraPay accessKey, e.g., AyAD8J9M0R7H",
                 "Enter the 32-character DoraPay secretKey. Do not share it with anyone, including our staff",
                 "Enter the order information, so the framework can display a popup informing the user about the payment",
                 "Enter the product details, so the framework can display a popup informing the user about the payment",
                 "Enter the recipient's wallet address, e.g., 0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000",
                 0.01,
-                object: DoraTrade.OrderListener {
+                object: DoraFund.OrderListener {
                     override fun onPrintOrder(orderId: String, chain: Modal.Model.Chain, value: Double) {
                         // Record this order transaction ID for future payment status queries
                     }
@@ -83,19 +83,19 @@ DoraTrade.pay(this,
 Query the order payment status:
 ```kotlin
 // Query the transaction of the currently selected chain  
-PayUtils.queryTransactionByHash("Fill in the transaction hash of this order")
+PayUtils.queryTransaction("Fill in the transaction hash of this order")
 // Query the transaction on the Ethereum mainnet  
-PayUtils.queryTransactionByHash("Fill in the transaction hash of this order", PayUtils.DEFAULT_RPC_ETHEREUM)
+PayUtils.queryTransaction("Fill in the transaction hash of this order", PayUtils.DEFAULT_RPC_ETHEREUM)
 // Query the transaction on the Polygon mainnet  
-PayUtils.queryTransactionByHash("Fill in the transaction hash of this order", PayUtils.DEFAULT_RPC_POLYGON)
+PayUtils.queryTransaction("Fill in the transaction hash of this order", PayUtils.DEFAULT_RPC_POLYGON)
 // Query the transaction on the Arbitrum mainnet  
-PayUtils.queryTransactionByHash("Fill in the transaction hash of this order", PayUtils.DEFAULT_RPC_ARBITRUM)
+PayUtils.queryTransaction("Fill in the transaction hash of this order", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
 Add proguard rules:
 ```pro
 -keep class org.json.JSONObject { *; }
--keep class dora.trade.DoraTrade { *; }
--keep class dora.trade.DoraTrade$PayListener { *; }
+-keep class dora.pay.DoraFund { *; }
+-keep class dora.pay.DoraFund$PayListener { *; }
 -keep class org.web3j.** { *; }
 -keep class com.walletconnect.web3.modal.client.Web3Modal { *; }
 -keep class com.walletconnect.web3.modal.client.models.request.Request { *; }
