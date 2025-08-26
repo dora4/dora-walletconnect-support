@@ -21,17 +21,20 @@ object PayUtils {
     const val DEFAULT_RPC_OKX = "https://exchainrpc.okex.org"
 
     /**
-     * 转换double代币数量为十六进制字符串。
+     * Convert a double token amount to a hexadecimal string.
      * @since 2.0
      */
     @JvmStatic
     fun convertToHexWei(amount: Double): String {
         val weiValue = BigDecimal(amount).multiply(BigDecimal.TEN.pow(18)).toBigInteger()
-        return "0x" + weiValue.toString(16) // 转换为十六进制字符串
+        return "0x" + weiValue.toString(16) // convert to hexadecimal string
     }
 
     /**
-     * 查询区块链链上数据，该笔订单是否被区块链成功确认，使用当前选中的链的json-rpc地址，默认使用以太坊的。
+     * Query blockchain data to check whether the transaction
+     * has been successfully confirmed on-chain.
+     * Uses the currently selected chain's JSON-RPC URL,
+     * defaults to Ethereum if not available.
      * @since 2.0
      */
     @JvmStatic
@@ -41,7 +44,9 @@ object PayUtils {
     }
 
     /**
-     * 查询区块链链上数据，该笔订单是否被区块链成功确认，自定义json-rpc地址。
+     * Query blockchain data to check whether the transaction
+     * has been successfully confirmed on-chain,
+     * using a custom JSON-RPC URL.
      * @since 2.0
      */
     @JvmStatic
@@ -54,7 +59,10 @@ object PayUtils {
     }
 
     /**
-     * 查询区块链链上数据，该笔订单的交易详情，使用当前选中的链的json-rpc地址，默认使用以太坊的。
+     * Query blockchain data to get transaction details
+     * for the given transaction hash.
+     * Uses the currently selected chain's JSON-RPC URL,
+     * defaults to Ethereum if not available.
      * @since 2.0
      */
     @JvmStatic
@@ -64,7 +72,9 @@ object PayUtils {
     }
 
     /**
-     * 查询区块链链上数据，该笔订单的交易详情，自定义json-rpc地址。
+     * Query blockchain data to get transaction details
+     * for the given transaction hash,
+     * using a custom JSON-RPC URL.
      * @since 2.0
      */
     @JvmStatic

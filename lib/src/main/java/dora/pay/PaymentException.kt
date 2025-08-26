@@ -1,7 +1,7 @@
 package dora.pay
 
 /**
- * 支付异常。
+ * Exception thrown during the payment process.
  * @since 2.0
  */
 class PaymentException(override val message: String) : RuntimeException(message) {

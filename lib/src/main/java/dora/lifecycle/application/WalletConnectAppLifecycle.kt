@@ -10,7 +10,7 @@ class WalletConnectAppLifecycle : ApplicationLifecycleCallbacks {
     }
 
     override fun onCreate(application: Application) {
-        // 建议在正式环境加入防调试
+        // It is recommended to enable anti-debugging in production environments
         AntiDebugMonitor.startMonitoring()
     }
 

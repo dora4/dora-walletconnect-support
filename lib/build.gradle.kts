@@ -16,10 +16,10 @@ android {
 //            }
 //        }
         ndk {
-            abiFilters.add("arm64-v8a") // 主流手机
-            abiFilters.add("armeabi-v7a") // 电视盒子
-//            abiFilters.add("x86")
-//            abiFilters.add("x86_64")
+            abiFilters.add("arm64-v8a") // mainstream smartphones
+            abiFilters.add("armeabi-v7a") // TV boxes
+//    abiFilters.add("x86")
+//    abiFilters.add("x86_64")
         }
     }
 
@@ -41,18 +41,24 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    sourceSets {
-        getByName("main") {
-            jniLibs.srcDir("src/main/jniLibs")
+    // Read build parameter from gradle.properties or command line
+    val buildNativeLibs: Boolean =
+        project.findProperty("buildNativeLibs")?.toString()?.toBoolean() ?: false
+
+    if (buildNativeLibs) {
+        externalNativeBuild {
+            cmake {
+                path = file("src/main/cpp/CMakeLists.txt")
+                version = "3.22.1"
+            }
+        }
+    } else {
+        sourceSets {
+            getByName("main") {
+                jniLibs.srcDir("src/main/jniLibs")
+            }
         }
     }
-
-//    externalNativeBuild {
-//        cmake {
-//            path = file("src/main/cpp/CMakeLists.txt")
-//            version = "3.22.1"
-//        }
-//    }
 }
 
 dependencies {

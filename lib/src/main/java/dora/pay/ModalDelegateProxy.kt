@@ -4,7 +4,8 @@ import com.walletconnect.web3.modal.client.Modal
 import com.walletconnect.web3.modal.client.Web3Modal
 
 /**
- * 支付生命周期处理。
+ * Handles the lifecycle of the payment process.
+ * @since 2.0
  */
 class ModalDelegateProxy(val payListener: DoraFund.PayListener? = null) : Web3Modal.ModalDelegate {
 

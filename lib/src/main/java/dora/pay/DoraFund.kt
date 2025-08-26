@@ -27,91 +27,91 @@ import dora.widget.DoraAlertDialog
 object DoraFund {
 
     /**
-     * 冷钱包支付的回调接口。
+     * Callback interface for cold wallet payments.
      * @since 2.0
      */
     private var payListener: PayListener? = null
 
     /**
-     * 应用的基本信息。
+     * Basic application information.
      * @since 2.0
      */
     private lateinit var appMetaData: Core.Model.AppMetaData
 
     /**
-     * 钱包事件的回调对象。
+     * Callback object for wallet events.
      * @since 2.0
      */
     private lateinit var modalDelegate: ModalDelegateProxy
 
     /**
-     * SDK默认的主题色，天蓝。
+     * Default SDK theme color, sky blue.
      * @since 2.0
      */
     private const val SDK_THEME_COLOR = "#389CFF"
 
     /**
-     * 主题色，用于弹窗的主色调。
+     * Theme color, used as the primary color of dialogs/popups.
      * @since 2.0
      */
     private var themeColor: Int = Color.parseColor(SDK_THEME_COLOR)
 
     /**
-     * 平台的ERC20钱包地址。
+     * Platform ERC20 wallet address.
      * @since 2.0
      */
     private const val ERC20_ADDRESS = "0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000"
 
     /**
-     * 成功。
+     * Success.
      * @since 2.0
      */
     private const val STATUS_CODE_OK = 0
 
     /**
-     * 访问密钥无效。
+     * Invalid access key.
      * @since 2.0
      */
     private const val STATUS_CODE_ACCESS_KEY_IS_INVALID = -1
 
     /**
-     * 支付调用失败。
+     * Payment invocation failed.
      * @since 2.0
      */
     private const val STATUS_CODE_PAYMENT_ERROR = -2
 
     /**
-     * 单笔额度超额。
+     * Single transaction limit exceeded.
      * @since 2.0
      */
     private const val STATUS_CODE_SINGLE_TRANSACTION_LIMIT = -3
 
     /**
-     * 月额度超额。
+     * Monthly limit exceeded.
      * @since 2.0
      */
     private const val STATUS_CODE_MONTHLY_LIMIT = -4
 
     /**
-     * 不支持的chainId。
+     * Unsupported chainId.
      * @since 2.0
      */
     private const val STATUS_CODE_UNSUPPORTED_CHAIN_ID = -5
 
     /**
-     * 代币价格获取失败。
+     * Failed to fetch token price.
      * @since 2.0
      */
     private const val STATUS_CODE_FAILED_TO_FETCH_TOKEN_PRICE = -6
 
     /**
-     * 访问密钥已过期。
+     * Access key has expired.
      * @since 2.0
      */
     private const val STATUS_CODE_ACCESS_KEY_IS_EXPIRED = -7
 
     /**
-     * 朵拉支付初始化应用元信息。
+     * Initialize DoraFund with application metadata.
      * @since 2.0
      */
     @JvmOverloads
@@ -126,9 +126,9 @@ object DoraFund {
     ) {
         System.loadLibrary("pay-core")
         appMetaData = nativeInitWalletConnect(application, appName, appDesc, domainUrl, supportChains, {
-             Log.e("initWalletConnect", it.toString())
+            Log.e("initWalletConnect", it.toString())
         }, {
-             Log.e("initWalletConnect", it.toString())
+            Log.e("initWalletConnect", it.toString())
         }, {})
         if (themeColor != null) {
             this.themeColor = themeColor
@@ -137,7 +137,7 @@ object DoraFund {
     }
 
     /**
-     * 设置主题色，如用于换肤等场景。
+     * Set theme color, e.g., for skin-switching scenarios.
      * @since 2.0
      */
     fun setThemeColor(@ColorInt color: Int) {
@@ -145,7 +145,7 @@ object DoraFund {
     }
 
     /**
-     * 获取当前的主题色。
+     * Get the current theme color.
      * @since 2.0
      */
     fun getThemeColor(): Int {
@@ -153,7 +153,7 @@ object DoraFund {
     }
 
     /**
-     * 设置支付监听器。
+     * Set the payment listener.
      * @since 2.0
      */
     fun setPayListener(listener: PayListener) {
@@ -162,7 +162,7 @@ object DoraFund {
     }
 
     /**
-     * 初始化钱包连接配置。
+     * Initialize WalletConnect configuration.
      * @since 2.0
      */
     private external fun nativeInitWalletConnect(
@@ -177,7 +177,7 @@ object DoraFund {
     ) : Core.Model.AppMetaData
 
     /**
-     * 初始化支付监听器。
+     * Initialize the payment listener.
      * @since 2.0
      */
     private fun initPayListener() {
@@ -186,13 +186,13 @@ object DoraFund {
     }
 
     /**
-     * 获取底层返回的推荐的Gas参数。
+     * Get recommended Gas parameters from native layer.
      * @since 2.0
      */
     private external fun nativeGetGasParameters(): Array<String>
 
     /**
-     * 检测钱包是否已连接上。
+     * Check if the wallet is connected.
      * @since 2.0
      */
     fun isWalletConnected() : Boolean {
@@ -200,7 +200,7 @@ object DoraFund {
     }
 
     /**
-     * 与冷钱包建立连接。
+     * Connect to cold wallet.
      * @since 2.0
      */
     fun connectWallet(context: Context) {
@@ -208,7 +208,7 @@ object DoraFund {
     }
 
     /**
-     * 与冷钱包建立连接，用于连接上钱包后立马支付的场景。
+     * Connect to cold wallet and pay immediately after connection.
      * @since 2.0
      */
     fun connectWallet(activity: Activity, requestCode: Int) {
@@ -216,7 +216,7 @@ object DoraFund {
     }
 
     /**
-     * 断开与冷钱包的连接。
+     * Disconnect from cold wallet.
      * @since 2.0
      */
     fun disconnectWallet() {
@@ -224,7 +224,7 @@ object DoraFund {
     }
 
     /**
-     * 断开与冷钱包的连接。
+     * Disconnect from cold wallet.
      * @since 2.0
      */
     fun disconnectWallet(onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
@@ -234,7 +234,7 @@ object DoraFund {
     }
 
     /**
-     * 捐赠，无需支付结果的回调监听。
+     * Donate, without requiring a payment result callback.
      * @since 2.0
      */
     fun donateProxy(
@@ -268,7 +268,7 @@ object DoraFund {
     }
 
     /**
-     * 捐赠，无需支付结果的回调监听。
+     * Donate, without requiring a payment result callback.
      * @since 2.0
      */
     fun donate(
@@ -303,7 +303,8 @@ object DoraFund {
     }
 
     /**
-     * 开始支付，使用默认的gasLimit和gasPrice，基础版访问密钥使用它。
+     * Start payment with default gasLimit and gasPrice.
+     * For basic access keys, use this method.
      * @since 2.0
      */
     fun payProxy(
@@ -331,7 +332,7 @@ object DoraFund {
     }
 
     /**
-     * 开始支付，使用默认的gasLimit和gasPrice。
+     * Start payment with default gasLimit and gasPrice.
      * @since 2.0
      */
     fun pay(
@@ -360,7 +361,7 @@ object DoraFund {
     }
 
     /**
-     * 开始支付。
+     * Start payment.
      * @since 2.0
      */
     fun pay(
@@ -404,7 +405,7 @@ object DoraFund {
     }
 
     /**
-     * 发送交易请求。
+     * Send transaction request.
      * @since 2.0
      */
     private fun sendTransactionRequest(
@@ -465,7 +466,7 @@ object DoraFund {
     }
 
     /**
-     * 创建VPN通知通道。
+     * Create VPN notification channels.
      * @since 2.0
      */
     @RequiresApi(Build.VERSION_CODES.O)
@@ -507,19 +508,19 @@ object DoraFund {
     }
 
     /**
-     * 连接VPN。
+     * Connect to VPN.
      * @since 2.0
      */
     external fun connectVPN(context: Context, accessKey: String, secretKey: String)
 
     /**
-     * 断开VPN连接。
+     * Disconnect VPN.
      * @since 2.0
      */
     external fun disconnectVPN(context: Context)
 
     /**
-     * 底层处理发送交易请求。
+     * Native layer handles sending transaction requests.
      * @since 2.0
      */
     private external fun nativeSendTransactionRequest(
@@ -536,32 +537,32 @@ object DoraFund {
     ): Int
 
     /**
-     * 调用支付时，用于生成订单。
+     * When invoking payment, used to generate an order.
      * @since 2.0
      */
     interface OrderListener {
 
         /**
-         * 生成该笔订单的交易订单号。
+         * Generate transaction order ID for this payment.
          * @since 2.0
          */
         fun onPrintOrder(orderId: String, chain: Modal.Model.Chain, value: Double)
     }
 
     /**
-     * 冷钱包支付的回调接口。
+     * Callback interface for cold wallet payments.
      * @since 2.0
      */
     interface PayListener {
 
         /**
-         * 转账消息准备上链。
+         * Transfer message prepared for blockchain.
          * @since 2.0
          */
         fun onSendTransactionToBlockchain(orderId: String, transactionHash: String)
 
         /**
-         * 支付失败。
+         * Payment failure.
          * @since 2.0
          */
         fun onPayFailure(orderId: String, msg: String)
