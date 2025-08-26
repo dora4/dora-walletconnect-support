@@ -435,28 +435,28 @@ object DoraFund {
             }
             val status = nativeSendTransactionRequest(context, accessKey, secretKey, from, to, value, gasLimit, gasPrice, onSuccess, onError)
             when (status) {
-                STATUS_CODE_OK -> {  // 成功
+                STATUS_CODE_OK -> {
                     Log.i("sendTransactionRequest", "OK.")
                 }
-                STATUS_CODE_ACCESS_KEY_IS_INVALID -> { // 访问密钥无效
+                STATUS_CODE_ACCESS_KEY_IS_INVALID -> {
                     Log.e("sendTransactionRequest", "The access key is invalid.")
                 }
-                STATUS_CODE_PAYMENT_ERROR -> { // 支付调用失败
+                STATUS_CODE_PAYMENT_ERROR -> {
                     Log.e("sendTransactionRequest", "Payment error, please try again.")
                 }
-                STATUS_CODE_SINGLE_TRANSACTION_LIMIT -> { // 单笔额度超额
+                STATUS_CODE_SINGLE_TRANSACTION_LIMIT -> {
                     Log.e("sendTransactionRequest", "Single transaction limit exceeded.")
                 }
-                STATUS_CODE_MONTHLY_LIMIT -> { // 月额度超额
+                STATUS_CODE_MONTHLY_LIMIT -> {
                     Log.e("sendTransactionRequest", "Monthly limit exceeded.")
                 }
-                STATUS_CODE_UNSUPPORTED_CHAIN_ID -> { // 不支持的chainId
+                STATUS_CODE_UNSUPPORTED_CHAIN_ID -> {
                     Log.e("sendTransactionRequest", "Unsupported chainId.")
                 }
-                STATUS_CODE_FAILED_TO_FETCH_TOKEN_PRICE -> { // 代币价格获取失败
+                STATUS_CODE_FAILED_TO_FETCH_TOKEN_PRICE -> {
                     Log.e("sendTransactionRequest", "Failed to fetch token price.")
                 }
-                STATUS_CODE_ACCESS_KEY_IS_EXPIRED -> { // 访问密钥已过期
+                STATUS_CODE_ACCESS_KEY_IS_EXPIRED -> {
                     Log.e("sendTransactionRequest", "The access key is expired.")
                 }
             }
