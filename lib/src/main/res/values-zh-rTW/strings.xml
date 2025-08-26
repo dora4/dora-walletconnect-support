@@ -5,4 +5,21 @@
     <string name="payment_failed">支付失敗</string>
     <string name="please_complete_the_payment_in_the_wallet">請在錢包中完成付款。</string>
     <string name="dorafund_provides_technical_support">dorafund提供技術支持</string>
+
+    <string name="notification_title">Dora Fund專用信道</string>
+    <string name="building_configration">正在準備連接到專用信道…</string>
+    <string name="notification_title_notconnect">無法連接到專用信道</string>
+    <string name="state_connecting">連接中</string>
+    <string name="cancel_connection">斷開</string>
+    <string name="reconnect">重連</string>
+    <string name="state_wait">等待網關回覆</string>
+    <string name="state_auth">認證中</string>
+    <string name="state_assign_ip">正在分配IP地址</string>
+    <string name="state_add_routes">正在添加路由</string>
+    <string name="state_get_config">正在獲取信道配置</string>
+    <string name="pauseVPN">暫停</string>
+    <string name="resumevpn">恢復</string>
+    <string name="warm_prompt">溫馨提示</string>
+    <string name="state_userpause">專用信道已由使用者暫停</string>
+    <string name="cancel_connection_query">斷開Dora Fund專用信道？</string>
 </resources>

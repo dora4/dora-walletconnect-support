@@ -5,4 +5,21 @@
     <string name="payment_failed">Thanh toán không thành công</string>
     <string name="please_complete_the_payment_in_the_wallet">Vui lòng hoàn tất thanh toán trong ví.</string>
     <string name="dorafund_provides_technical_support">dorafund cung cấp hỗ trợ kỹ thuật</string>
+
+    <string name="notification_title">Kênh chuyên dụng Dora Fund</string>
+    <string name="building_configration">Đang chuẩn bị kết nối đến kênh chuyên dụng…</string>
+    <string name="notification_title_notconnect">Không thể kết nối đến kênh chuyên dụng</string>
+    <string name="state_connecting">Đang kết nối</string>
+    <string name="cancel_connection">Ngắt kết nối</string>
+    <string name="reconnect">Kết nối lại</string>
+    <string name="state_wait">Đang chờ phản hồi từ cổng</string>
+    <string name="state_auth">Đang xác thực</string>
+    <string name="state_assign_ip">Đang cấp phát địa chỉ IP</string>
+    <string name="state_add_routes">Đang thêm tuyến đường</string>
+    <string name="state_get_config">Đang lấy cấu hình kênh</string>
+    <string name="pauseVPN">Tạm dừng</string>
+    <string name="resumevpn">Tiếp tục</string>
+    <string name="warm_prompt">Lời nhắc thân thiện</string>
+    <string name="state_userpause">Kênh chuyên dụng đã bị người dùng tạm dừng</string>
+    <string name="cancel_connection_query">Ngắt kết nối kênh chuyên dụng Dora Fund?</string>
 </resources>

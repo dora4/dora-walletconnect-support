@@ -5,4 +5,21 @@
     <string name="payment_failed">결제 실패</string>
     <string name="please_complete_the_payment_in_the_wallet">지갑에서 결제를 완료해 주세요.</string>
     <string name="dorafund_provides_technical_support">dorafund는 기술 지원을 제공합니다</string>
+
+    <string name="notification_title">Dora Fund 전용 채널</string>
+    <string name="building_configration">전용 채널에 연결 준비 중…</string>
+    <string name="notification_title_notconnect">전용 채널에 연결할 수 없음</string>
+    <string name="state_connecting">연결 중</string>
+    <string name="cancel_connection">연결 해제</string>
+    <string name="reconnect">재연결</string>
+    <string name="state_wait">게이트웨이 응답 대기 중</string>
+    <string name="state_auth">인증 중</string>
+    <string name="state_assign_ip">IP 주소 할당 중</string>
+    <string name="state_add_routes">경로 추가 중</string>
+    <string name="state_get_config">채널 구성 가져오는 중</string>
+    <string name="pauseVPN">일시 중지</string>
+    <string name="resumevpn">다시 시작</string>
+    <string name="warm_prompt">따뜻한 알림</string>
+    <string name="state_userpause">전용 채널이 사용자에 의해 일시 중지됨</string>
+    <string name="cancel_connection_query">Dora Fund 전용 채널 연결을 해제하시겠습니까?</string>
 </resources>

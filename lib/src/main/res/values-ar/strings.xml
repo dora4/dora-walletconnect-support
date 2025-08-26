@@ -5,4 +5,21 @@
     <string name="payment_failed">فشل الدفع</string>
     <string name="please_complete_the_payment_in_the_wallet">يرجى إكمال الدفع في المحفظة.</string>
     <string name="dorafund_provides_technical_support">توفر دورافاند الدعم الفني</string>
+
+    <string name="notification_title">قناة Dora Fund المخصصة</string>
+    <string name="building_configration">جارٍ التحضير للاتصال بالقناة المخصصة…</string>
+    <string name="notification_title_notconnect">تعذر الاتصال بالقناة المخصصة</string>
+    <string name="state_connecting">جارٍ الاتصال</string>
+    <string name="cancel_connection">قطع الاتصال</string>
+    <string name="reconnect">إعادة الاتصال</string>
+    <string name="state_wait">في انتظار استجابة البوابة</string>
+    <string name="state_auth">جارٍ التحقق</string>
+    <string name="state_assign_ip">جارٍ تخصيص عنوان IP</string>
+    <string name="state_add_routes">جارٍ إضافة المسارات</string>
+    <string name="state_get_config">جارٍ جلب إعدادات القناة</string>
+    <string name="pauseVPN">إيقاف مؤقت</string>
+    <string name="resumevpn">استئناف</string>
+    <string name="warm_prompt">تذكير ودي</string>
+    <string name="state_userpause">تم إيقاف القناة المخصصة مؤقتًا بواسطة المستخدم</string>
+    <string name="cancel_connection_query">قطع الاتصال بالقناة المخصصة Dora Fund؟</string>
 </resources>

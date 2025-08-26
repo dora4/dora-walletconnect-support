@@ -5,4 +5,21 @@
     <string name="payment_failed">Платеж не прошёл</string>
     <string name="please_complete_the_payment_in_the_wallet">Пожалуйста, завершите оплату в кошельке.</string>
     <string name="dorafund_provides_technical_support">dorafund оказывает техническую поддержку</string>
+
+    <string name="notification_title">Специальный канал Dora Fund</string>
+    <string name="building_configration">Подготовка к подключению к специальному каналу…</string>
+    <string name="notification_title_notconnect">Не удалось подключиться к специальному каналу</string>
+    <string name="state_connecting">Подключение</string>
+    <string name="cancel_connection">Отключить</string>
+    <string name="reconnect">Переподключить</string>
+    <string name="state_wait">Ожидание ответа от шлюза</string>
+    <string name="state_auth">Аутентификация</string>
+    <string name="state_assign_ip">Назначение IP-адреса</string>
+    <string name="state_add_routes">Добавление маршрутов</string>
+    <string name="state_get_config">Получение конфигурации канала</string>
+    <string name="pauseVPN">Пауза</string>
+    <string name="resumevpn">Возобновить</string>
+    <string name="warm_prompt">Дружеское напоминание</string>
+    <string name="state_userpause">Специальный канал был приостановлен пользователем</string>
+    <string name="cancel_connection_query">Отключить специальный канал Dora Fund?</string>
 </resources>

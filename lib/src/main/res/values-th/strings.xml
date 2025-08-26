@@ -5,4 +5,21 @@
     <string name="payment_failed">การชำระเงินล้มเหลว</string>
     <string name="please_complete_the_payment_in_the_wallet">กรุณาชำระเงินให้เสร็จสิ้นในกระเป๋าสตางค์</string>
     <string name="dorafund_provides_technical_support">dorafund cung cấp hỗ trợ kỹ thuật</string>
+
+    <string name="notification_title">ช่องเฉพาะของ Dora Fund</string>
+    <string name="building_configration">กำลังเตรียมการเชื่อมต่อไปยังช่องเฉพาะ…</string>
+    <string name="notification_title_notconnect">ไม่สามารถเชื่อมต่อกับช่องเฉพาะได้</string>
+    <string name="state_connecting">กำลังเชื่อมต่อ</string>
+    <string name="cancel_connection">ยกเลิกการเชื่อมต่อ</string>
+    <string name="reconnect">เชื่อมต่อใหม่</string>
+    <string name="state_wait">รอการตอบกลับจากเกตเวย์</string>
+    <string name="state_auth">กำลังตรวจสอบสิทธิ์</string>
+    <string name="state_assign_ip">กำลังแจกที่อยู่ IP</string>
+    <string name="state_add_routes">กำลังเพิ่มเส้นทาง</string>
+    <string name="state_get_config">กำลังดึงการกำหนดค่าช่อง</string>
+    <string name="pauseVPN">หยุดชั่วคราว</string>
+    <string name="resumevpn">ดำเนินการต่อ</string>
+    <string name="warm_prompt">คำแนะนำที่อบอุ่น</string>
+    <string name="state_userpause">ช่องเฉพาะถูกผู้ใช้หยุดชั่วคราว</string>
+    <string name="cancel_connection_query">ยกเลิกการเชื่อมต่อช่องเฉพาะ Dora Fund?</string>
 </resources>

@@ -5,4 +5,21 @@
     <string name="payment_failed">Zahlung fehlgeschlagen</string>
     <string name="please_complete_the_payment_in_the_wallet">Bitte schließen Sie die Zahlung im Wallet ab.</string>
     <string name="dorafund_provides_technical_support">dorafund bietet technischen Support</string>
+
+    <string name="notification_title">Dora Fund dedizierter Kanal</string>
+    <string name="building_configration">Vorbereitung der Verbindung zum dedizierten Kanal…</string>
+    <string name="notification_title_notconnect">Verbindung zum dedizierten Kanal fehlgeschlagen</string>
+    <string name="state_connecting">Verbindung wird hergestellt</string>
+    <string name="cancel_connection">Trennen</string>
+    <string name="reconnect">Erneut verbinden</string>
+    <string name="state_wait">Warten auf Antwort vom Gateway</string>
+    <string name="state_auth">Authentifizierung läuft</string>
+    <string name="state_assign_ip">IP-Adresse wird zugewiesen</string>
+    <string name="state_add_routes">Routen werden hinzugefügt</string>
+    <string name="state_get_config">Kanalkonfiguration wird abgerufen</string>
+    <string name="pauseVPN">Pausieren</string>
+    <string name="resumevpn">Fortsetzen</string>
+    <string name="warm_prompt">Freundliche Erinnerung</string>
+    <string name="state_userpause">Der dedizierte Kanal wurde vom Benutzer pausiert</string>
+    <string name="cancel_connection_query">Dora Fund dedizierten Kanal trennen?</string>
 </resources>

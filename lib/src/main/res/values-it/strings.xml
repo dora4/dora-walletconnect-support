@@ -5,4 +5,21 @@
     <string name="payment_failed">Pagamento non riuscito</string>
     <string name="please_complete_the_payment_in_the_wallet">Completa il pagamento nel portafoglio.</string>
     <string name="dorafund_provides_technical_support">dorafund fornisce supporto tecnico</string>
+
+    <string name="notification_title">Canale dedicato Dora Fund</string>
+    <string name="building_configration">Preparazione alla connessione al canale dedicato…</string>
+    <string name="notification_title_notconnect">Impossibile connettersi al canale dedicato</string>
+    <string name="state_connecting">Connessione in corso</string>
+    <string name="cancel_connection">Disconnetti</string>
+    <string name="reconnect">Riconnetti</string>
+    <string name="state_wait">In attesa di risposta dal gateway</string>
+    <string name="state_auth">Autenticazione in corso</string>
+    <string name="state_assign_ip">Assegnazione dell’indirizzo IP</string>
+    <string name="state_add_routes">Aggiunta delle rotte</string>
+    <string name="state_get_config">Recupero configurazione del canale</string>
+    <string name="pauseVPN">Pausa</string>
+    <string name="resumevpn">Riprendi</string>
+    <string name="warm_prompt">Promemoria amichevole</string>
+    <string name="state_userpause">Il canale dedicato è stato messo in pausa dall’utente</string>
+    <string name="cancel_connection_query">Disconnettere il canale dedicato Dora Fund?</string>
 </resources>

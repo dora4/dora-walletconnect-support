@@ -5,4 +5,21 @@
     <string name="payment_failed">支払いに失敗しました</string>
     <string name="please_complete_the_payment_in_the_wallet">ウォレット内でお支払いを完了してください。</string>
     <string name="dorafund_provides_technical_support">dorafundは技術サポートを提供します</string>
+
+    <string name="notification_title">Dora Fund専用チャネル</string>
+    <string name="building_configration">専用チャネルへの接続を準備中…</string>
+    <string name="notification_title_notconnect">専用チャネルに接続できません</string>
+    <string name="state_connecting">接続中</string>
+    <string name="cancel_connection">切断</string>
+    <string name="reconnect">再接続</string>
+    <string name="state_wait">ゲートウェイからの応答を待機中</string>
+    <string name="state_auth">認証中</string>
+    <string name="state_assign_ip">IPアドレスを割り当て中</string>
+    <string name="state_add_routes">ルートを追加中</string>
+    <string name="state_get_config">チャネル設定を取得中</string>
+    <string name="pauseVPN">一時停止</string>
+    <string name="resumevpn">再開</string>
+    <string name="warm_prompt">ご案内</string>
+    <string name="state_userpause">専用チャネルはユーザーによって一時停止されました</string>
+    <string name="cancel_connection_query">Dora Fund専用チャネルを切断しますか？</string>
 </resources>
