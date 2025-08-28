@@ -42,23 +42,23 @@ android {
     }
 
     // Read build parameter from gradle.properties or command line
-//    val buildNativeLibs: Boolean =
-//        project.findProperty("buildNativeLibs")?.toString()?.toBoolean() ?: false
-//
-//    if (buildNativeLibs) {
-//        externalNativeBuild {
-//            cmake {
-//                path = file("src/main/cpp/CMakeLists.txt")
-//                version = "3.22.1"
-//            }
-//        }
-//    } else {
+    val buildNativeLibs: Boolean =
+        project.findProperty("buildNativeLibs")?.toString()?.toBoolean() ?: false
+
+    if (buildNativeLibs) {
+        externalNativeBuild {
+            cmake {
+                path = file("src/main/cpp/CMakeLists.txt")
+                version = "3.22.1"
+            }
+        }
+    } else {
         sourceSets {
             getByName("main") {
                 jniLibs.srcDir("src/main/jniLibs")
             }
         }
-//    }
+    }
 }
 
 dependencies {
@@ -78,7 +78,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.dora4"
                 artifactId = "dora-walletconnect-support"
-                version = "2.0.3"
+                version = "2.0.4"
             }
         }
     }
