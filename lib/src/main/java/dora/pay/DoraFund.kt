@@ -9,7 +9,6 @@ import android.graphics.Color
 import android.os.Build
 import android.util.Log
 import androidx.annotation.ColorInt
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.walletconnect.android.Core
 import com.walletconnect.web3.modal.client.Modal
