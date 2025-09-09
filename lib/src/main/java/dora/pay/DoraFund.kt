@@ -10,6 +10,7 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.ColorInt
 import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
 import com.walletconnect.android.Core
 import com.walletconnect.web3.modal.client.Modal
 import com.walletconnect.web3.modal.client.Web3Modal
@@ -109,6 +110,12 @@ object DoraFund {
      * @since 2.0
      */
     private const val STATUS_CODE_ACCESS_KEY_IS_EXPIRED = -7
+
+    /**
+     * VPN notification ID.
+     * @since 2.0
+     */
+    private const val NOTIFICATION_ID = 1001
 
     /**
      * Initialize DoraFund with application metadata.
@@ -466,45 +473,57 @@ object DoraFund {
     }
 
     /**
-     * Create VPN notification channels.
+     * Create VPN notification channels, compatible with all API levels.
      * @since 2.0
      */
-    @RequiresApi(Build.VERSION_CODES.O)
     fun createNotificationChannels(context: Context) {
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        var name = context.getString(R.string.channel_name_background)
-        var channel = NotificationChannel(
-            OpenVPNService.NOTIFICATION_CHANNEL_BG_ID,
-            name,
-            NotificationManager.IMPORTANCE_MIN
-        ).apply {
-            description = context.getString(R.string.channel_description_background)
-            enableLights(false)
-            lightColor = Color.DKGRAY
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            var name = context.getString(R.string.channel_name_background)
+            var channel = NotificationChannel(
+                OpenVPNService.NOTIFICATION_CHANNEL_BG_ID,
+                name,
+                NotificationManager.IMPORTANCE_MIN
+            ).apply {
+                description = context.getString(R.string.channel_description_background)
+                enableLights(false)
+                lightColor = Color.DKGRAY
+            }
+            notificationManager.createNotificationChannel(channel)
+
+            name = context.getString(R.string.channel_name_status)
+            channel = NotificationChannel(
+                OpenVPNService.NOTIFICATION_CHANNEL_NEWSTATUS_ID,
+                name,
+                NotificationManager.IMPORTANCE_LOW
+            ).apply {
+                description = context.getString(R.string.channel_description_status)
+                enableLights(true)
+                lightColor = Color.BLUE
+            }
+            notificationManager.createNotificationChannel(channel)
+
+            name = context.getString(R.string.channel_name_userreq)
+            channel = NotificationChannel(
+                OpenVPNService.NOTIFICATION_CHANNEL_USERREQ_ID,
+                name,
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = context.getString(R.string.channel_description_userreq)
+                enableVibration(true)
+                lightColor = Color.CYAN
+            }
+            notificationManager.createNotificationChannel(channel)
+        } else {
+            val notification = NotificationCompat.Builder(context)
+                .setContentTitle(context.getString(R.string.channel_name_status))
+                .setContentText(context.getString(R.string.channel_description_status))
+                .setSmallIcon(android.R.drawable.stat_sys_warning)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .build()
+            notificationManager.notify(NOTIFICATION_ID, notification)
         }
-        notificationManager.createNotificationChannel(channel)
-        name = context.getString(R.string.channel_name_status)
-        channel = NotificationChannel(
-            OpenVPNService.NOTIFICATION_CHANNEL_NEWSTATUS_ID,
-            name,
-            NotificationManager.IMPORTANCE_LOW
-        ).apply {
-            description = context.getString(R.string.channel_description_status)
-            enableLights(true)
-            lightColor = Color.BLUE
-        }
-        notificationManager.createNotificationChannel(channel)
-        name = context.getString(R.string.channel_name_userreq)
-        channel = NotificationChannel(
-            OpenVPNService.NOTIFICATION_CHANNEL_USERREQ_ID,
-            name,
-            NotificationManager.IMPORTANCE_HIGH
-        ).apply {
-            description = context.getString(R.string.channel_description_userreq)
-            enableVibration(true)
-            lightColor = Color.CYAN
-        }
-        notificationManager.createNotificationChannel(channel)
     }
 
     /**
