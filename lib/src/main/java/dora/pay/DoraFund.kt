@@ -206,6 +206,28 @@ object DoraFund {
     }
 
     /**
+     * Get the address of the currently selected wallet.
+     * @since 2.0
+     */
+    fun getCurrentAddress() : String {
+        if (!isWalletConnected()) {
+            return ""
+        }
+        return Web3Modal.getAccount()?.address!!
+    }
+
+    /**
+     * Get the currently selected chain.
+     * @since 2.0
+     */
+    fun getCurrentChain() : Modal.Model.Chain? {
+        if (!isWalletConnected()) {
+            return null
+        }
+        return Web3Modal.getAccount()?.chain
+    }
+
+    /**
      * Connect to cold wallet.
      * @since 2.0
      */
