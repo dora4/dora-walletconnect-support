@@ -118,6 +118,8 @@ object DoraFund {
 
     /**
      * Initialize DoraFund with application metadata.
+     *
+     * @see EVMChains
      * @since 2.0
      */
     @JvmOverloads
