@@ -1,0 +1,25 @@
+package dora.pay.token
+
+import dora.pay.EVMChains
+
+/**
+ * ERC20 Token, from Arbitrum.
+ * @since 2.1
+ */
+object ArbitrumToken {
+
+    /**
+     * @since 2.1
+     */
+    val USDT = Token(EVMChains.ARBITRUM, "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9")
+
+    /**
+     * @since 2.1
+     */
+    val USDC = Token(EVMChains.ARBITRUM, "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8")
+
+    /**
+     * @since 2.1
+     */
+    val DAI  = Token(EVMChains.ARBITRUM, "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1")
+}
