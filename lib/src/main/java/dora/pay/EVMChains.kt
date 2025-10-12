@@ -38,7 +38,7 @@ interface EVMChains {
          * Ethereum Proof-of-Work.
          * @since 2.1
          */
-        val ETHEREUM_POW = Web3ModalChainsPresets.ethChains["10001"]!!
+//        val ETHEREUM_POW = Web3ModalChainsPresets.ethChains["10001"]!!
 
         /**
          * Arbitrum.

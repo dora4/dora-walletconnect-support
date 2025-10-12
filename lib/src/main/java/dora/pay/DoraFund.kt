@@ -222,7 +222,7 @@ object DoraFund {
      * @property transferType 0=Native，1=ERC20
      * @since 2.1
      */
-    private external fun nativeGetGasParametersEIP1559(transferType: Int): Array<String>
+    private external fun nativeGetGasParametersEIP1559(context: Context, transferType: Int): Array<String>
 
     /**
      * Check if the wallet is connected.
@@ -385,7 +385,7 @@ object DoraFund {
         value: Double,
         orderListener: OrderListener
     ) {
-        val (gasLimit, gasPrice, maxFeePerGas, maxPriorityFeePerGas) = nativeGetGasParametersEIP1559(TRANSFER_TYPE_NATIVE)
+        val (gasLimit, gasPrice, maxFeePerGas, maxPriorityFeePerGas) = nativeGetGasParametersEIP1559(context, TRANSFER_TYPE_NATIVE)
         pay(
             context,
             accessKey,
@@ -429,8 +429,8 @@ object DoraFund {
         token: Token? = null,
         orderListener: OrderListener
     ) {
-        val (gasLimit, gasPrice, maxFeePerGas, maxPriorityFeePerGas) = nativeGetGasParametersEIP1559(TRANSFER_TYPE_NATIVE)
         if (token == null) {
+            val (gasLimit, gasPrice, maxFeePerGas, maxPriorityFeePerGas) = nativeGetGasParametersEIP1559(context, TRANSFER_TYPE_NATIVE)
             // supports EIP-1559
             val isEIP1559Chain = when (chain) {
                 EVMChains.ETHEREUM,
@@ -548,10 +548,8 @@ object DoraFund {
         token: Token? = null,
         orderListener: OrderListener
     ) {
-        val (gasLimit, gasPrice, maxFeePerGas, maxPriorityFeePerGas) = nativeGetGasParametersEIP1559(
-            TRANSFER_TYPE_NATIVE
-        )
         if (token == null) {
+            val (gasLimit, gasPrice, maxFeePerGas, maxPriorityFeePerGas) = nativeGetGasParametersEIP1559(context, TRANSFER_TYPE_NATIVE)
             // supports EIP-1559
             val isEIP1559Chain = when (chain) {
                 EVMChains.ETHEREUM,
@@ -759,7 +757,7 @@ object DoraFund {
         token: Token,
         orderListener: OrderListener
     ) {
-        val (gasLimit, gasPrice, maxFeePerGas, maxPriorityFeePerGas) = nativeGetGasParametersEIP1559(TRANSFER_TYPE_ERC20)
+        val (gasLimit, gasPrice, maxFeePerGas, maxPriorityFeePerGas) = nativeGetGasParametersEIP1559(context, TRANSFER_TYPE_ERC20)
         val isEIP1559Chain = when (token.chain) {
             EVMChains.ETHEREUM,
             EVMChains.POLYGON,
