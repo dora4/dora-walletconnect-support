@@ -31,6 +31,19 @@ object PayUtils {
     }
 
     /**
+     * Convert a token amount to a 32-byte left-padded hexadecimal string.
+     * This is suitable for ERC20 ABI transfer data.
+     * @since 2.1
+     */
+    @JvmStatic
+    fun convertToHexWeiABI(amount: Double): String {
+        val weiValue = BigDecimal(amount).multiply(BigDecimal.TEN.pow(18)).toBigInteger()
+        val hex = weiValue.toString(16)
+        return hex.padStart(64, '0')
+    }
+
+
+    /**
      * Query blockchain data to check whether the transaction
      * has been successfully confirmed on-chain.
      * Uses the currently selected chain's JSON-RPC URL,
