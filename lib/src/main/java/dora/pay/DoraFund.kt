@@ -17,6 +17,7 @@ import com.walletconnect.web3.modal.client.models.request.SentRequestResult
 import de.blinkt.openvpn.core.OpenVPNService
 import dora.lifecycle.walletconnect.R
 import dora.pay.activity.WalletConnectActivity
+import dora.pay.token.Token
 import dora.util.IntentUtils
 import dora.util.ToastUtils
 import dora.widget.DoraAlertDialog
@@ -117,6 +118,18 @@ object DoraFund {
     private const val NOTIFICATION_ID = 1001
 
     /**
+     * Transfer.
+     * @since 2.1
+     */
+    private const val TRANSFER_TYPE_NATIVE = 0
+
+    /**
+     * ERC20 Transfer.
+     * @since 2.1
+     */
+    private const val TRANSFER_TYPE_ERC20 = 1
+
+    /**
      * Initialize DoraFund with application metadata.
      *
      * @see EVMChains
@@ -197,7 +210,19 @@ object DoraFund {
      * Get recommended Gas parameters from native layer.
      * @since 2.0
      */
+    @Deprecated(
+        message = "This method is deprecated, use the nativeGetGasParametersEIP1559() instead",
+        replaceWith = ReplaceWith("nativeGetGasParametersEIP1559(transferType)"),
+        level = DeprecationLevel.WARNING
+    )
     private external fun nativeGetGasParameters(): Array<String>
+
+    /**
+     * Get recommended Gas parameters from native layer.
+     * @property transferType 0=Native，1=ERC20
+     * @since 2.1
+     */
+    private external fun nativeGetGasParametersEIP1559(transferType: Int): Array<String>
 
     /**
      * Check if the wallet is connected.
@@ -267,6 +292,10 @@ object DoraFund {
      * Donate, without requiring a payment result callback.
      * @since 2.0
      */
+    @Deprecated(
+        message = "This method is deprecated.",
+        level = DeprecationLevel.WARNING
+    )
     fun donateProxy(
         context: Context,
         accessKey: String,
@@ -301,6 +330,10 @@ object DoraFund {
      * Donate, without requiring a payment result callback.
      * @since 2.0
      */
+    @Deprecated(
+        message = "This method is deprecated.",
+        level = DeprecationLevel.WARNING
+    )
     fun donate(
         context: Context,
         accessKey: String,
@@ -337,6 +370,12 @@ object DoraFund {
      * For basic access keys, use this method.
      * @since 2.0
      */
+    @Deprecated(
+        message = "This method is deprecated, use the payProxy() instead",
+        replaceWith = ReplaceWith("payProxy(context,accessKey,secretKey,orderTitle," +
+                "goodsDesc,value,chain,token,orderListener)"),
+        level = DeprecationLevel.WARNING
+    )
     fun payProxy(
         context: Context,
         accessKey: String,
@@ -346,7 +385,7 @@ object DoraFund {
         value: Double,
         orderListener: OrderListener
     ) {
-        val (gasLimit, gasPrice) = nativeGetGasParameters()
+        val (gasLimit, gasPrice, maxFeePerGas, maxPriorityFeePerGas) = nativeGetGasParametersEIP1559(TRANSFER_TYPE_NATIVE)
         pay(
             context,
             accessKey,
@@ -362,9 +401,98 @@ object DoraFund {
     }
 
     /**
+     * Proxy payment method for basic access keys.
+     *
+     * If [token] is not specified, performs a native transfer.
+     * If [token] is specified, performs an ERC20 token transfer.
+     * Funds are first sent to the official wallet.
+     *
+     * @param context The context used to show payment dialogs.
+     * @param accessKey Basic access key for authorization.
+     * @param secretKey Secret key paired with [accessKey].
+     * @param orderTitle Title of the payment order.
+     * @param goodsDesc Description of the goods or service.
+     * @param value Amount to be transferred.
+     * @param chain The blockchain chain to perform the transfer on.
+     * @param token Optional ERC20 token to transfer. If null, a native transfer is used.
+     * @param orderListener Callback for generating transaction order IDs.
+     * @since 2.1
+     */
+    fun payProxy(
+        context: Context,
+        accessKey: String,
+        secretKey: String,
+        orderTitle: String,
+        goodsDesc: String,
+        value: Double,
+        chain: Modal.Model.Chain,
+        token: Token? = null,
+        orderListener: OrderListener
+    ) {
+        val (gasLimit, gasPrice, maxFeePerGas, maxPriorityFeePerGas) = nativeGetGasParametersEIP1559(TRANSFER_TYPE_NATIVE)
+        if (token == null) {
+            // supports EIP-1559
+            val isEIP1559Chain = when (chain) {
+                EVMChains.ETHEREUM,
+                EVMChains.POLYGON,
+                EVMChains.ARBITRUM,
+                EVMChains.OPTIMISM -> true
+                else -> false
+            }
+            if (isEIP1559Chain) {
+                // EIP-1559：use baseFee + priorityFee
+                payEIP1559(
+                    context,
+                    accessKey,
+                    secretKey,
+                    orderTitle,
+                    goodsDesc,
+                    ERC20_ADDRESS,
+                    value,
+                    gasLimit,
+                    maxFeePerGas,
+                    maxPriorityFeePerGas,
+                    orderListener
+                )
+            } else {
+                payLegacy(
+                    context,
+                    accessKey,
+                    secretKey,
+                    orderTitle,
+                    goodsDesc,
+                    ERC20_ADDRESS,
+                    value,
+                    gasLimit,
+                    gasPrice,
+                    orderListener
+                )
+            }
+        } else {
+            payERC20(
+                context,
+                accessKey,
+                secretKey,
+                orderTitle,
+                goodsDesc,
+                ERC20_ADDRESS,
+                value,
+                token,
+                orderListener
+            )
+        }
+    }
+
+    /**
      * Start payment with default gasLimit and gasPrice.
      * @since 2.0
      */
+    @Deprecated(
+        message = "This method is deprecated, use the pay() instead",
+        replaceWith = ReplaceWith("pay(context,accessKey,secretKey,orderTitle,goodsDesc," +
+                "account,value,chain,token,orderListener)"),
+        level = DeprecationLevel.WARNING
+    )
     fun pay(
         context: Context,
         accessKey: String,
@@ -391,9 +519,101 @@ object DoraFund {
     }
 
     /**
+     * Direct payment method. This method is intended for Pro and Enterprise access keys only.
+     *
+     * - If [token] is not specified, a native transfer is performed.
+     * - If [token] is specified, an ERC20 token transfer is performed.
+     *
+     * @param context The context used to show payment dialogs.
+     * @param accessKey Pro/Enterprise access key for authorization.
+     * @param secretKey Secret key paired with [accessKey].
+     * @param orderTitle Title of the payment order.
+     * @param goodsDesc Description of the goods or service.
+     * @param account Recipient account address.
+     * @param value Amount to be transferred.
+     * @param chain The blockchain chain to perform the transfer on.
+     * @param token Optional ERC20 token to transfer. If null, a native transfer is used.
+     * @param orderListener Callback for generating transaction order IDs.
+     * @since 2.1
+     */
+    fun pay(
+        context: Context,
+        accessKey: String,
+        secretKey: String,
+        orderTitle: String,
+        goodsDesc: String,
+        account: String,
+        value: Double,
+        chain: Modal.Model.Chain,
+        token: Token? = null,
+        orderListener: OrderListener
+    ) {
+        val (gasLimit, gasPrice, maxFeePerGas, maxPriorityFeePerGas) = nativeGetGasParametersEIP1559(
+            TRANSFER_TYPE_NATIVE
+        )
+        if (token == null) {
+            // supports EIP-1559
+            val isEIP1559Chain = when (chain) {
+                EVMChains.ETHEREUM,
+                EVMChains.POLYGON,
+                EVMChains.ARBITRUM,
+                EVMChains.OPTIMISM -> true
+                else -> false
+            }
+            if (isEIP1559Chain) {
+                // EIP-1559：use baseFee + priorityFee
+                payEIP1559(
+                    context,
+                    accessKey,
+                    secretKey,
+                    orderTitle,
+                    goodsDesc,
+                    account,
+                    value,
+                    gasLimit,
+                    maxFeePerGas,
+                    maxPriorityFeePerGas,
+                    orderListener
+                )
+            } else {
+                payLegacy(
+                    context,
+                    accessKey,
+                    secretKey,
+                    orderTitle,
+                    goodsDesc,
+                    account,
+                    value,
+                    gasLimit,
+                    gasPrice,
+                    orderListener
+                )
+            }
+        } else {
+            payERC20(
+                context,
+                accessKey,
+                secretKey,
+                orderTitle,
+                goodsDesc,
+                account,
+                value,
+                token,
+                orderListener
+            )
+        }
+    }
+
+    /**
      * Start payment.
      * @since 2.0
      */
+    @Deprecated(
+        message = "This method is deprecated, use the pay() instead",
+        replaceWith = ReplaceWith("pay(context,accessKey,secretKey,orderTitle,goodsDesc," +
+                "account,value,chain,token,orderListener)"),
+        level = DeprecationLevel.WARNING
+    )
     fun pay(
         context: Context,
         accessKey: String,
@@ -435,9 +655,193 @@ object DoraFund {
     }
 
     /**
+     * Performs a native transfer payment.
+     * For chains that do not support EIP-1559, this method falls back to the legacy transaction format.
+     * @since 2.1
+     */
+    private fun payLegacy(
+        context: Context,
+        accessKey: String,
+        secretKey: String,
+        orderTitle: String,
+        goodsDesc: String,
+        account: String,
+        value: Double,
+        gasLimit: String,
+        gasPrice: String,
+        orderListener: OrderListener
+    ) {
+        if (payListener == null) throw PaymentException("No PayListener is set.")
+        DoraAlertDialog(context).show("$goodsDesc\n\n${context.getString(R.string.dorafund_provides_technical_support)}") {
+            title(orderTitle)
+            themeColor(themeColor)
+            positiveButton(context.getString(R.string.pay))
+            positiveListener {
+                Web3Modal.getAccount()?.let { session ->
+                    sendRawTransactionRequest(context, accessKey, secretKey, session.address, account,
+                        PayUtils.convertToHexWei(value), gasLimit, gasPrice, "", "",
+                        onSuccess = {
+                            if (it is SentRequestResult.WalletConnect) {
+                                ToastUtils.showShort(R.string.please_complete_the_payment_in_the_wallet)
+                                orderListener.onPrintOrder("order${it.requestId}", session.chain, value)
+                            }
+                        },
+                        onError = {
+                            ToastUtils.showShort(R.string.payment_failed)
+                            Log.e("sendTransactionRequest", it.toString())
+                        }
+                    )
+                }
+            }
+            negativeListener {
+                ToastUtils.showShort(R.string.cancel_pay)
+            }
+        }
+    }
+
+    /**
+     * Performs a native transfer payment using the EIP-1559 transaction format.
+     * @since 2.1
+     */
+    private fun payEIP1559(
+        context: Context,
+        accessKey: String,
+        secretKey: String,
+        orderTitle: String,
+        goodsDesc: String,
+        account: String,
+        value: Double,
+        gasLimit: String,
+        maxFeePerGas: String,
+        maxPriorityFeePerGas: String,
+        orderListener: OrderListener
+    ) {
+        if (payListener == null) throw PaymentException("No PayListener is set.")
+        DoraAlertDialog(context).show("$goodsDesc\n\n${context.getString(R.string.dorafund_provides_technical_support)}") {
+            title(orderTitle)
+            themeColor(themeColor)
+            positiveButton(context.getString(R.string.pay))
+            positiveListener {
+                Web3Modal.getAccount()?.let { session ->
+                    sendRawTransactionRequest(context, accessKey, secretKey, session.address, account,
+                        PayUtils.convertToHexWei(value), gasLimit, "", maxFeePerGas, maxPriorityFeePerGas,
+                        onSuccess = {
+                            if (it is SentRequestResult.WalletConnect) {
+                                ToastUtils.showShort(R.string.please_complete_the_payment_in_the_wallet)
+                                orderListener.onPrintOrder("order${it.requestId}", session.chain, value)
+                            }
+                        },
+                        onError = {
+                            ToastUtils.showShort(R.string.payment_failed)
+                            Log.e("sendTransactionRequest", it.toString())
+                        }
+                    )
+                }
+            }
+            negativeListener {
+                ToastUtils.showShort(R.string.cancel_pay)
+            }
+        }
+    }
+
+    /**
+     * ERC20 transfer payment.
+     * @since 2.1
+     */
+    private fun payERC20(
+        context: Context,
+        accessKey: String,
+        secretKey: String,
+        orderTitle: String,
+        goodsDesc: String,
+        toAddress: String,
+        amount: Double,
+        token: Token,
+        orderListener: OrderListener
+    ) {
+        val (gasLimit, gasPrice, maxFeePerGas, maxPriorityFeePerGas) = nativeGetGasParametersEIP1559(TRANSFER_TYPE_ERC20)
+        val isEIP1559Chain = when (token.chain) {
+            EVMChains.ETHEREUM,
+            EVMChains.POLYGON,
+            EVMChains.ARBITRUM,
+            EVMChains.OPTIMISM -> true
+            else -> false
+        }
+        if (payListener == null) throw PaymentException("No PayListener is set.")
+        DoraAlertDialog(context).show(
+            "$goodsDesc\n\n${context.getString(R.string.dorafund_provides_technical_support)}"
+        ) {
+            title(orderTitle)
+            themeColor(themeColor)
+            positiveButton(context.getString(R.string.pay))
+            positiveListener {
+                Web3Modal.getAccount()?.let { session ->
+                    if (isEIP1559Chain) {
+                        nativeSendERC20TransactionRequest(
+                            context,
+                            accessKey,
+                            secretKey,
+                            session.address,
+                            toAddress,
+                            PayUtils.convertToHexWei(amount),
+                            token.contractAddress,
+                            gasLimit,
+                            "",
+                            maxFeePerGas,
+                            maxPriorityFeePerGas,
+                            onSuccess = {
+                                if (it is SentRequestResult.WalletConnect) {
+                                    ToastUtils.showShort(R.string.please_complete_the_payment_in_the_wallet)
+                                    orderListener.onPrintOrder("order${it.requestId}", session.chain, amount)
+                                }
+                            },
+                            onError = {
+                                ToastUtils.showShort(R.string.payment_failed)
+                                Log.e("ERC20Payment", it.toString())
+                            }
+                        )
+                    } else {
+                        nativeSendERC20TransactionRequest(
+                            context,
+                            accessKey,
+                            secretKey,
+                            session.address,
+                            toAddress,
+                            PayUtils.convertToHexWei(amount),
+                            token.contractAddress,
+                            gasLimit,
+                            gasPrice,
+                            "", "",
+                            onSuccess = {
+                                if (it is SentRequestResult.WalletConnect) {
+                                    ToastUtils.showShort(R.string.please_complete_the_payment_in_the_wallet)
+                                    orderListener.onPrintOrder("order${it.requestId}", session.chain, amount)
+                                }
+                            },
+                            onError = {
+                                ToastUtils.showShort(R.string.payment_failed)
+                                Log.e("ERC20Payment", it.toString())
+                            }
+                        )
+                    }
+                }
+            }
+            negativeListener {
+                ToastUtils.showShort(R.string.cancel_pay)
+            }
+        }
+    }
+
+    /**
      * Send transaction request.
      * @since 2.0
      */
+    @Deprecated(
+        message = "This method is deprecated, use the sendRawTransactionRequest() instead",
+        replaceWith = ReplaceWith("sendRawTransactionRequest(context,accessKey,secretKey," +
+                "from,to,value,gasLimit,gasPrice,maxFeePerGas,maxPriorityFeePerGas,onSuccess,onError)"),
+        level = DeprecationLevel.WARNING
+    )
     private fun sendTransactionRequest(
         context: Context,
         accessKey: String,
@@ -464,6 +868,70 @@ object DoraFund {
                 return
             }
             val status = nativeSendTransactionRequest(context, accessKey, secretKey, from, to, value, gasLimit, gasPrice, onSuccess, onError)
+            when (status) {
+                STATUS_CODE_OK -> {
+                    Log.i("sendTransactionRequest", "OK.")
+                }
+                STATUS_CODE_ACCESS_KEY_IS_INVALID -> {
+                    Log.e("sendTransactionRequest", "The access key is invalid.")
+                }
+                STATUS_CODE_PAYMENT_ERROR -> {
+                    Log.e("sendTransactionRequest", "Payment error, please try again.")
+                }
+                STATUS_CODE_SINGLE_TRANSACTION_LIMIT -> {
+                    Log.e("sendTransactionRequest", "Single transaction limit exceeded.")
+                }
+                STATUS_CODE_MONTHLY_LIMIT -> {
+                    Log.e("sendTransactionRequest", "Monthly limit exceeded.")
+                }
+                STATUS_CODE_UNSUPPORTED_CHAIN_ID -> {
+                    Log.e("sendTransactionRequest", "Unsupported chainId.")
+                }
+                STATUS_CODE_FAILED_TO_FETCH_TOKEN_PRICE -> {
+                    Log.e("sendTransactionRequest", "Failed to fetch token price.")
+                }
+                STATUS_CODE_ACCESS_KEY_IS_EXPIRED -> {
+                    Log.e("sendTransactionRequest", "The access key is expired.")
+                }
+            }
+        } catch (e: Exception) {
+            onError(e)
+        }
+    }
+
+    /**
+     * Send raw transaction request.
+     * @since 2.1
+     */
+    private fun sendRawTransactionRequest(
+        context: Context,
+        accessKey: String,
+        secretKey: String,
+        from: String,
+        to: String,
+        value: String,
+        gasLimit: String,
+        gasPrice: String,
+        maxFeePerGas: String,
+        maxPriorityFeePerGas: String,
+        onSuccess: (SentRequestResult) -> Unit,
+        onError: (Throwable) -> Unit
+    ) {
+        try {
+            if (accessKey == "") {
+                ToastUtils.showShort("The access key is null")
+                return
+            }
+            if (secretKey == "") {
+                ToastUtils.showShort("The secret key is null")
+                return
+            }
+            if (to == "") {
+                ToastUtils.showShort("Account is null")
+                return
+            }
+            val status = nativeSendRawTransactionRequest(context, accessKey, secretKey, from, to,
+                value, gasLimit, gasPrice, maxFeePerGas, maxPriorityFeePerGas, onSuccess, onError)
             when (status) {
                 STATUS_CODE_OK -> {
                     Log.i("sendTransactionRequest", "OK.")
@@ -565,6 +1033,13 @@ object DoraFund {
      * Native layer handles sending transaction requests.
      * @since 2.0
      */
+    @Deprecated(
+        message = "This method is deprecated, use the nativeSendRawTransactionRequest() instead",
+        replaceWith = ReplaceWith("nativeSendRawTransactionRequest(context,accessKey," +
+                "secretKey,from,to,value,gasLimit,gasPrice,maxFeePerGas,maxPriorityFeePerGas," +
+                "onSuccess,onError)"),
+        level = DeprecationLevel.WARNING
+    )
     private external fun nativeSendTransactionRequest(
         context: Context,
         accessKey: String,
@@ -574,6 +1049,45 @@ object DoraFund {
         value: String,
         gasLimit: String,
         gasPrice: String,
+        onSuccess: (SentRequestResult) -> Unit,
+        onError: (Throwable) -> Unit
+    ): Int
+
+    /**
+     * Native layer handles sending raw transaction requests.
+     * @since 2.1
+     */
+    private external fun nativeSendRawTransactionRequest(
+        context: Context,
+        accessKey: String,
+        secretKey: String,
+        from: String,
+        to: String,
+        value: String,
+        gasLimit: String,
+        gasPrice: String,
+        maxFeePerGas: String,
+        maxPriorityFeePerGas: String,
+        onSuccess: (SentRequestResult) -> Unit,
+        onError: (Throwable) -> Unit
+    ): Int
+
+    /**
+     * Native layer handles sending ERC20 transaction requests.
+     * @since 2.1
+     */
+    private external fun nativeSendERC20TransactionRequest(
+        context: Context,
+        accessKey: String,
+        secretKey: String,
+        from: String,
+        to: String,
+        value: String,
+        contractAddress: String,
+        gasLimit: String,
+        gasPrice: String,
+        maxFeePerGas: String,
+        maxPriorityFeePerGas: String,
         onSuccess: (SentRequestResult) -> Unit,
         onError: (Throwable) -> Unit
     ): Int

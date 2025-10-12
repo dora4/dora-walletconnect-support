@@ -9,4 +9,4 @@ import com.walletconnect.web3.modal.client.Modal
  * @property contractAddress The token's contract address
  * @since 2.1
  */
-open class Token(chain: Modal.Model.Chain, contractAddress: String)
+open class Token(val chain: Modal.Model.Chain, val contractAddress: String)
