@@ -36,12 +36,12 @@ object PayUtils {
      * @since 2.1
      */
     @JvmStatic
-    fun convertToHexWeiABI(amount: Double): String {
-        val weiValue = BigDecimal(amount).multiply(BigDecimal.TEN.pow(18)).toBigInteger()
+    fun convertToHexWeiABI(amount: Double, decimals: Int = 18): String {
+        val decimalAmount = BigDecimal.valueOf(amount)
+        val weiValue = decimalAmount.multiply(BigDecimal.TEN.pow(decimals)).toBigInteger()
         val hex = weiValue.toString(16)
         return hex.padStart(64, '0')
     }
-
 
     /**
      * Query blockchain data to check whether the transaction

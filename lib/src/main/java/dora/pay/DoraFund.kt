@@ -676,7 +676,7 @@ object DoraFund {
             positiveButton(context.getString(R.string.pay))
             positiveListener {
                 Web3Modal.getAccount()?.let { session ->
-                    sendRawTransactionRequest(context, accessKey, secretKey, session.address, account,
+                    sendNativeTransactionRequest(context, accessKey, secretKey, session.address, account,
                         PayUtils.convertToHexWei(value), gasLimit, gasPrice, "", "",
                         onSuccess = {
                             if (it is SentRequestResult.WalletConnect) {
@@ -686,7 +686,7 @@ object DoraFund {
                         },
                         onError = {
                             ToastUtils.showShort(R.string.payment_failed)
-                            Log.e("sendTransactionRequest", it.toString())
+                            Log.e("sendNativeTransactionRequest", it.toString())
                         }
                     )
                 }
@@ -721,7 +721,7 @@ object DoraFund {
             positiveButton(context.getString(R.string.pay))
             positiveListener {
                 Web3Modal.getAccount()?.let { session ->
-                    sendRawTransactionRequest(context, accessKey, secretKey, session.address, account,
+                    sendNativeTransactionRequest(context, accessKey, secretKey, session.address, account,
                         PayUtils.convertToHexWei(value), gasLimit, "", maxFeePerGas, maxPriorityFeePerGas,
                         onSuccess = {
                             if (it is SentRequestResult.WalletConnect) {
@@ -731,7 +731,7 @@ object DoraFund {
                         },
                         onError = {
                             ToastUtils.showShort(R.string.payment_failed)
-                            Log.e("sendTransactionRequest", it.toString())
+                            Log.e("sendNativeTransactionRequest", it.toString())
                         }
                     )
                 }
@@ -781,7 +781,7 @@ object DoraFund {
                             secretKey,
                             session.address,
                             toAddress,
-                            PayUtils.convertToHexWeiABI(amount),
+                            PayUtils.convertToHexWeiABI(amount, token.decimals),
                             token.symbol,
                             token.contractAddress,
                             gasLimit,
@@ -806,7 +806,7 @@ object DoraFund {
                             secretKey,
                             session.address,
                             toAddress,
-                            PayUtils.convertToHexWeiABI(amount),
+                            PayUtils.convertToHexWeiABI(amount, token.decimals),
                             token.symbol,
                             token.contractAddress,
                             gasLimit,
@@ -837,8 +837,8 @@ object DoraFund {
      * @since 2.0
      */
     @Deprecated(
-        message = "This method is deprecated, use the sendRawTransactionRequest() instead",
-        replaceWith = ReplaceWith("sendRawTransactionRequest(context,accessKey,secretKey," +
+        message = "This method is deprecated, use the sendNativeTransactionRequest() instead",
+        replaceWith = ReplaceWith("sendNativeTransactionRequest(context,accessKey,secretKey," +
                 "from,to,value,gasLimit,gasPrice,maxFeePerGas,maxPriorityFeePerGas,onSuccess,onError)"),
         level = DeprecationLevel.WARNING
     )
@@ -900,10 +900,10 @@ object DoraFund {
     }
 
     /**
-     * Send raw transaction request.
+     * Send native transaction request.
      * @since 2.1
      */
-    private fun sendRawTransactionRequest(
+    private fun sendNativeTransactionRequest(
         context: Context,
         accessKey: String,
         secretKey: String,
@@ -930,32 +930,32 @@ object DoraFund {
                 ToastUtils.showShort("Account is null")
                 return
             }
-            val status = nativeSendRawTransactionRequest(context, accessKey, secretKey, from, to,
+            val status = nativeSendNativeTransactionRequest(context, accessKey, secretKey, from, to,
                 value, gasLimit, gasPrice, maxFeePerGas, maxPriorityFeePerGas, onSuccess, onError)
             when (status) {
                 STATUS_CODE_OK -> {
-                    Log.i("sendTransactionRequest", "OK.")
+                    Log.i("sendNativeTransactionRequest", "OK.")
                 }
                 STATUS_CODE_ACCESS_KEY_IS_INVALID -> {
-                    Log.e("sendTransactionRequest", "The access key is invalid.")
+                    Log.e("sendNativeTransactionRequest", "The access key is invalid.")
                 }
                 STATUS_CODE_PAYMENT_ERROR -> {
-                    Log.e("sendTransactionRequest", "Payment error, please try again.")
+                    Log.e("sendNativeTransactionRequest", "Payment error, please try again.")
                 }
                 STATUS_CODE_SINGLE_TRANSACTION_LIMIT -> {
-                    Log.e("sendTransactionRequest", "Single transaction limit exceeded.")
+                    Log.e("sendNativeTransactionRequest", "Single transaction limit exceeded.")
                 }
                 STATUS_CODE_MONTHLY_LIMIT -> {
-                    Log.e("sendTransactionRequest", "Monthly limit exceeded.")
+                    Log.e("sendNativeTransactionRequest", "Monthly limit exceeded.")
                 }
                 STATUS_CODE_UNSUPPORTED_CHAIN_ID -> {
-                    Log.e("sendTransactionRequest", "Unsupported chainId.")
+                    Log.e("sendNativeTransactionRequest", "Unsupported chainId.")
                 }
                 STATUS_CODE_FAILED_TO_FETCH_TOKEN_PRICE -> {
-                    Log.e("sendTransactionRequest", "Failed to fetch token price.")
+                    Log.e("sendNativeTransactionRequest", "Failed to fetch token price.")
                 }
                 STATUS_CODE_ACCESS_KEY_IS_EXPIRED -> {
-                    Log.e("sendTransactionRequest", "The access key is expired.")
+                    Log.e("sendNativeTransactionRequest", "The access key is expired.")
                 }
             }
         } catch (e: Exception) {
@@ -1034,8 +1034,8 @@ object DoraFund {
      * @since 2.0
      */
     @Deprecated(
-        message = "This method is deprecated, use the nativeSendRawTransactionRequest() instead",
-        replaceWith = ReplaceWith("nativeSendRawTransactionRequest(context,accessKey," +
+        message = "This method is deprecated, use the nativeSendNativeTransactionRequest() instead",
+        replaceWith = ReplaceWith("nativeSendNativeTransactionRequest(context,accessKey," +
                 "secretKey,from,to,value,gasLimit,gasPrice,maxFeePerGas,maxPriorityFeePerGas," +
                 "onSuccess,onError)"),
         level = DeprecationLevel.WARNING
@@ -1054,10 +1054,10 @@ object DoraFund {
     ): Int
 
     /**
-     * Native layer handles sending raw transaction requests.
+     * Native layer handles sending native transaction requests.
      * @since 2.1
      */
-    private external fun nativeSendRawTransactionRequest(
+    private external fun nativeSendNativeTransactionRequest(
         context: Context,
         accessKey: String,
         secretKey: String,
