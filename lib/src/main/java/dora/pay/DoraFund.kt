@@ -841,28 +841,28 @@ object DoraFund {
                     }
                     when (status) {
                         STATUS_CODE_OK -> {
-                            Log.i("sendNativeTransactionRequest", "OK.")
+                            Log.i("sendERC20TransactionRequest", "OK.")
                         }
                         STATUS_CODE_ACCESS_KEY_IS_INVALID -> {
-                            Log.e("sendNativeTransactionRequest", "The access key is invalid.")
+                            Log.e("sendERC20TransactionRequest", "The access key is invalid.")
                         }
                         STATUS_CODE_PAYMENT_ERROR -> {
-                            Log.e("sendNativeTransactionRequest", "Payment error, please try again.")
+                            Log.e("sendERC20TransactionRequest", "Payment error, please try again.")
                         }
                         STATUS_CODE_SINGLE_TRANSACTION_LIMIT -> {
-                            Log.e("sendNativeTransactionRequest", "Single transaction limit exceeded.")
+                            Log.e("sendERC20TransactionRequest", "Single transaction limit exceeded.")
                         }
                         STATUS_CODE_MONTHLY_LIMIT -> {
-                            Log.e("sendNativeTransactionRequest", "Monthly limit exceeded.")
+                            Log.e("sendERC20TransactionRequest", "Monthly limit exceeded.")
                         }
                         STATUS_CODE_UNSUPPORTED_CHAIN_ID -> {
-                            Log.e("sendNativeTransactionRequest", "Unsupported chainId.")
+                            Log.e("sendERC20TransactionRequest", "Unsupported chainId.")
                         }
                         STATUS_CODE_FAILED_TO_FETCH_TOKEN_PRICE -> {
-                            Log.e("sendNativeTransactionRequest", "Failed to fetch token price.")
+                            Log.e("sendERC20TransactionRequest", "Failed to fetch token price.")
                         }
                         STATUS_CODE_ACCESS_KEY_IS_EXPIRED -> {
-                            Log.e("sendNativeTransactionRequest", "The access key is expired.")
+                            Log.e("sendERC20TransactionRequest", "The access key is expired.")
                         }
                     }
                 }
