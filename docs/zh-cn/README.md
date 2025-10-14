@@ -17,8 +17,8 @@ dependencyResolutionManagement {
 ```kotlin
 dependencies {
     // 扩展包必须在有主框架dora的情况下使用
-    implementation("com.github.dora4:dora:1.3.14")
-    implementation("com.github.dora4:dora-walletconnect-support:2.0.10")
+    implementation("com.github.dora4:dora:1.3.37")
+    implementation("com.github.dora4:dora-walletconnect-support:2.1.12")
 }
 ```
 
@@ -41,13 +41,12 @@ minSdk = 23
 ```
 在Application类的onCreate()中调用。
 ```kotlin
-// 通过chainId指定支持的以太坊兼容链
-val chains: Array<Modal.Model.Chain> = arrayOf(
-            Web3ModalChainsPresets.ethChains["1"]!!,      // 支持Ethereum
-            Web3ModalChainsPresets.ethChains["137"]!!,    // 支持Polygon
-            Web3ModalChainsPresets.ethChains["42161"]!!   // 支持Arbitrum
-)
-DoraFund.init(this, "App Name", "App Description", "https://yourdomain.com", chains)
+DoraFund.init(this, "App Name", "App Description", "https://yourdomain.com", arrayOf(
+    EVMChains.ETHEREUM,   // 支持Ethereum
+    EVMChains.POLYGON,    // 支持Polygon
+    EVMChains.ARBITRUM,   // 支持Arbitrum
+    EVMChains.AVALANCHE   // 支持Avalanche C-Chain
+))
 ```
 在Activity中与冷钱包建立连接。
 ```kotlin
@@ -75,6 +74,8 @@ DoraFund.pay(this,
                 "填写商品详细描述，便于框架给你弹窗，以让用户知晓正在支付",
                 "填写收款方的钱包地址，如0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000",
                 0.01,
+                EVMChains.POLYGON,
+                null,
                 object: DoraFund.OrderListener {
                     override fun onPrintOrder(orderId: String, chain: Modal.Model.Chain, value: Double) {
                         // 在此记录该笔订单的交易订单号，便于以后查询支付状态

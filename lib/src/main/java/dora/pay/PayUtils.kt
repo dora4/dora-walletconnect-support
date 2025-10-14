@@ -25,8 +25,9 @@ object PayUtils {
      * @since 2.0
      */
     @JvmStatic
-    fun convertToHexWei(amount: Double): String {
-        val weiValue = BigDecimal(amount).multiply(BigDecimal.TEN.pow(18)).toBigInteger()
+    fun convertToHexWei(amount: Double, decimals: Int = 18): String {
+        val decimalAmount = BigDecimal.valueOf(amount)
+        val weiValue = decimalAmount.multiply(BigDecimal.TEN.pow(decimals)).toBigInteger()
         return "0x" + weiValue.toString(16) // convert to hexadecimal string
     }
 

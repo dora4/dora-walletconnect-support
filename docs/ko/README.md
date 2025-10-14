@@ -17,8 +17,8 @@ dependencyResolutionManagement {
 ```kotlin
 dependencies {
     // 확장 패키지는 메인 프레임워크 "dora"와 함께 사용해야 합니다.
-    implementation("com.github.dora4:dora:1.3.14")
-    implementation("com.github.dora4:dora-walletconnect-support:2.0.10")
+    implementation("com.github.dora4:dora:1.3.37")
+    implementation("com.github.dora4:dora-walletconnect-support:2.1.12")
 }
 ```
 
@@ -40,13 +40,12 @@ minSdk = 23
 ```
 `Application` 클래스의 `onCreate()` 메서드에서 다음 메서드를 호출하세요:
 ```kotlin
-// 지원하는 Ethereum 호환 체인을 chainId로 지정
-val chains: Array<Modal.Model.Chain> = arrayOf(
-            Web3ModalChainsPresets.ethChains["1"]!!,      // Ethereum 지원
-            Web3ModalChainsPresets.ethChains["137"]!!,    // Polygon 지원
-            Web3ModalChainsPresets.ethChains["42161"]!!   // Arbitrum 지원
-)
-DoraFund.init(this, "앱 이름", "앱 설명", "https://yourdomain.com", chains)
+DoraFund.init(this, "App Name", "App Description", "https://yourdomain.com", arrayOf(
+    EVMChains.ETHEREUM,   // 이더리움 지원
+    EVMChains.POLYGON,    // 폴리곤 지원
+    EVMChains.ARBITRUM,   // 아비트럼 지원
+    EVMChains.AVALANCHE   // 아발란체 C-체인 지원
+))
 ```
 `Activity`에서 콜드월렛과 연결을 설정하세요:
 ```kotlin
@@ -73,6 +72,8 @@ DoraFund.pay(this,
                 "상품 정보를 입력하세요. 프레임워크가 팝업을 띄워 사용자에게 결제를 안내합니다.",
                 "수취인의 지갑 주소를 입력하세요. 예: 0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000",
                 0.01,
+                EVMChains.POLYGON,
+                null,
                 object: DoraFund.OrderListener {
                     override fun onPrintOrder(orderId: String, chain: Modal.Model.Chain, value: Double) {
                         // 이 주문의 거래 ID를 기록하여 이후 결제 상태 조회에 사용

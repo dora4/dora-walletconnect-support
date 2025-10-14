@@ -17,8 +17,8 @@ Add the following code to the `build.gradle.kts` file in the `app` module:
 ```kotlin
 dependencies {
     // The extension package must be used with the main framework "dora"
-    implementation("com.github.dora4:dora:1.3.14")
-    implementation("com.github.dora4:dora-walletconnect-support:2.0.10")
+    implementation("com.github.dora4:dora:1.3.37")
+    implementation("com.github.dora4:dora-walletconnect-support:2.1.12")
 }
 ```
 
@@ -41,13 +41,12 @@ Add the following configuration to `AndroidManifest.xml`:
 ```
 Call the following method in the `onCreate()` method of the `Application` class:
 ```kotlin
-// Specify supported Ethereum-compatible chains using chainId
-val chains: Array<Modal.Model.Chain> = arrayOf(
-            Web3ModalChainsPresets.ethChains["1"]!!,      // Supports Ethereum
-            Web3ModalChainsPresets.ethChains["137"]!!,    // Supports Polygon
-            Web3ModalChainsPresets.ethChains["42161"]!!   // Supports Arbitrum
-)
-DoraFund.init(this, "App Name", "App Description", "https://yourdomain.com", chains)
+DoraFund.init(this, "App Name", "App Description", "https://yourdomain.com", arrayOf(
+    EVMChains.ETHEREUM,   // Support Ethereum
+    EVMChains.POLYGON,    // Support Polygon
+    EVMChains.ARBITRUM,   // Support Arbitrum
+    EVMChains.AVALANCHE   // Support Avalanche C-Chain
+))
 ```
 Establish a connection with the cold wallet in an `Activity`:
 ```kotlin
@@ -74,6 +73,8 @@ DoraFund.pay(this,
                 "Enter the product details, so the framework can display a popup informing the user about the payment",
                 "Enter the recipient's wallet address, e.g., 0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000",
                 0.01,
+                EVMChains.POLYGON,
+                null,
                 object: DoraFund.OrderListener {
                     override fun onPrintOrder(orderId: String, chain: Modal.Model.Chain, value: Double) {
                         // Record this order transaction ID for future payment status queries

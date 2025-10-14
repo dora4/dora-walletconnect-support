@@ -17,8 +17,8 @@ Añade el siguiente código en el archivo `build.gradle.kts` del módulo `app`:
 ```kotlin
 dependencies {
     // El paquete de extensión debe usarse con el framework principal "dora"
-    implementation("com.github.dora4:dora:1.3.14")
-    implementation("com.github.dora4:dora-walletconnect-support:2.0.10")
+    implementation("com.github.dora4:dora:1.3.37")
+    implementation("com.github.dora4:dora-walletconnect-support:2.1.12")
 }
 ```
 
@@ -40,13 +40,12 @@ Añade la siguiente configuración en `AndroidManifest.xml`:
 ```
 En el método `onCreate()` de la clase `Application`, llama al siguiente método:
 ```kotlin
-// Especificar las cadenas compatibles con Ethereum usando chainId
-val chains: Array<Modal.Model.Chain> = arrayOf(
-            Web3ModalChainsPresets.ethChains["1"]!!,      // Soporta Ethereum
-            Web3ModalChainsPresets.ethChains["137"]!!,    // Soporta Polygon
-            Web3ModalChainsPresets.ethChains["42161"]!!   // Soporta Arbitrum
-)
-DoraFund.init(this, "Nombre de la aplicación", "Descripción de la aplicación", "https://yourdomain.com", chains)
+DoraFund.init(this, "App Name", "App Description", "https://yourdomain.com", arrayOf(
+    EVMChains.ETHEREUM,   // Compatible con Ethereum
+    EVMChains.POLYGON,    // Compatible con Polygon
+    EVMChains.ARBITRUM,   // Compatible con Arbitrum
+    EVMChains.AVALANCHE   // Compatible con Avalanche C-Chain
+))
 ```
 Establece la conexión con la billetera fría en una `Activity`:
 ```kotlin
@@ -73,6 +72,8 @@ DoraFund.pay(this,
                 "Introduce los detalles del producto para que el framework muestre una ventana emergente informando al usuario sobre el pago.",
                 "Introduce la dirección de la billetera del destinatario, por ejemplo, 0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000",
                 0.01,
+                EVMChains.POLYGON,
+                null,
                 object: DoraFund.OrderListener {
                     override fun onPrintOrder(orderId: String, chain: Modal.Model.Chain, value: Double) {
                         // Registra este ID de transacción para futuras consultas sobre el estado del pago
