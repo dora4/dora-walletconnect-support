@@ -5,6 +5,8 @@
     <string name="payment_failed">支付失败</string>
     <string name="please_complete_the_payment_in_the_wallet">请在钱包完成支付。</string>
     <string name="dorafund_provides_technical_support">dorafund提供技术支持</string>
+    <string name="please_connect_wallet_first">请先连接钱包</string>
+    <string name="please_switch_correct_chain_to_pay_with_tokens">请切换正确的链以支付代币</string>
 
     <string name="notification_title">Dora Fund专用信道</string>
     <string name="building_configration">正在准备连接到专用信道…</string>

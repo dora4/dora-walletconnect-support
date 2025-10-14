@@ -18,7 +18,7 @@ dependencyResolutionManagement {
 dependencies {
     // 擴展包必須與主框架 "dora" 一起使用
     implementation("com.github.dora4:dora:1.3.37")
-    implementation("com.github.dora4:dora-walletconnect-support:2.1.12")
+    implementation("com.github.dora4:dora-walletconnect-support:2.1.15")
 }
 ```
 
@@ -72,7 +72,6 @@ DoraFund.pay(this,
                 "輸入商品詳情，以便框架彈出窗口通知用戶支付",
                 "輸入收款方錢包地址，例如 0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000",
                 0.01,
-                EVMChains.POLYGON,
                 null,
                 object: DoraFund.OrderListener {
                     override fun onPrintOrder(orderId: String, chain: Modal.Model.Chain, value: Double) {

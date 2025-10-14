@@ -18,7 +18,7 @@ Add the following code to the `build.gradle.kts` file in the `app` module:
 dependencies {
     // The extension package must be used with the main framework "dora"
     implementation("com.github.dora4:dora:1.3.37")
-    implementation("com.github.dora4:dora-walletconnect-support:2.1.12")
+    implementation("com.github.dora4:dora-walletconnect-support:2.1.15")
 }
 ```
 
@@ -73,7 +73,6 @@ DoraFund.pay(this,
                 "Enter the product details, so the framework can display a popup informing the user about the payment",
                 "Enter the recipient's wallet address, e.g., 0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000",
                 0.01,
-                EVMChains.POLYGON,
                 null,
                 object: DoraFund.OrderListener {
                     override fun onPrintOrder(orderId: String, chain: Modal.Model.Chain, value: Double) {

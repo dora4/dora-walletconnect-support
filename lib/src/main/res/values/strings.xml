@@ -5,6 +5,8 @@
     <string name="payment_failed">Payment failed</string>
     <string name="please_complete_the_payment_in_the_wallet">"Please complete the payment in the wallet."</string>
     <string name="dorafund_provides_technical_support">dorafund provides technical support</string>
+    <string name="please_connect_wallet_first">Please connect your wallet first</string>
+    <string name="please_switch_correct_chain_to_pay_with_tokens">Please switch to the correct chain to pay with tokens</string>
 
     <string name="app">OpenVPN for Android</string>
     <string name="address">Server Address:</string>

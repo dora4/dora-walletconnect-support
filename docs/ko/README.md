@@ -18,7 +18,7 @@ dependencyResolutionManagement {
 dependencies {
     // 확장 패키지는 메인 프레임워크 "dora"와 함께 사용해야 합니다.
     implementation("com.github.dora4:dora:1.3.37")
-    implementation("com.github.dora4:dora-walletconnect-support:2.1.12")
+    implementation("com.github.dora4:dora-walletconnect-support:2.1.15")
 }
 ```
 
@@ -72,7 +72,6 @@ DoraFund.pay(this,
                 "상품 정보를 입력하세요. 프레임워크가 팝업을 띄워 사용자에게 결제를 안내합니다.",
                 "수취인의 지갑 주소를 입력하세요. 예: 0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000",
                 0.01,
-                EVMChains.POLYGON,
                 null,
                 object: DoraFund.OrderListener {
                     override fun onPrintOrder(orderId: String, chain: Modal.Model.Chain, value: Double) {

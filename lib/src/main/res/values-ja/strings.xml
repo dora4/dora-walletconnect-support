@@ -5,6 +5,8 @@
     <string name="payment_failed">支払いに失敗しました</string>
     <string name="please_complete_the_payment_in_the_wallet">ウォレット内でお支払いを完了してください。</string>
     <string name="dorafund_provides_technical_support">dorafundは技術サポートを提供します</string>
+    <string name="please_connect_wallet_first">まずウォレットを接続してください</string>
+    <string name="please_switch_correct_chain_to_pay_with_tokens">トークンを支払うには正しいチェーンに切り替えてください</string>
 
     <string name="notification_title">Dora Fund専用チャネル</string>
     <string name="building_configration">専用チャネルへの接続を準備中…</string>

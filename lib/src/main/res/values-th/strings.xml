@@ -5,6 +5,8 @@
     <string name="payment_failed">การชำระเงินล้มเหลว</string>
     <string name="please_complete_the_payment_in_the_wallet">กรุณาชำระเงินให้เสร็จสิ้นในกระเป๋าสตางค์</string>
     <string name="dorafund_provides_technical_support">dorafund cung cấp hỗ trợ kỹ thuật</string>
+    <string name="please_connect_wallet_first">โปรดเชื่อมต่อกระเป๋าเงินของคุณก่อน</string>
+    <string name="please_switch_correct_chain_to_pay_with_tokens">โปรดสลับไปยังบล็อกเชนที่ถูกต้องเพื่อชำระด้วยโทเค็น</string>
 
     <string name="notification_title">ช่องเฉพาะของ Dora Fund</string>
     <string name="building_configration">กำลังเตรียมการเชื่อมต่อไปยังช่องเฉพาะ…</string>

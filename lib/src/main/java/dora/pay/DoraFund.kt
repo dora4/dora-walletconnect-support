@@ -373,7 +373,7 @@ object DoraFund {
     @Deprecated(
         message = "This method is deprecated, use the payProxy() instead",
         replaceWith = ReplaceWith("payProxy(context,accessKey,secretKey,orderTitle," +
-                "goodsDesc,value,chain,token,orderListener)"),
+                "goodsDesc,value,token,orderListener)"),
         level = DeprecationLevel.WARNING
     )
     fun payProxy(
@@ -385,7 +385,7 @@ object DoraFund {
         value: Double,
         orderListener: OrderListener
     ) {
-        val (gasLimit, gasPrice, maxFeePerGas, maxPriorityFeePerGas) = nativeGetGasParametersEIP1559(context, TRANSFER_TYPE_NATIVE)
+        val (gasLimit, gasPrice) = nativeGetGasParameters()
         pay(
             context,
             accessKey,
@@ -413,7 +413,6 @@ object DoraFund {
      * @param orderTitle Title of the payment order.
      * @param goodsDesc Description of the goods or service.
      * @param value Amount to be transferred.
-     * @param chain The blockchain chain to perform the transfer on.
      * @param token Optional ERC20 token to transfer. If null, a native transfer is used.
      * @param orderListener Callback for generating transaction order IDs.
      * @since 2.1
@@ -425,12 +424,16 @@ object DoraFund {
         orderTitle: String,
         goodsDesc: String,
         value: Double,
-        chain: Modal.Model.Chain,
         token: Token? = null,
         orderListener: OrderListener
     ) {
         if (token == null) {
             val (gasLimit, gasPrice, maxFeePerGas, maxPriorityFeePerGas) = nativeGetGasParametersEIP1559(context, TRANSFER_TYPE_NATIVE)
+            val chain = getCurrentChain()
+            if (chain == null) {
+                ToastUtils.showShort(context.getString(R.string.please_connect_wallet_first))
+                return
+            }
             // supports EIP-1559
             val isEIP1559Chain = when (chain) {
                 EVMChains.ETHEREUM,
@@ -490,7 +493,7 @@ object DoraFund {
     @Deprecated(
         message = "This method is deprecated, use the pay() instead",
         replaceWith = ReplaceWith("pay(context,accessKey,secretKey,orderTitle,goodsDesc," +
-                "account,value,chain,token,orderListener)"),
+                "account,value,token,orderListener)"),
         level = DeprecationLevel.WARNING
     )
     fun pay(
@@ -531,7 +534,6 @@ object DoraFund {
      * @param goodsDesc Description of the goods or service.
      * @param account Recipient account address.
      * @param value Amount to be transferred.
-     * @param chain The blockchain chain to perform the transfer on.
      * @param token Optional ERC20 token to transfer. If null, a native transfer is used.
      * @param orderListener Callback for generating transaction order IDs.
      * @since 2.1
@@ -544,12 +546,16 @@ object DoraFund {
         goodsDesc: String,
         account: String,
         value: Double,
-        chain: Modal.Model.Chain,
         token: Token? = null,
         orderListener: OrderListener
     ) {
         if (token == null) {
             val (gasLimit, gasPrice, maxFeePerGas, maxPriorityFeePerGas) = nativeGetGasParametersEIP1559(context, TRANSFER_TYPE_NATIVE)
+            val chain = getCurrentChain()
+            if (chain == null) {
+                ToastUtils.showShort(context.getString(R.string.please_connect_wallet_first))
+                return
+            }
             // supports EIP-1559
             val isEIP1559Chain = when (chain) {
                 EVMChains.ETHEREUM,
@@ -609,7 +615,7 @@ object DoraFund {
     @Deprecated(
         message = "This method is deprecated, use the pay() instead",
         replaceWith = ReplaceWith("pay(context,accessKey,secretKey,orderTitle,goodsDesc," +
-                "account,value,chain,token,orderListener)"),
+                "account,value,token,orderListener)"),
         level = DeprecationLevel.WARNING
     )
     fun pay(
@@ -758,6 +764,15 @@ object DoraFund {
         orderListener: OrderListener
     ) {
         val (gasLimit, gasPrice, maxFeePerGas, maxPriorityFeePerGas) = nativeGetGasParametersEIP1559(context, TRANSFER_TYPE_ERC20)
+        val chain = getCurrentChain()
+        if (chain == null) {
+            ToastUtils.showShort(context.getString(R.string.please_connect_wallet_first))
+            return
+        }
+        if (chain.id != token.chain.id) {
+            ToastUtils.showShort(context.getString(R.string.please_switch_correct_chain_to_pay_with_tokens))
+            return
+        }
         val isEIP1559Chain = when (token.chain) {
             EVMChains.ETHEREUM,
             EVMChains.POLYGON,
@@ -774,7 +789,7 @@ object DoraFund {
             positiveButton(context.getString(R.string.pay))
             positiveListener {
                 Web3Modal.getAccount()?.let { session ->
-                    if (isEIP1559Chain) {
+                    val status = if (isEIP1559Chain) {
                         nativeSendERC20TransactionRequest(
                             context,
                             accessKey,
@@ -823,6 +838,32 @@ object DoraFund {
                                 Log.e("ERC20Payment", it.toString())
                             }
                         )
+                    }
+                    when (status) {
+                        STATUS_CODE_OK -> {
+                            Log.i("sendNativeTransactionRequest", "OK.")
+                        }
+                        STATUS_CODE_ACCESS_KEY_IS_INVALID -> {
+                            Log.e("sendNativeTransactionRequest", "The access key is invalid.")
+                        }
+                        STATUS_CODE_PAYMENT_ERROR -> {
+                            Log.e("sendNativeTransactionRequest", "Payment error, please try again.")
+                        }
+                        STATUS_CODE_SINGLE_TRANSACTION_LIMIT -> {
+                            Log.e("sendNativeTransactionRequest", "Single transaction limit exceeded.")
+                        }
+                        STATUS_CODE_MONTHLY_LIMIT -> {
+                            Log.e("sendNativeTransactionRequest", "Monthly limit exceeded.")
+                        }
+                        STATUS_CODE_UNSUPPORTED_CHAIN_ID -> {
+                            Log.e("sendNativeTransactionRequest", "Unsupported chainId.")
+                        }
+                        STATUS_CODE_FAILED_TO_FETCH_TOKEN_PRICE -> {
+                            Log.e("sendNativeTransactionRequest", "Failed to fetch token price.")
+                        }
+                        STATUS_CODE_ACCESS_KEY_IS_EXPIRED -> {
+                            Log.e("sendNativeTransactionRequest", "The access key is expired.")
+                        }
                     }
                 }
             }

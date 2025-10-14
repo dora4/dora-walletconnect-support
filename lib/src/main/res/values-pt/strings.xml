@@ -5,6 +5,8 @@
     <string name="payment_failed">O pagamento falhou</string>
     <string name="please_complete_the_payment_in_the_wallet">Por favor, conclua o pagamento na carteira.</string>
     <string name="dorafund_provides_technical_support">dorafund fornece apoio técnico</string>
+    <string name="please_connect_wallet_first">Por favor, conecte sua carteira primeiro</string>
+    <string name="please_switch_correct_chain_to_pay_with_tokens">Por favor, mude para a blockchain correta para pagar com tokens</string>
 
     <string name="notification_title">Canal dedicado Dora Fund</string>
     <string name="building_configration">Preparando para conectar ao canal dedicado…</string>

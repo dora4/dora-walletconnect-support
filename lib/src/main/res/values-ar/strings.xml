@@ -5,6 +5,8 @@
     <string name="payment_failed">فشل الدفع</string>
     <string name="please_complete_the_payment_in_the_wallet">يرجى إكمال الدفع في المحفظة.</string>
     <string name="dorafund_provides_technical_support">توفر دورافاند الدعم الفني</string>
+    <string name="please_connect_wallet_first">يرجى توصيل محفظتك أولاً</string>
+    <string name="please_switch_correct_chain_to_pay_with_tokens">يرجى التبديل إلى السلسلة الصحيحة لدفع الرموز</string>
 
     <string name="notification_title">قناة Dora Fund المخصصة</string>
     <string name="building_configration">جارٍ التحضير للاتصال بالقناة المخصصة…</string>

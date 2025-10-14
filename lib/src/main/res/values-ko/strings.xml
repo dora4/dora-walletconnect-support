@@ -5,6 +5,8 @@
     <string name="payment_failed">결제 실패</string>
     <string name="please_complete_the_payment_in_the_wallet">지갑에서 결제를 완료해 주세요.</string>
     <string name="dorafund_provides_technical_support">dorafund는 기술 지원을 제공합니다</string>
+    <string name="please_connect_wallet_first">먼저 지갑을 연결해주세요</string>
+    <string name="please_switch_correct_chain_to_pay_with_tokens">토큰을 결제하려면 올바른 체인으로 전환해주세요</string>
 
     <string name="notification_title">Dora Fund 전용 채널</string>
     <string name="building_configration">전용 채널에 연결 준비 중…</string>
