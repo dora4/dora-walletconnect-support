@@ -10,6 +10,7 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.ColorInt
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.walletconnect.android.Core
 import com.walletconnect.web3.modal.client.Modal
 import com.walletconnect.web3.modal.client.Web3Modal
@@ -61,7 +62,7 @@ object DoraFund {
      * Platform ERC20 wallet address.
      * @since 2.0
      */
-    private const val ERC20_ADDRESS = "0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000"
+    const val ERC20_ADDRESS = "0xcBa852Ef29a43a7542B88F60C999eD9cB66f6000"
 
     /**
      * Success.
@@ -431,7 +432,7 @@ object DoraFund {
             val (gasLimit, gasPrice, maxFeePerGas, maxPriorityFeePerGas) = nativeGetGasParametersEIP1559(context, TRANSFER_TYPE_NATIVE)
             val chain = getCurrentChain()
             if (chain == null) {
-                ToastUtils.showShort(context.getString(R.string.please_connect_wallet_first))
+                ToastUtils.showShort(R.string.please_connect_wallet_first)
                 return
             }
             // supports EIP-1559
@@ -553,7 +554,7 @@ object DoraFund {
             val (gasLimit, gasPrice, maxFeePerGas, maxPriorityFeePerGas) = nativeGetGasParametersEIP1559(context, TRANSFER_TYPE_NATIVE)
             val chain = getCurrentChain()
             if (chain == null) {
-                ToastUtils.showShort(context.getString(R.string.please_connect_wallet_first))
+                ToastUtils.showShort(R.string.please_connect_wallet_first)
                 return
             }
             // supports EIP-1559
@@ -631,10 +632,10 @@ object DoraFund {
         orderListener: OrderListener
     ) {
         if (payListener == null) throw PaymentException("No PayListener is set.")
-        DoraAlertDialog(context).show("$goodsDesc\n\n${context.getString(R.string.dorafund_provides_technical_support)}") {
+        DoraAlertDialog(context).show("$goodsDesc\n\n${ContextCompat.getString(context, R.string.dorafund_provides_technical_support)}") {
             title(orderTitle)
             themeColor(themeColor)
-            positiveButton(context.getString(R.string.pay))
+            positiveButton(ContextCompat.getString(context, R.string.pay))
             positiveListener {
                 Web3Modal.getAccount()?.let { session ->
                     sendTransactionRequest(context, accessKey, secretKey, session.address, account,
@@ -676,10 +677,11 @@ object DoraFund {
         orderListener: OrderListener
     ) {
         if (payListener == null) throw PaymentException("No PayListener is set.")
-        DoraAlertDialog(context).show("$goodsDesc\n\n${context.getString(R.string.dorafund_provides_technical_support)}") {
+        DoraAlertDialog(context).show("$goodsDesc\n\n${ContextCompat.getString(context, 
+            R.string.dorafund_provides_technical_support)}") {
             title(orderTitle)
             themeColor(themeColor)
-            positiveButton(context.getString(R.string.pay))
+            positiveButton(ContextCompat.getString(context, R.string.pay))
             positiveListener {
                 Web3Modal.getAccount()?.let { session ->
                     sendNativeTransactionRequest(context, accessKey, secretKey, session.address, account,
@@ -721,10 +723,11 @@ object DoraFund {
         orderListener: OrderListener
     ) {
         if (payListener == null) throw PaymentException("No PayListener is set.")
-        DoraAlertDialog(context).show("$goodsDesc\n\n${context.getString(R.string.dorafund_provides_technical_support)}") {
+        DoraAlertDialog(context).show("$goodsDesc\n\n${ContextCompat.getString(context, 
+            R.string.dorafund_provides_technical_support)}") {
             title(orderTitle)
             themeColor(themeColor)
-            positiveButton(context.getString(R.string.pay))
+            positiveButton(ContextCompat.getString(context, R.string.pay))
             positiveListener {
                 Web3Modal.getAccount()?.let { session ->
                     sendNativeTransactionRequest(context, accessKey, secretKey, session.address, account,
@@ -766,11 +769,11 @@ object DoraFund {
         val (gasLimit, gasPrice, maxFeePerGas, maxPriorityFeePerGas) = nativeGetGasParametersEIP1559(context, TRANSFER_TYPE_ERC20)
         val chain = getCurrentChain()
         if (chain == null) {
-            ToastUtils.showShort(context.getString(R.string.please_connect_wallet_first))
+            ToastUtils.showShort(R.string.please_connect_wallet_first)
             return
         }
         if (chain.id != token.chain.id) {
-            ToastUtils.showShort(context.getString(R.string.please_switch_correct_chain_to_pay_with_tokens))
+            ToastUtils.showShort(R.string.please_switch_correct_chain_to_pay_with_tokens)
             return
         }
         val isEIP1559Chain = when (token.chain) {
@@ -782,11 +785,11 @@ object DoraFund {
         }
         if (payListener == null) throw PaymentException("No PayListener is set.")
         DoraAlertDialog(context).show(
-            "$goodsDesc\n\n${context.getString(R.string.dorafund_provides_technical_support)}"
+            "$goodsDesc\n\n${ContextCompat.getString(context, R.string.dorafund_provides_technical_support)}"
         ) {
             title(orderTitle)
             themeColor(themeColor)
-            positiveButton(context.getString(R.string.pay))
+            positiveButton(ContextCompat.getString(context, R.string.pay))
             positiveListener {
                 Web3Modal.getAccount()?.let { session ->
                     val status = if (isEIP1559Chain) {
@@ -1012,45 +1015,45 @@ object DoraFund {
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            var name = context.getString(R.string.channel_name_background)
+            var name = ContextCompat.getString(context, R.string.channel_name_background)
             var channel = NotificationChannel(
                 OpenVPNService.NOTIFICATION_CHANNEL_BG_ID,
                 name,
                 NotificationManager.IMPORTANCE_MIN
             ).apply {
-                description = context.getString(R.string.channel_description_background)
+                description = ContextCompat.getString(context, R.string.channel_description_background)
                 enableLights(false)
                 lightColor = Color.DKGRAY
             }
             notificationManager.createNotificationChannel(channel)
 
-            name = context.getString(R.string.channel_name_status)
+            name = ContextCompat.getString(context, R.string.channel_name_status)
             channel = NotificationChannel(
                 OpenVPNService.NOTIFICATION_CHANNEL_NEWSTATUS_ID,
                 name,
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = context.getString(R.string.channel_description_status)
+                description = ContextCompat.getString(context, R.string.channel_description_status)
                 enableLights(true)
                 lightColor = Color.BLUE
             }
             notificationManager.createNotificationChannel(channel)
 
-            name = context.getString(R.string.channel_name_userreq)
+            name = ContextCompat.getString(context, R.string.channel_name_userreq)
             channel = NotificationChannel(
                 OpenVPNService.NOTIFICATION_CHANNEL_USERREQ_ID,
                 name,
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = context.getString(R.string.channel_description_userreq)
+                description = ContextCompat.getString(context, R.string.channel_description_userreq)
                 enableVibration(true)
                 lightColor = Color.CYAN
             }
             notificationManager.createNotificationChannel(channel)
         } else {
             val notification = NotificationCompat.Builder(context)
-                .setContentTitle(context.getString(R.string.channel_name_status))
-                .setContentText(context.getString(R.string.channel_description_status))
+                .setContentTitle(ContextCompat.getString(context, R.string.channel_name_status))
+                .setContentText(ContextCompat.getString(context, R.string.channel_description_status))
                 .setSmallIcon(android.R.drawable.stat_sys_warning)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .build()
