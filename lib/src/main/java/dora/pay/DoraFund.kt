@@ -113,6 +113,18 @@ object DoraFund {
     private const val STATUS_CODE_ACCESS_KEY_IS_EXPIRED = -7
 
     /**
+     * Unsupported ERC20 token.
+     * @since 2.1
+     */
+    private const val STATUS_CODE_UNSUPPORTED_ERC20_TOKEN = -8
+
+    /**
+     * ERC20 token symbol does not match the expected value during validation.
+     * @since 2.1
+     */
+    private const val STATUS_CODE_TOKEN_SYMBOL_MISMATCH = -9
+
+    /**
      * VPN notification ID.
      * @since 2.0
      */
@@ -866,6 +878,12 @@ object DoraFund {
                         }
                         STATUS_CODE_ACCESS_KEY_IS_EXPIRED -> {
                             Log.e("sendERC20TransactionRequest", "The access key is expired.")
+                        }
+                        STATUS_CODE_UNSUPPORTED_ERC20_TOKEN -> {
+                            Log.e("sendERC20TransactionRequest", "Unsupported ERC20 token.")
+                        }
+                        STATUS_CODE_TOKEN_SYMBOL_MISMATCH -> {
+                            Log.e("sendERC20TransactionRequest", "ERC20 token symbol does not match.")
                         }
                     }
                 }
