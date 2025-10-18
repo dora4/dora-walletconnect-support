@@ -22,6 +22,7 @@ import dora.pay.token.Token
 import dora.util.IntentUtils
 import dora.util.ToastUtils
 import dora.widget.DoraAlertDialog
+import org.json.JSONObject
 
 /**
  * https://dorafund.com
@@ -143,8 +144,15 @@ object DoraFund {
     private const val TRANSFER_TYPE_ERC20 = 1
 
     /**
+     * JSON field name used to identify EIP-1559 support in a block response.
+     * If this field is present in the latest block data, it indicates that
+     * the network supports EIP-1559 (type-2) transactions.
+     * @since 2.1
+     */
+    private const val EIP1559_GAS_FIELD = "baseFeePerGas"
+
+    /**
      * Initialize DoraFund with application metadata.
-     *
      * @see EVMChains
      * @since 2.0
      */
@@ -211,6 +219,20 @@ object DoraFund {
     ) : Core.Model.AppMetaData
 
     /**
+     * Determines whether the connected blockchain network or node supports EIP-1559 transactions.
+     * This native function performs a low-level capability check to verify if
+     * type-2 (EIP-1559) transactions can be used on the currently connected chain.
+     * The result is returned asynchronously through the provided callbacks.
+     * @param context The Android context used for environment or resource access.
+     * @param onSuccess Callback invoked when the support check completes successfully.
+     * @param onError Callback invoked if the check fails due to an error or unsupported configuration.
+     * @since 2.1
+     */
+    private external fun nativeIsEIP1559Supported(context: Context,
+                                                  onSuccess: (SentRequestResult) -> Unit,
+                                                  onError: (Throwable) -> Unit)
+
+    /**
      * Initialize the payment listener.
      * @since 2.0
      */
@@ -225,7 +247,7 @@ object DoraFund {
      */
     @Deprecated(
         message = "This method is deprecated, use the nativeGetGasParametersEIP1559() instead",
-        replaceWith = ReplaceWith("nativeGetGasParametersEIP1559(transferType)"),
+        replaceWith = ReplaceWith("nativeGetGasParametersEIP1559(context,transferType)"),
         level = DeprecationLevel.WARNING
     )
     private external fun nativeGetGasParameters(): Array<String>
@@ -451,26 +473,12 @@ object DoraFund {
             val isEIP1559Chain = when (chain) {
                 EVMChains.ETHEREUM,
                 EVMChains.POLYGON,
+                EVMChains.AVALANCHE,
                 EVMChains.ARBITRUM,
                 EVMChains.OPTIMISM -> true
                 else -> false
             }
-            if (isEIP1559Chain) {
-                // EIP-1559：use baseFee + priorityFee
-                payEIP1559(
-                    context,
-                    accessKey,
-                    secretKey,
-                    orderTitle,
-                    goodsDesc,
-                    ERC20_ADDRESS,
-                    value,
-                    gasLimit,
-                    maxFeePerGas,
-                    maxPriorityFeePerGas,
-                    orderListener
-                )
-            } else {
+            if (!isEIP1559Chain) {
                 payLegacy(
                     context,
                     accessKey,
@@ -483,7 +491,42 @@ object DoraFund {
                     gasPrice,
                     orderListener
                 )
+                return
             }
+            nativeIsEIP1559Supported(context, { result: SentRequestResult ->
+                val supports = JSONObject(result.params).has(EIP1559_GAS_FIELD)
+                if (supports) {
+                    // EIP-1559：use baseFee + priorityFee
+                    payEIP1559(
+                        context,
+                        accessKey,
+                        secretKey,
+                        orderTitle,
+                        goodsDesc,
+                        ERC20_ADDRESS,
+                        value,
+                        gasLimit,
+                        maxFeePerGas,
+                        maxPriorityFeePerGas,
+                        orderListener
+                    )
+                } else {
+                    payLegacy(
+                        context,
+                        accessKey,
+                        secretKey,
+                        orderTitle,
+                        goodsDesc,
+                        ERC20_ADDRESS,
+                        value,
+                        gasLimit,
+                        gasPrice,
+                        orderListener
+                    )
+                }
+            }, { error: Throwable ->
+                Log.e("EIP1559", "Wallet request failed", error)
+            })
         } else {
             payERC20(
                 context,
@@ -573,26 +616,12 @@ object DoraFund {
             val isEIP1559Chain = when (chain) {
                 EVMChains.ETHEREUM,
                 EVMChains.POLYGON,
+                EVMChains.AVALANCHE,
                 EVMChains.ARBITRUM,
                 EVMChains.OPTIMISM -> true
                 else -> false
             }
-            if (isEIP1559Chain) {
-                // EIP-1559：use baseFee + priorityFee
-                payEIP1559(
-                    context,
-                    accessKey,
-                    secretKey,
-                    orderTitle,
-                    goodsDesc,
-                    account,
-                    value,
-                    gasLimit,
-                    maxFeePerGas,
-                    maxPriorityFeePerGas,
-                    orderListener
-                )
-            } else {
+            if (!isEIP1559Chain) {
                 payLegacy(
                     context,
                     accessKey,
@@ -605,7 +634,42 @@ object DoraFund {
                     gasPrice,
                     orderListener
                 )
+                return
             }
+            nativeIsEIP1559Supported(context, { result: SentRequestResult ->
+                val supports = JSONObject(result.params).has(EIP1559_GAS_FIELD)
+                if (supports) {
+                    // EIP-1559：use baseFee + priorityFee
+                    payEIP1559(
+                        context,
+                        accessKey,
+                        secretKey,
+                        orderTitle,
+                        goodsDesc,
+                        account,
+                        value,
+                        gasLimit,
+                        maxFeePerGas,
+                        maxPriorityFeePerGas,
+                        orderListener
+                    )
+                } else {
+                    payLegacy(
+                        context,
+                        accessKey,
+                        secretKey,
+                        orderTitle,
+                        goodsDesc,
+                        account,
+                        value,
+                        gasLimit,
+                        gasPrice,
+                        orderListener
+                    )
+                }
+            }, { error: Throwable ->
+                Log.e("EIP1559", "Wallet request failed", error)
+            })
         } else {
             payERC20(
                 context,
@@ -697,7 +761,7 @@ object DoraFund {
             positiveListener {
                 Web3Modal.getAccount()?.let { session ->
                     sendNativeTransactionRequest(context, accessKey, secretKey, session.address, account,
-                        PayUtils.convertToHexWei(value), gasLimit, gasPrice, "", "",
+                        PayUtils.convertToHexWei(value), false, gasLimit, gasPrice, "", "",
                         onSuccess = {
                             if (it is SentRequestResult.WalletConnect) {
                                 ToastUtils.showShort(R.string.please_complete_the_payment_in_the_wallet)
@@ -743,7 +807,7 @@ object DoraFund {
             positiveListener {
                 Web3Modal.getAccount()?.let { session ->
                     sendNativeTransactionRequest(context, accessKey, secretKey, session.address, account,
-                        PayUtils.convertToHexWei(value), gasLimit, "", maxFeePerGas, maxPriorityFeePerGas,
+                        PayUtils.convertToHexWei(value), true, gasLimit, "", maxFeePerGas, maxPriorityFeePerGas,
                         onSuccess = {
                             if (it is SentRequestResult.WalletConnect) {
                                 ToastUtils.showShort(R.string.please_complete_the_payment_in_the_wallet)
@@ -788,9 +852,10 @@ object DoraFund {
             ToastUtils.showShort(R.string.please_switch_correct_chain_to_pay_with_tokens)
             return
         }
-        val isEIP1559Chain = when (token.chain) {
+        val isEIP1559Chain = when (chain) {
             EVMChains.ETHEREUM,
             EVMChains.POLYGON,
+            EVMChains.AVALANCHE,
             EVMChains.ARBITRUM,
             EVMChains.OPTIMISM -> true
             else -> false
@@ -804,8 +869,8 @@ object DoraFund {
             positiveButton(ContextCompat.getString(context, R.string.pay))
             positiveListener {
                 Web3Modal.getAccount()?.let { session ->
-                    val status = if (isEIP1559Chain) {
-                        nativeSendERC20TransactionRequest(
+                    if (!isEIP1559Chain) {
+                        val status = nativeSendERC20TransactionRequest(
                             context,
                             accessKey,
                             secretKey,
@@ -814,31 +879,7 @@ object DoraFund {
                             PayUtils.convertToHexWeiABI(amount, token.decimals),
                             token.symbol,
                             token.contractAddress,
-                            gasLimit,
-                            "",
-                            maxFeePerGas,
-                            maxPriorityFeePerGas,
-                            onSuccess = {
-                                if (it is SentRequestResult.WalletConnect) {
-                                    ToastUtils.showShort(R.string.please_complete_the_payment_in_the_wallet)
-                                    orderListener.onPrintOrder("order${it.requestId}", session.chain, amount)
-                                }
-                            },
-                            onError = {
-                                ToastUtils.showShort(R.string.payment_failed)
-                                Log.e("ERC20Payment", it.toString())
-                            }
-                        )
-                    } else {
-                        nativeSendERC20TransactionRequest(
-                            context,
-                            accessKey,
-                            secretKey,
-                            session.address,
-                            toAddress,
-                            PayUtils.convertToHexWeiABI(amount, token.decimals),
-                            token.symbol,
-                            token.contractAddress,
+                            false,
                             gasLimit,
                             gasPrice,
                             "", "",
@@ -853,39 +894,162 @@ object DoraFund {
                                 Log.e("ERC20Payment", it.toString())
                             }
                         )
+                        when (status) {
+                            STATUS_CODE_OK -> {
+                                Log.i("sendERC20TransactionRequest", "OK.")
+                            }
+                            STATUS_CODE_ACCESS_KEY_IS_INVALID -> {
+                                Log.e("sendERC20TransactionRequest", "The access key is invalid.")
+                            }
+                            STATUS_CODE_PAYMENT_ERROR -> {
+                                Log.e("sendERC20TransactionRequest", "Payment error, please try again.")
+                            }
+                            STATUS_CODE_SINGLE_TRANSACTION_LIMIT -> {
+                                Log.e("sendERC20TransactionRequest", "Single transaction limit exceeded.")
+                            }
+                            STATUS_CODE_MONTHLY_LIMIT -> {
+                                Log.e("sendERC20TransactionRequest", "Monthly limit exceeded.")
+                            }
+                            STATUS_CODE_UNSUPPORTED_CHAIN_ID -> {
+                                Log.e("sendERC20TransactionRequest", "Unsupported chainId.")
+                            }
+                            STATUS_CODE_FAILED_TO_FETCH_TOKEN_PRICE -> {
+                                Log.e("sendERC20TransactionRequest", "Failed to fetch token price.")
+                            }
+                            STATUS_CODE_ACCESS_KEY_IS_EXPIRED -> {
+                                Log.e("sendERC20TransactionRequest", "The access key is expired.")
+                            }
+                            STATUS_CODE_UNSUPPORTED_ERC20_TOKEN -> {
+                                Log.e("sendERC20TransactionRequest", "Unsupported ERC20 token.")
+                            }
+                            STATUS_CODE_TOKEN_SYMBOL_MISMATCH -> {
+                                Log.e("sendERC20TransactionRequest", "ERC20 token symbol does not match.")
+                            }
+                        }
+                        return@positiveListener
                     }
-                    when (status) {
-                        STATUS_CODE_OK -> {
-                            Log.i("sendERC20TransactionRequest", "OK.")
+                    nativeIsEIP1559Supported(context, { result: SentRequestResult ->
+                        val supports = JSONObject(result.params).has(EIP1559_GAS_FIELD)
+                        if (supports) {
+                            // EIP-1559：use baseFee + priorityFee
+                            val status = nativeSendERC20TransactionRequest(
+                                context,
+                                accessKey,
+                                secretKey,
+                                session.address,
+                                toAddress,
+                                PayUtils.convertToHexWeiABI(amount, token.decimals),
+                                token.symbol,
+                                token.contractAddress,
+                                true,
+                                gasLimit,
+                                "",
+                                maxFeePerGas,
+                                maxPriorityFeePerGas,
+                                onSuccess = {
+                                    if (it is SentRequestResult.WalletConnect) {
+                                        ToastUtils.showShort(R.string.please_complete_the_payment_in_the_wallet)
+                                        orderListener.onPrintOrder("order${it.requestId}", session.chain, amount)
+                                    }
+                                },
+                                onError = {
+                                    ToastUtils.showShort(R.string.payment_failed)
+                                    Log.e("ERC20Payment", it.toString())
+                                }
+                            )
+                            when (status) {
+                                STATUS_CODE_OK -> {
+                                    Log.i("sendERC20TransactionRequest", "OK.")
+                                }
+                                STATUS_CODE_ACCESS_KEY_IS_INVALID -> {
+                                    Log.e("sendERC20TransactionRequest", "The access key is invalid.")
+                                }
+                                STATUS_CODE_PAYMENT_ERROR -> {
+                                    Log.e("sendERC20TransactionRequest", "Payment error, please try again.")
+                                }
+                                STATUS_CODE_SINGLE_TRANSACTION_LIMIT -> {
+                                    Log.e("sendERC20TransactionRequest", "Single transaction limit exceeded.")
+                                }
+                                STATUS_CODE_MONTHLY_LIMIT -> {
+                                    Log.e("sendERC20TransactionRequest", "Monthly limit exceeded.")
+                                }
+                                STATUS_CODE_UNSUPPORTED_CHAIN_ID -> {
+                                    Log.e("sendERC20TransactionRequest", "Unsupported chainId.")
+                                }
+                                STATUS_CODE_FAILED_TO_FETCH_TOKEN_PRICE -> {
+                                    Log.e("sendERC20TransactionRequest", "Failed to fetch token price.")
+                                }
+                                STATUS_CODE_ACCESS_KEY_IS_EXPIRED -> {
+                                    Log.e("sendERC20TransactionRequest", "The access key is expired.")
+                                }
+                                STATUS_CODE_UNSUPPORTED_ERC20_TOKEN -> {
+                                    Log.e("sendERC20TransactionRequest", "Unsupported ERC20 token.")
+                                }
+                                STATUS_CODE_TOKEN_SYMBOL_MISMATCH -> {
+                                    Log.e("sendERC20TransactionRequest", "ERC20 token symbol does not match.")
+                                }
+                            }
+                        } else {
+                            val status = nativeSendERC20TransactionRequest(
+                                context,
+                                accessKey,
+                                secretKey,
+                                session.address,
+                                toAddress,
+                                PayUtils.convertToHexWeiABI(amount, token.decimals),
+                                token.symbol,
+                                token.contractAddress,
+                                false,
+                                gasLimit,
+                                gasPrice,
+                                "", "",
+                                onSuccess = {
+                                    if (it is SentRequestResult.WalletConnect) {
+                                        ToastUtils.showShort(R.string.please_complete_the_payment_in_the_wallet)
+                                        orderListener.onPrintOrder("order${it.requestId}", session.chain, amount)
+                                    }
+                                },
+                                onError = {
+                                    ToastUtils.showShort(R.string.payment_failed)
+                                    Log.e("ERC20Payment", it.toString())
+                                }
+                            )
+                            when (status) {
+                                STATUS_CODE_OK -> {
+                                    Log.i("sendERC20TransactionRequest", "OK.")
+                                }
+                                STATUS_CODE_ACCESS_KEY_IS_INVALID -> {
+                                    Log.e("sendERC20TransactionRequest", "The access key is invalid.")
+                                }
+                                STATUS_CODE_PAYMENT_ERROR -> {
+                                    Log.e("sendERC20TransactionRequest", "Payment error, please try again.")
+                                }
+                                STATUS_CODE_SINGLE_TRANSACTION_LIMIT -> {
+                                    Log.e("sendERC20TransactionRequest", "Single transaction limit exceeded.")
+                                }
+                                STATUS_CODE_MONTHLY_LIMIT -> {
+                                    Log.e("sendERC20TransactionRequest", "Monthly limit exceeded.")
+                                }
+                                STATUS_CODE_UNSUPPORTED_CHAIN_ID -> {
+                                    Log.e("sendERC20TransactionRequest", "Unsupported chainId.")
+                                }
+                                STATUS_CODE_FAILED_TO_FETCH_TOKEN_PRICE -> {
+                                    Log.e("sendERC20TransactionRequest", "Failed to fetch token price.")
+                                }
+                                STATUS_CODE_ACCESS_KEY_IS_EXPIRED -> {
+                                    Log.e("sendERC20TransactionRequest", "The access key is expired.")
+                                }
+                                STATUS_CODE_UNSUPPORTED_ERC20_TOKEN -> {
+                                    Log.e("sendERC20TransactionRequest", "Unsupported ERC20 token.")
+                                }
+                                STATUS_CODE_TOKEN_SYMBOL_MISMATCH -> {
+                                    Log.e("sendERC20TransactionRequest", "ERC20 token symbol does not match.")
+                                }
+                            }
                         }
-                        STATUS_CODE_ACCESS_KEY_IS_INVALID -> {
-                            Log.e("sendERC20TransactionRequest", "The access key is invalid.")
-                        }
-                        STATUS_CODE_PAYMENT_ERROR -> {
-                            Log.e("sendERC20TransactionRequest", "Payment error, please try again.")
-                        }
-                        STATUS_CODE_SINGLE_TRANSACTION_LIMIT -> {
-                            Log.e("sendERC20TransactionRequest", "Single transaction limit exceeded.")
-                        }
-                        STATUS_CODE_MONTHLY_LIMIT -> {
-                            Log.e("sendERC20TransactionRequest", "Monthly limit exceeded.")
-                        }
-                        STATUS_CODE_UNSUPPORTED_CHAIN_ID -> {
-                            Log.e("sendERC20TransactionRequest", "Unsupported chainId.")
-                        }
-                        STATUS_CODE_FAILED_TO_FETCH_TOKEN_PRICE -> {
-                            Log.e("sendERC20TransactionRequest", "Failed to fetch token price.")
-                        }
-                        STATUS_CODE_ACCESS_KEY_IS_EXPIRED -> {
-                            Log.e("sendERC20TransactionRequest", "The access key is expired.")
-                        }
-                        STATUS_CODE_UNSUPPORTED_ERC20_TOKEN -> {
-                            Log.e("sendERC20TransactionRequest", "Unsupported ERC20 token.")
-                        }
-                        STATUS_CODE_TOKEN_SYMBOL_MISMATCH -> {
-                            Log.e("sendERC20TransactionRequest", "ERC20 token symbol does not match.")
-                        }
-                    }
+                    }, { error: Throwable ->
+                        Log.e("EIP1559", "Wallet request failed", error)
+                    })
                 }
             }
             negativeListener {
@@ -901,7 +1065,7 @@ object DoraFund {
     @Deprecated(
         message = "This method is deprecated, use the sendNativeTransactionRequest() instead",
         replaceWith = ReplaceWith("sendNativeTransactionRequest(context,accessKey,secretKey," +
-                "from,to,value,gasLimit,gasPrice,maxFeePerGas,maxPriorityFeePerGas,onSuccess,onError)"),
+                "from,to,value,isEIP1559,gasLimit,gasPrice,maxFeePerGas,maxPriorityFeePerGas,onSuccess,onError)"),
         level = DeprecationLevel.WARNING
     )
     private fun sendTransactionRequest(
@@ -972,6 +1136,7 @@ object DoraFund {
         from: String,
         to: String,
         value: String,
+        isEIP1559: Boolean,
         gasLimit: String,
         gasPrice: String,
         maxFeePerGas: String,
@@ -993,7 +1158,7 @@ object DoraFund {
                 return
             }
             val status = nativeSendNativeTransactionRequest(context, accessKey, secretKey, from, to,
-                value, gasLimit, gasPrice, maxFeePerGas, maxPriorityFeePerGas, onSuccess, onError)
+                value, isEIP1559, gasLimit, gasPrice, maxFeePerGas, maxPriorityFeePerGas, onSuccess, onError)
             when (status) {
                 STATUS_CODE_OK -> {
                     Log.i("sendNativeTransactionRequest", "OK.")
@@ -1098,7 +1263,7 @@ object DoraFund {
     @Deprecated(
         message = "This method is deprecated, use the nativeSendNativeTransactionRequest() instead",
         replaceWith = ReplaceWith("nativeSendNativeTransactionRequest(context,accessKey," +
-                "secretKey,from,to,value,gasLimit,gasPrice,maxFeePerGas,maxPriorityFeePerGas," +
+                "secretKey,from,to,value,isEIP1559,gasLimit,gasPrice,maxFeePerGas,maxPriorityFeePerGas," +
                 "onSuccess,onError)"),
         level = DeprecationLevel.WARNING
     )
@@ -1126,6 +1291,7 @@ object DoraFund {
         from: String,
         to: String,
         value: String,
+        isEIP1559: Boolean,
         gasLimit: String,
         gasPrice: String,
         maxFeePerGas: String,
@@ -1147,6 +1313,7 @@ object DoraFund {
         value: String,
         tokenSymbol: String,
         contractAddress: String,
+        isEIP1559: Boolean,
         gasLimit: String,
         gasPrice: String,
         maxFeePerGas: String,
