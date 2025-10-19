@@ -230,7 +230,7 @@ object DoraFund {
      */
     private external fun nativeIsEIP1559Supported(context: Context,
                                                   onSuccess: (SentRequestResult) -> Unit,
-                                                  onError: (Throwable) -> Unit)
+                                                  onError: (Throwable) -> Unit) : Boolean
 
     /**
      * Initialize the payment listener.
