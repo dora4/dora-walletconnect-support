@@ -625,8 +625,8 @@ object DoraFund {
                     "LEGACY"
                 }
             }
-                .subscribeOn(Schedulers.io()) // RPC调用在IO线程
-                .observeOn(AndroidSchedulers.mainThread()) // 支付方法在主线程
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ type ->
                     when (type) {
                         "EIP1559" -> {

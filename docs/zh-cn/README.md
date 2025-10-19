@@ -17,8 +17,8 @@ dependencyResolutionManagement {
 ```kotlin
 dependencies {
     // 扩展包必须在有主框架dora的情况下使用
-    implementation("com.github.dora4:dora:1.3.37")
-    implementation("com.github.dora4:dora-walletconnect-support:2.1.16")
+    implementation("com.github.dora4:dora:1.3.39")
+    implementation("com.github.dora4:dora-walletconnect-support:2.1.28")
 }
 ```
 
