@@ -22,6 +22,9 @@ import dora.pay.token.Token
 import dora.util.IntentUtils
 import dora.util.ToastUtils
 import dora.widget.DoraAlertDialog
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 /**
  * https://dorafund.com
@@ -459,8 +462,7 @@ object DoraFund {
                 ToastUtils.showShort(R.string.rpc_url_is_missing)
                 return
             }
-            Thread {
-                // supports EIP-1559
+            Observable.fromCallable {
                 val isEIP1559Chain = when (chain) {
                     EVMChains.ETHEREUM,
                     EVMChains.POLYGON,
@@ -470,35 +472,50 @@ object DoraFund {
                     else -> false
                 }
                 if (isEIP1559Chain && PayUtils.isEIP1559Supported(chain.rpcUrl!!)) {
-                    // EIP-1559：use baseFee + priorityFee
-                    payEIP1559(
-                        context,
-                        accessKey,
-                        secretKey,
-                        orderTitle,
-                        goodsDesc,
-                        ERC20_ADDRESS,
-                        value,
-                        gasLimit,
-                        maxFeePerGas,
-                        maxPriorityFeePerGas,
-                        orderListener
-                    )
+                    "EIP1559"
                 } else {
-                    payLegacy(
-                        context,
-                        accessKey,
-                        secretKey,
-                        orderTitle,
-                        goodsDesc,
-                        ERC20_ADDRESS,
-                        value,
-                        gasLimit,
-                        gasPrice,
-                        orderListener
-                    )
+                    "LEGACY"
                 }
-            }.start()
+            }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ type ->
+                    when (type) {
+                        "EIP1559" -> {
+                            payEIP1559(
+                                context,
+                                accessKey,
+                                secretKey,
+                                orderTitle,
+                                goodsDesc,
+                                ERC20_ADDRESS,
+                                value,
+                                gasLimit,
+                                maxFeePerGas,
+                                maxPriorityFeePerGas,
+                                orderListener
+                            )
+                        }
+                        "LEGACY" -> {
+                            payLegacy(
+                                context,
+                                accessKey,
+                                secretKey,
+                                orderTitle,
+                                goodsDesc,
+                                ERC20_ADDRESS,
+                                value,
+                                gasLimit,
+                                gasPrice,
+                                orderListener
+                            )
+                        }
+                    }
+                }, { error ->
+                    error.printStackTrace()
+                    ToastUtils.showShort(R.string.payment_failed)
+                })
+
         } else {
             payERC20(
                 context,
@@ -593,47 +610,60 @@ object DoraFund {
                 ToastUtils.showShort(R.string.rpc_url_is_missing)
                 return
             }
-            Thread {
-                // supports EIP-1559
+            Observable.fromCallable {
                 val isEIP1559Chain = when (chain) {
                     EVMChains.ETHEREUM,
                     EVMChains.POLYGON,
                     EVMChains.AVALANCHE,
                     EVMChains.ARBITRUM,
                     EVMChains.OPTIMISM -> true
-
                     else -> false
                 }
                 if (isEIP1559Chain && PayUtils.isEIP1559Supported(chain.rpcUrl!!)) {
-                    // EIP-1559：use baseFee + priorityFee
-                    payEIP1559(
-                        context,
-                        accessKey,
-                        secretKey,
-                        orderTitle,
-                        goodsDesc,
-                        account,
-                        value,
-                        gasLimit,
-                        maxFeePerGas,
-                        maxPriorityFeePerGas,
-                        orderListener
-                    )
+                    "EIP1559"
                 } else {
-                    payLegacy(
-                        context,
-                        accessKey,
-                        secretKey,
-                        orderTitle,
-                        goodsDesc,
-                        account,
-                        value,
-                        gasLimit,
-                        gasPrice,
-                        orderListener
-                    )
+                    "LEGACY"
                 }
-            }.start()
+            }
+                .subscribeOn(Schedulers.io()) // RPC调用在IO线程
+                .observeOn(AndroidSchedulers.mainThread()) // 支付方法在主线程
+                .subscribe({ type ->
+                    when (type) {
+                        "EIP1559" -> {
+                            payEIP1559(
+                                context,
+                                accessKey,
+                                secretKey,
+                                orderTitle,
+                                goodsDesc,
+                                account,
+                                value,
+                                gasLimit,
+                                maxFeePerGas,
+                                maxPriorityFeePerGas,
+                                orderListener
+                            )
+                        }
+                        "LEGACY" -> {
+                            payLegacy(
+                                context,
+                                accessKey,
+                                secretKey,
+                                orderTitle,
+                                goodsDesc,
+                                account,
+                                value,
+                                gasLimit,
+                                gasPrice,
+                                orderListener
+                            )
+                        }
+                    }
+                }, { error ->
+                    error.printStackTrace()
+                    ToastUtils.showShort(R.string.payment_failed)
+                })
+
         } else {
             payERC20(
                 context,
@@ -874,15 +904,16 @@ object DoraFund {
             ToastUtils.showShort(R.string.please_switch_correct_chain_to_pay_with_tokens)
             return
         }
+
         val isEIP1559Chain = when (chain) {
             EVMChains.ETHEREUM,
             EVMChains.POLYGON,
             EVMChains.AVALANCHE,
             EVMChains.ARBITRUM,
             EVMChains.OPTIMISM -> true
-
             else -> false
         }
+
         if (payListener == null) throw PaymentException("No PayListener is set.")
         DoraAlertDialog(context).show(
             "$goodsDesc\n\n${
@@ -897,120 +928,87 @@ object DoraFund {
             positiveButton(ContextCompat.getString(context, R.string.pay))
             positiveListener {
                 Web3Modal.getAccount()?.let { session ->
-                    Thread {
-                        val status =
-                            if (isEIP1559Chain && PayUtils.isEIP1559Supported(chain.rpcUrl!!)) {
-                                // EIP-1559：use baseFee + priorityFee
-                                nativeSendERC20TransactionRequest(
-                                    context,
-                                    accessKey,
-                                    secretKey,
-                                    session.address,
-                                    toAddress,
-                                    PayUtils.convertToHexWeiABI(amount, token.decimals),
-                                    token.symbol,
-                                    token.contractAddress,
-                                    true,
-                                    gasLimit,
-                                    "",
-                                    maxFeePerGas,
-                                    maxPriorityFeePerGas,
-                                    onSuccess = {
-                                        if (it is SentRequestResult.WalletConnect) {
-                                            ToastUtils.showShort(R.string.please_complete_the_payment_in_the_wallet)
-                                            orderListener.onPrintOrder(
-                                                "order${it.requestId}",
-                                                session.chain,
-                                                amount
-                                            )
-                                        }
-                                    },
-                                    onError = {
-                                        ToastUtils.showShort(R.string.payment_failed)
-                                        Log.e("ERC20Payment", it.toString())
+                    Observable.fromCallable {
+                        if (isEIP1559Chain && PayUtils.isEIP1559Supported(chain.rpcUrl!!)) {
+                            nativeSendERC20TransactionRequest(
+                                context,
+                                accessKey,
+                                secretKey,
+                                session.address,
+                                toAddress,
+                                PayUtils.convertToHexWeiABI(amount, token.decimals),
+                                token.symbol,
+                                token.contractAddress,
+                                true,
+                                gasLimit,
+                                "",
+                                maxFeePerGas,
+                                maxPriorityFeePerGas,
+                                onSuccess = { result ->
+                                    if (result is SentRequestResult.WalletConnect) {
+                                        ToastUtils.showShort(R.string.please_complete_the_payment_in_the_wallet)
+                                        orderListener.onPrintOrder(
+                                            "order${result.requestId}",
+                                            session.chain,
+                                            amount
+                                        )
                                     }
-                                )
-                            } else {
-                                nativeSendERC20TransactionRequest(
-                                    context,
-                                    accessKey,
-                                    secretKey,
-                                    session.address,
-                                    toAddress,
-                                    PayUtils.convertToHexWeiABI(amount, token.decimals),
-                                    token.symbol,
-                                    token.contractAddress,
-                                    false,
-                                    gasLimit,
-                                    gasPrice,
-                                    "", "",
-                                    onSuccess = {
-                                        if (it is SentRequestResult.WalletConnect) {
-                                            ToastUtils.showShort(R.string.please_complete_the_payment_in_the_wallet)
-                                            orderListener.onPrintOrder(
-                                                "order${it.requestId}",
-                                                session.chain,
-                                                amount
-                                            )
-                                        }
-                                    },
-                                    onError = {
-                                        ToastUtils.showShort(R.string.payment_failed)
-                                        Log.e("ERC20Payment", it.toString())
+                                },
+                                onError = { error ->
+                                    ToastUtils.showShort(R.string.payment_failed)
+                                    Log.e("ERC20Payment", error.toString())
+                                }
+                            )
+                        } else {
+                            nativeSendERC20TransactionRequest(
+                                context,
+                                accessKey,
+                                secretKey,
+                                session.address,
+                                toAddress,
+                                PayUtils.convertToHexWeiABI(amount, token.decimals),
+                                token.symbol,
+                                token.contractAddress,
+                                false,
+                                gasLimit,
+                                gasPrice,
+                                "", "",
+                                onSuccess = { result ->
+                                    if (result is SentRequestResult.WalletConnect) {
+                                        ToastUtils.showShort(R.string.please_complete_the_payment_in_the_wallet)
+                                        orderListener.onPrintOrder(
+                                            "order${result.requestId}",
+                                            session.chain,
+                                            amount
+                                        )
                                     }
-                                )
-                            }
-                        when (status) {
-                            STATUS_CODE_OK -> {
-                                Log.i("sendERC20TransactionRequest", "OK.")
-                            }
-
-                            STATUS_CODE_ACCESS_KEY_IS_INVALID -> {
-                                Log.e("sendERC20TransactionRequest", "The access key is invalid.")
-                            }
-
-                            STATUS_CODE_PAYMENT_ERROR -> {
-                                Log.e(
-                                    "sendERC20TransactionRequest",
-                                    "Payment error, please try again."
-                                )
-                            }
-
-                            STATUS_CODE_SINGLE_TRANSACTION_LIMIT -> {
-                                Log.e(
-                                    "sendERC20TransactionRequest",
-                                    "Single transaction limit exceeded."
-                                )
-                            }
-
-                            STATUS_CODE_MONTHLY_LIMIT -> {
-                                Log.e("sendERC20TransactionRequest", "Monthly limit exceeded.")
-                            }
-
-                            STATUS_CODE_UNSUPPORTED_CHAIN_ID -> {
-                                Log.e("sendERC20TransactionRequest", "Unsupported chainId.")
-                            }
-
-                            STATUS_CODE_FAILED_TO_FETCH_TOKEN_PRICE -> {
-                                Log.e("sendERC20TransactionRequest", "Failed to fetch token price.")
-                            }
-
-                            STATUS_CODE_ACCESS_KEY_IS_EXPIRED -> {
-                                Log.e("sendERC20TransactionRequest", "The access key is expired.")
-                            }
-
-                            STATUS_CODE_UNSUPPORTED_ERC20_TOKEN -> {
-                                Log.e("sendERC20TransactionRequest", "Unsupported ERC20 token.")
-                            }
-
-                            STATUS_CODE_TOKEN_SYMBOL_MISMATCH -> {
-                                Log.e(
-                                    "sendERC20TransactionRequest",
-                                    "ERC20 token symbol does not match."
-                                )
-                            }
+                                },
+                                onError = { error ->
+                                    ToastUtils.showShort(R.string.payment_failed)
+                                    Log.e("ERC20Payment", error.toString())
+                                }
+                            )
                         }
-                    }.start()
+                    }
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({ status ->
+                            when (status) {
+                                STATUS_CODE_OK -> Log.i("sendERC20TransactionRequest", "OK.")
+                                STATUS_CODE_ACCESS_KEY_IS_INVALID -> Log.e("sendERC20TransactionRequest", "The access key is invalid.")
+                                STATUS_CODE_PAYMENT_ERROR -> Log.e("sendERC20TransactionRequest", "Payment error, please try again.")
+                                STATUS_CODE_SINGLE_TRANSACTION_LIMIT -> Log.e("sendERC20TransactionRequest", "Single transaction limit exceeded.")
+                                STATUS_CODE_MONTHLY_LIMIT -> Log.e("sendERC20TransactionRequest", "Monthly limit exceeded.")
+                                STATUS_CODE_UNSUPPORTED_CHAIN_ID -> Log.e("sendERC20TransactionRequest", "Unsupported chainId.")
+                                STATUS_CODE_FAILED_TO_FETCH_TOKEN_PRICE -> Log.e("sendERC20TransactionRequest", "Failed to fetch token price.")
+                                STATUS_CODE_ACCESS_KEY_IS_EXPIRED -> Log.e("sendERC20TransactionRequest", "The access key is expired.")
+                                STATUS_CODE_UNSUPPORTED_ERC20_TOKEN -> Log.e("sendERC20TransactionRequest", "Unsupported ERC20 token.")
+                                STATUS_CODE_TOKEN_SYMBOL_MISMATCH -> Log.e("sendERC20TransactionRequest", "ERC20 token symbol does not match.")
+                            }
+                        }, { error ->
+                            error.printStackTrace()
+                            ToastUtils.showShort(R.string.payment_failed)
+                        })
                 }
             }
             negativeListener {
