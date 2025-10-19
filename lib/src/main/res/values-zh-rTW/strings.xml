@@ -24,4 +24,5 @@
     <string name="warm_prompt">溫馨提示</string>
     <string name="state_userpause">專用信道已由使用者暫停</string>
     <string name="cancel_connection_query">斷開Dora Fund專用信道？</string>
+    <string name="rpc_url_is_missing">RPC地址为空</string>
 </resources>

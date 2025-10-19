@@ -512,4 +512,5 @@
     <string name="allow_translations_summary">Allows the app to be translated with translations contributed by the community. Requires a restart of the app to activate.</string>
     <string name="tls_profile">TLS Security Profile</string>
     <string name="tap_to_continue">Tap to continue</string>
+    <string name="rpc_url_is_missing">RPC URL is missing</string>
 </resources>

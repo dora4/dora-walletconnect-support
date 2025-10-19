@@ -97,4 +97,21 @@ object PayUtils {
         val web3j: Web3j = Web3j.build(HttpService(jsonRpcUrl))
         return web3j.ethGetTransactionByHash(transactionHash).send().transaction.orElse(null)
     }
+
+    /**
+     * Determines whether the connected blockchain network or node supports EIP-1559 transactions.
+     * This native function performs a low-level capability check to verify if
+     * type-2 (EIP-1559) transactions can be used on the currently connected chain.
+     * The result is returned asynchronously through the provided callbacks.
+     * @since 2.1
+     */
+    @JvmStatic
+    @WorkerThread
+    fun isEIP1559Supported(jsonRpcUrl: String) : Boolean {
+        val web3 = Web3j.build(HttpService(jsonRpcUrl))
+        return web3.ethGetBlockByNumber(
+            org.web3j.protocol.core.DefaultBlockParameterName.LATEST,
+            false
+        ).send().block.baseFeePerGas != null
+    }
 }

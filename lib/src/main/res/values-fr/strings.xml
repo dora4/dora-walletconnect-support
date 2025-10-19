@@ -24,4 +24,5 @@
     <string name="warm_prompt">Rappel amical</string>
     <string name="state_userpause">Le canal dédié a été mis en pause par l’utilisateur</string>
     <string name="cancel_connection_query">Déconnecter le canal dédié Dora Fund ?</string>
+    <string name="rpc_url_is_missing">L’URL RPC est manquante</string>
 </resources>

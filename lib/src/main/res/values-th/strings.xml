@@ -24,4 +24,5 @@
     <string name="warm_prompt">คำแนะนำที่อบอุ่น</string>
     <string name="state_userpause">ช่องเฉพาะถูกผู้ใช้หยุดชั่วคราว</string>
     <string name="cancel_connection_query">ยกเลิกการเชื่อมต่อช่องเฉพาะ Dora Fund?</string>
+    <string name="rpc_url_is_missing">ไม่มี URL ของ RPC</string>
 </resources>

@@ -24,4 +24,5 @@
     <string name="warm_prompt">تذكير ودي</string>
     <string name="state_userpause">تم إيقاف القناة المخصصة مؤقتًا بواسطة المستخدم</string>
     <string name="cancel_connection_query">قطع الاتصال بالقناة المخصصة Dora Fund؟</string>
+    <string name="rpc_url_is_missing">عنوان URL الخاص بـ RPC مفقود</string>
 </resources>

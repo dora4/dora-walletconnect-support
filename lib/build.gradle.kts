@@ -9,7 +9,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 23
+        minSdk = 24
 //        externalNativeBuild {
 //            cmake {
 //                cppFlags += ""
@@ -68,7 +68,7 @@ dependencies {
     api(platform("com.walletconnect:android-bom:1.31.4"))
     api("com.walletconnect:android-core")
     api("com.walletconnect:web3modal")
-    api("org.web3j:core:4.1.0-android")
+    api("org.web3j:core:4.10.3")
 }
 
 afterEvaluate {
@@ -78,7 +78,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.dora4"
                 artifactId = "dora-walletconnect-support"
-                version = "2.1.25"
+                version = "2.1.26"
             }
         }
     }

@@ -24,4 +24,5 @@
     <string name="warm_prompt">ご案内</string>
     <string name="state_userpause">専用チャネルはユーザーによって一時停止されました</string>
     <string name="cancel_connection_query">Dora Fund専用チャネルを切断しますか？</string>
+    <string name="rpc_url_is_missing">RPCのURLがありません</string>
 </resources>

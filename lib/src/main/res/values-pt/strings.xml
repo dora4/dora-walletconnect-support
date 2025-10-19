@@ -24,4 +24,5 @@
     <string name="warm_prompt">Aviso amigável</string>
     <string name="state_userpause">O canal dedicado foi pausado pelo usuário</string>
     <string name="cancel_connection_query">Desconectar do canal dedicado Dora Fund?</string>
+    <string name="rpc_url_is_missing">URL do RPC ausente</string>
 </resources>

@@ -24,4 +24,5 @@
     <string name="warm_prompt">Дружеское напоминание</string>
     <string name="state_userpause">Специальный канал был приостановлен пользователем</string>
     <string name="cancel_connection_query">Отключить специальный канал Dora Fund?</string>
+    <string name="rpc_url_is_missing">URL RPC отсутствует</string>
 </resources>
