@@ -593,45 +593,47 @@ object DoraFund {
                 ToastUtils.showShort(R.string.rpc_url_is_missing)
                 return
             }
-            // supports EIP-1559
-            val isEIP1559Chain = when (chain) {
-                EVMChains.ETHEREUM,
-                EVMChains.POLYGON,
-                EVMChains.AVALANCHE,
-                EVMChains.ARBITRUM,
-                EVMChains.OPTIMISM -> true
+            Thread {
+                // supports EIP-1559
+                val isEIP1559Chain = when (chain) {
+                    EVMChains.ETHEREUM,
+                    EVMChains.POLYGON,
+                    EVMChains.AVALANCHE,
+                    EVMChains.ARBITRUM,
+                    EVMChains.OPTIMISM -> true
 
-                else -> false
-            }
-            if (isEIP1559Chain && PayUtils.isEIP1559Supported(chain.rpcUrl!!)) {
-                // EIP-1559：use baseFee + priorityFee
-                payEIP1559(
-                    context,
-                    accessKey,
-                    secretKey,
-                    orderTitle,
-                    goodsDesc,
-                    account,
-                    value,
-                    gasLimit,
-                    maxFeePerGas,
-                    maxPriorityFeePerGas,
-                    orderListener
-                )
-            } else {
-                payLegacy(
-                    context,
-                    accessKey,
-                    secretKey,
-                    orderTitle,
-                    goodsDesc,
-                    account,
-                    value,
-                    gasLimit,
-                    gasPrice,
-                    orderListener
-                )
-            }
+                    else -> false
+                }
+                if (isEIP1559Chain && PayUtils.isEIP1559Supported(chain.rpcUrl!!)) {
+                    // EIP-1559：use baseFee + priorityFee
+                    payEIP1559(
+                        context,
+                        accessKey,
+                        secretKey,
+                        orderTitle,
+                        goodsDesc,
+                        account,
+                        value,
+                        gasLimit,
+                        maxFeePerGas,
+                        maxPriorityFeePerGas,
+                        orderListener
+                    )
+                } else {
+                    payLegacy(
+                        context,
+                        accessKey,
+                        secretKey,
+                        orderTitle,
+                        goodsDesc,
+                        account,
+                        value,
+                        gasLimit,
+                        gasPrice,
+                        orderListener
+                    )
+                }
+            }.start()
         } else {
             payERC20(
                 context,
