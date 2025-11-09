@@ -18,7 +18,7 @@ dependencyResolutionManagement {
 dependencies {
     // 擴展包必須與主框架 "dora" 一起使用
     implementation("com.github.dora4:dora:1.3.43")
-    implementation("com.github.dora4:dora-walletconnect-support:2.1.29")
+    implementation("com.github.dora4:dora-walletconnect-support:2.1.30")
 }
 ```
 
