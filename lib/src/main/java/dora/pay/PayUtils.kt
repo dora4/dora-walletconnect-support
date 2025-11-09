@@ -66,9 +66,9 @@ object PayUtils {
     @JvmStatic
     @WorkerThread
     fun queryTransaction(transactionHash: String, jsonRpcUrl: String) : Boolean {
-        val web3j: Web3j = Web3j.build(HttpService(jsonRpcUrl))
+        val web3: Web3j = Web3j.build(HttpService(jsonRpcUrl))
         val receipt: TransactionReceipt? =
-            web3j.ethGetTransactionReceipt(transactionHash).send().result
+            web3.ethGetTransactionReceipt(transactionHash).send().result
         return receipt != null && receipt.blockNumber != null
     }
 
@@ -94,8 +94,8 @@ object PayUtils {
     @JvmStatic
     @WorkerThread
     fun queryTransactionDetail(transactionHash: String, jsonRpcUrl: String) : Transaction? {
-        val web3j: Web3j = Web3j.build(HttpService(jsonRpcUrl))
-        return web3j.ethGetTransactionByHash(transactionHash).send().transaction.orElse(null)
+        val web3: Web3j = Web3j.build(HttpService(jsonRpcUrl))
+        return web3.ethGetTransactionByHash(transactionHash).send().transaction.orElse(null)
     }
 
     /**
