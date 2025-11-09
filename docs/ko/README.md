@@ -38,6 +38,7 @@ minSdk = 24
             android:value="GlobalConfig"/>
 </application>
 ```
+
 `Application` 클래스의 `onCreate()` 메서드에서 다음 메서드를 호출하세요:
 ```kotlin
 DoraFund.init(this, "App Name", "App Description", "https://yourdomain.com", arrayOf(
@@ -47,10 +48,21 @@ DoraFund.init(this, "App Name", "App Description", "https://yourdomain.com", arr
     EVMChains.AVALANCHE   // 아발란체 C-체인 지원
 ))
 ```
-`Activity`에서 콜드월렛과 연결을 설정하세요:
+
+Activity에서 지갑 연결
 ```kotlin
-DoraFund.connectWallet(this)
+DoraFund.connectWallet(this, requestCode)
 ```
+그런 다음 onActivityResult 메서드를 재정의합니다.
+
+Fragment에서 지갑 연결
+```kotlin
+DoraFund.prepareConnectWallet(fragment, intArrayOf(requestCode), callback)
+```
+```kotlin
+DoraFund.connectWallet(requestCode)
+```
+
 (선택 사항) 단일 `Activity`에서만 결제를 처리하는 경우, 해당 `Activity`에서 콜드월렛 결제 리스너를 설정할 수 있습니다. 만약 `Application`의 `init()` 메서드에서 `PayListener`를 등록하면, 콜백에서 메시지를 전송하여 처리 인터페이스에 알릴 수 있습니다.
 ```kotlin
 DoraFund.setPayListener(object : DoraFund.PayListener {
@@ -63,6 +75,7 @@ DoraFund.setPayListener(object : DoraFund.PayListener {
     }
 })
 ```
+
 주문 데이터를 생성하고 결제를 진행하세요:
 ```kotlin
 DoraFund.pay(this,
@@ -79,6 +92,7 @@ DoraFund.pay(this,
                     }
                 })
 ```
+
 주문 결제 상태를 조회하세요:
 ```kotlin
 // 현재 선택된 체인의 거래 조회
@@ -90,6 +104,7 @@ PayUtils.queryTransaction("이 주문의 거래 해시를 입력하세요", PayU
 // Arbitrum 메인넷의 거래 조회
 PayUtils.queryTransaction("이 주문의 거래 해시를 입력하세요", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
+
 프로가드 규칙 추가:
 ```pro
 -keep class org.json.JSONObject { *; }

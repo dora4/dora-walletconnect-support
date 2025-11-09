@@ -159,13 +159,6 @@ object DoraFund {
      * Each entry in the map is keyed by an integer request code, allowing the
      * Fragment to manage multiple wallet connection launchers simultaneously.
      *
-     * The generic type {@code Int} represents the input parameter passed to the
-     * {@link WalletContract}, typically used as a request code.
-     *
-     * All launchers must be registered before the Fragment is fully created
-     * (e.g., during {@code onCreate()}), otherwise an {@link IllegalStateException}
-     * may be thrown.
-     *
      * @since 2.1
      */
     private val connectWalletLaunchers = mutableMapOf<Int, ActivityResultLauncher<Unit>>()
@@ -346,11 +339,11 @@ object DoraFund {
     }
 
     /**
-     * Launches the cold wallet connection flow for the specified request code.
+     * Launches the cold wallet connection flow for the specified request code from a Fragment.
      *
-     * This method retrieves the pre-registered {@link ActivityResultLauncher}
-     * corresponding to the given request code from {@code connectWalletLaunchers},
-     * and starts the wallet connection process.
+     * This method is intended for use within a {@link Fragment} and retrieves the
+     * pre-registered {@link ActivityResultLauncher} corresponding to the given request code
+     * from {@code connectWalletLaunchers}, then starts the wallet connection process.
      *
      * Each request code represents a distinct wallet connection scenario,
      * such as login, payment, or authorization.

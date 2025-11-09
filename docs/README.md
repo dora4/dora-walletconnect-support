@@ -39,6 +39,7 @@ Add the following configuration to `AndroidManifest.xml`:
             android:value="GlobalConfig"/>
 </application>
 ```
+
 Call the following method in the `onCreate()` method of the `Application` class:
 ```kotlin
 DoraFund.init(this, "App Name", "App Description", "https://yourdomain.com", arrayOf(
@@ -48,10 +49,21 @@ DoraFund.init(this, "App Name", "App Description", "https://yourdomain.com", arr
     EVMChains.AVALANCHE   // Support Avalanche C-Chain
 ))
 ```
-Establish a connection with the cold wallet in an `Activity`:
+
+Connect Wallet from an Activity
 ```kotlin
-DoraFund.connectWallet(this)
+DoraFund.connectWallet(this, requestCode)
 ```
+Then, override the onActivityResult method.
+
+Connect Wallet from a Fragment
+```kotlin
+DoraFund.prepareConnectWallet(fragment, intArrayOf(requestCode), callback)
+```
+```kotlin
+DoraFund.connectWallet(requestCode)
+```
+
 (Optional) If only a single `Activity` handles payments, you can set a cold wallet payment listener in that `Activity`. If `PayListener` is registered in the `init()` method of the `Application`, you can send messages in the callback to notify the processing interface.
 ```kotlin
 DoraFund.setPayListener(object : DoraFund.PayListener {
@@ -64,6 +76,7 @@ DoraFund.setPayListener(object : DoraFund.PayListener {
     }
 })
 ```
+
 Construct order data to proceed with the payment:
 ```kotlin
 DoraFund.pay(this,
@@ -80,6 +93,7 @@ DoraFund.pay(this,
                     }
                 })
 ```
+
 Query the order payment status:
 ```kotlin
 // Query the transaction of the currently selected chain  
@@ -91,6 +105,7 @@ PayUtils.queryTransaction("Fill in the transaction hash of this order", PayUtils
 // Query the transaction on the Arbitrum mainnet  
 PayUtils.queryTransaction("Fill in the transaction hash of this order", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
+
 Add proguard rules:
 ```pro
 -keep class org.json.JSONObject { *; }

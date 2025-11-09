@@ -38,6 +38,7 @@ Añade la siguiente configuración en `AndroidManifest.xml`:
             android:value="GlobalConfig"/>
 </application>
 ```
+
 En el método `onCreate()` de la clase `Application`, llama al siguiente método:
 ```kotlin
 DoraFund.init(this, "App Name", "App Description", "https://yourdomain.com", arrayOf(
@@ -47,10 +48,21 @@ DoraFund.init(this, "App Name", "App Description", "https://yourdomain.com", arr
     EVMChains.AVALANCHE   // Compatible con Avalanche C-Chain
 ))
 ```
-Establece la conexión con la billetera fría en una `Activity`:
+
+Conexión de la cartera desde un Activity
 ```kotlin
-DoraFund.connectWallet(this)
+DoraFund.connectWallet(this, requestCode)
 ```
+Luego, sobrescribe el método onActivityResult.
+
+Conexión de la cartera desde un Fragment
+```kotlin
+DoraFund.prepareConnectWallet(fragment, intArrayOf(requestCode), callback)
+```
+```kotlin
+DoraFund.connectWallet(requestCode)
+```
+
 (Opcional) Si solo una `Activity` maneja los pagos, puedes configurar un oyente de pago de billetera fría en esa `Activity`. Si `PayListener` está registrado en el método `init()` de `Application`, puedes enviar mensajes dentro del callback para notificar a la interfaz de procesamiento.
 ```kotlin
 DoraFund.setPayListener(object : DoraFund.PayListener {
@@ -63,6 +75,7 @@ DoraFund.setPayListener(object : DoraFund.PayListener {
     }
 })
 ```
+
 Construye los datos de la orden y procede con el pago:
 ```kotlin
 DoraFund.pay(this,
@@ -79,6 +92,7 @@ DoraFund.pay(this,
                     }
                 })
 ```
+
 Consulta el estado del pago de la orden:
 ```kotlin
 // Consultar la transacción de la cadena seleccionada actualmente
@@ -90,6 +104,7 @@ PayUtils.queryTransaction("Rellena el hash de la transacción de este pedido", P
 // Consultar la transacción en la red principal de Arbitrum
 PayUtils.queryTransaction("Rellena el hash de la transacción de este pedido", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
+
 Agregar reglas de ofuscación:
 ```pro
 -keep class org.json.JSONObject { *; }

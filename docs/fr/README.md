@@ -38,6 +38,7 @@ Ajoutez la configuration suivante dans `AndroidManifest.xml` :
             android:value="GlobalConfig"/>
 </application>
 ```
+
 Dans la méthode `onCreate()` de la classe `Application`, appelez la méthode suivante :
 ```kotlin
 DoraFund.init(this, "App Name", "App Description", "https://yourdomain.com", arrayOf(
@@ -47,10 +48,21 @@ DoraFund.init(this, "App Name", "App Description", "https://yourdomain.com", arr
     EVMChains.AVALANCHE   // Prend en charge Avalanche C-Chain
 ))
 ```
-Établissez une connexion avec le portefeuille froid dans une `Activity` :
+
+Connexion du portefeuille depuis une Activity
 ```kotlin
-DoraFund.connectWallet(this)
+DoraFund.connectWallet(this, requestCode)
 ```
+Ensuite, redéfinissez la méthode onActivityResult.
+
+Connexion du portefeuille depuis un Fragment
+```kotlin
+DoraFund.prepareConnectWallet(fragment, intArrayOf(requestCode), callback)
+```
+```kotlin
+DoraFund.connectWallet(requestCode)
+```
+
 (Facultatif) Si une seule `Activity` gère les paiements, vous pouvez configurer un écouteur de paiement pour le portefeuille froid dans cette `Activity`. Si `PayListener` est enregistré dans la méthode `init()` de `Application`, vous pouvez envoyer des messages via le rappel pour notifier l'interface de traitement.
 ```kotlin
 DoraFund.setPayListener(object : DoraFund.PayListener {
@@ -63,6 +75,7 @@ DoraFund.setPayListener(object : DoraFund.PayListener {
     }
 })
 ```
+
 Créez les données de commande et procédez au paiement :
 ```kotlin
 DoraFund.pay(this,
@@ -79,6 +92,7 @@ DoraFund.pay(this,
                     }
                 })
 ```
+
 Interrogez l'état du paiement de la commande :
 ```kotlin
 // Rechercher la transaction de la chaîne actuellement sélectionnée
@@ -90,6 +104,7 @@ PayUtils.queryTransaction("Remplissez le hachage de la transaction de cette comm
 // Rechercher la transaction sur le réseau principal Arbitrum
 PayUtils.queryTransaction("Remplissez le hachage de la transaction de cette commande", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
+
 Ajouter des règles Proguard :
 ```pro
 -keep class org.json.JSONObject { *; }

@@ -38,6 +38,7 @@ minSdk = 24
             android:value="GlobalConfig"/>
 </application>
 ```
+
 在 `Application` 類的 `onCreate()` 方法中調用以下方法：
 ```kotlin
 DoraFund.init(this, "App Name", "App Description", "https://yourdomain.com", arrayOf(
@@ -47,10 +48,21 @@ DoraFund.init(this, "App Name", "App Description", "https://yourdomain.com", arr
     EVMChains.AVALANCHE   // 支援Avalanche C-Chain
 ))
 ```
-在 `Activity` 中與冷錢包建立連接：
+
+Activity 連接錢包
 ```kotlin
-DoraFund.connectWallet(this)
+DoraFund.connectWallet(this, requestCode)
 ```
+然後重寫 onActivityResult 方法。
+
+Fragment 連接錢包
+```kotlin
+DoraFund.prepareConnectWallet(fragment, intArrayOf(requestCode), callback)
+```
+```kotlin
+DoraFund.connectWallet(requestCode)
+```
+
 (選填) 若僅有單個 `Activity` 負責處理支付，可以在該 `Activity` 設置冷錢包支付監聽器。若在 `Application` 的 `init()` 方法中註冊了 `PayListener`，則可在回調中發送訊息通知處理介面。
 ```kotlin
 DoraFund.setPayListener(object : DoraFund.PayListener {
@@ -63,6 +75,7 @@ DoraFund.setPayListener(object : DoraFund.PayListener {
     }
 })
 ```
+
 構造訂單數據並執行支付：
 ```kotlin
 DoraFund.pay(this,
@@ -79,6 +92,7 @@ DoraFund.pay(this,
                     }
                 })
 ```
+
 查詢訂單支付狀態：
 ```kotlin
 // 查詢當前選中鏈的交易
@@ -90,6 +104,7 @@ PayUtils.queryTransaction("填寫該筆訂單的交易哈希", PayUtils.DEFAULT_
 // 查詢Arbitrum主網的交易
 PayUtils.queryTransaction("填寫該筆訂單的交易哈希", PayUtils.DEFAULT_RPC_ARBITRUM)
 ```
+
 添加混淆規則：
 ```pro
 -keep class org.json.JSONObject { *; }
