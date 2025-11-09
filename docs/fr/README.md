@@ -24,7 +24,7 @@ dependencies {
 
 #### Exigences du SDK
 ```kotlin
-minSdk = 23
+minSdk = 24
 ```
 
 #### Utilisation
