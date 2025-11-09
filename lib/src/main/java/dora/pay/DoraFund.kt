@@ -9,6 +9,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.util.Log
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.annotation.ColorInt
 import androidx.core.app.NotificationCompat
@@ -30,6 +31,7 @@ import dora.widget.DoraAlertDialog
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlin.collections.forEach
 
 /**
  * https://dorafund.com
@@ -149,6 +151,24 @@ object DoraFund {
      * @since 2.1
      */
     private const val TRANSFER_TYPE_ERC20 = 1
+
+    /**
+     * A collection of {@link ActivityResultLauncher} instances used to start
+     * the cold wallet connection flow for different request codes.
+     *
+     * Each entry in the map is keyed by an integer request code, allowing the
+     * Fragment to manage multiple wallet connection launchers simultaneously.
+     *
+     * The generic type {@code Int} represents the input parameter passed to the
+     * {@link WalletContract}, typically used as a request code.
+     *
+     * All launchers must be registered before the Fragment is fully created
+     * (e.g., during {@code onCreate()}), otherwise an {@link IllegalStateException}
+     * may be thrown.
+     *
+     * @since 2.1
+     */
+    private val connectWalletLaunchers = mutableMapOf<Int, ActivityResultLauncher<Unit>>()
 
     /**
      * Initialize DoraFund with application metadata.
@@ -303,44 +323,47 @@ object DoraFund {
     }
 
     /**
-     * Connect to a cold wallet from a Fragment using the new Activity Result API.
-     * This method registers a launcher for the WalletContract and launches it immediately.
+     * Prepare all supported cold wallet connection launchers for the given request codes.
+     * Must be called before the Fragment is fully created (e.g., in onCreate()).
      *
-     * @param fragment The Fragment from which the wallet connection is initiated.
-     * @param onResult Optional callback invoked when the wallet connection finishes.
-     *                 The WalletResult contains information about the connection status,
-     *                 or null if the operation was canceled or failed.
+     * @param fragment The Fragment used to register the launchers.
+     * @param requestCodes An array of request codes representing different wallet connection requests.
+     * @param onResult Callback invoked when each wallet connection flow completes.
+     *                 The first parameter is the request code corresponding to the launcher.
      * @since 2.1
      */
-    @JvmOverloads
-    fun connectWallet(fragment: Fragment, onResult: ((WalletResult?) -> Unit)? = null) {
-        val connectWalletLauncher =
-            fragment.registerForActivityResult(WalletContract()) { result ->
-                onResult?.invoke(result)
+    fun prepareConnectWallet(
+        fragment: Fragment,
+        requestCodes: IntArray,
+        onResult: ((requestCode: Int, result: WalletResult?) -> Unit)? = null
+    ) {
+        requestCodes.forEach { requestCode ->
+            val launcher: ActivityResultLauncher<Unit> = fragment.registerForActivityResult(WalletContract()) { result ->
+                onResult?.invoke(requestCode, result)
             }
-        connectWalletLauncher.launch(Unit)
+            connectWalletLaunchers[requestCode] = launcher
+        }
     }
 
     /**
-     * Ensures that a wallet is connected before performing an action.
-     * If a wallet is already connected, it immediately invokes the callback with null.
-     * Otherwise, it initiates the wallet connection process.
+     * Launches the cold wallet connection flow for the specified request code.
      *
-     * @param fragment The Fragment from which the wallet connection is initiated.
-     * @param onResult Callback invoked after the connection attempt.
-     *                 If the wallet is already connected, the result will be null.
+     * This method retrieves the pre-registered {@link ActivityResultLauncher}
+     * corresponding to the given request code from {@code connectWalletLaunchers},
+     * and starts the wallet connection process.
+     *
+     * Each request code represents a distinct wallet connection scenario,
+     * such as login, payment, or authorization.
+     *
+     * Ensure that {@link #prepareConnectWallet(Fragment, int[], Function)} has been called
+     * beforehand to register the launchers; otherwise, an {@link IllegalStateException}
+     * will be thrown if the requested launcher does not exist.
+     *
+     * @param requestCode The request code identifying which wallet connection launcher to use.
      * @since 2.1
      */
-    fun ensureConnectWallet(fragment: Fragment, onResult: (WalletResult) -> Unit) {
-        if (isWalletConnected()) {
-            onResult.invoke(WalletResult(getCurrentChain()?.id ?: "",
-                getCurrentChain()?.chainName ?: "", getCurrentAddress()))
-        } else {
-            connectWallet(fragment = fragment) {
-                onResult(WalletResult(it?.chainId ?: "", it?.chainName ?: "",
-                    it?.address ?: ""))
-            }
-        }
+    fun connectWallet(requestCode: Int) {
+        connectWalletLaunchers[requestCode]?.launch(Unit)
     }
 
     /**

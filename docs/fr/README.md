@@ -18,7 +18,7 @@ Ajoutez le code suivant dans le fichier `build.gradle.kts` du module `app` :
 dependencies {
     // Le package d'extension doit être utilisé avec le framework principal "dora"
     implementation("com.github.dora4:dora:1.3.43")
-    implementation("com.github.dora4:dora-walletconnect-support:2.1.31")
+    implementation("com.github.dora4:dora-walletconnect-support:2.1.32")
 }
 ```
 

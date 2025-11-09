@@ -30,10 +30,7 @@ class WalletContract : ActivityResultContract<Unit, WalletResult?>() {
         const val EXTRA_ERC20_ADDRESS = "erc20Address"
     }
 
-    override fun createIntent(
-        context: Context,
-        input: Unit
-    ): Intent {
+    override fun createIntent(context: Context, input: Unit): Intent {
         return Intent(context, WalletConnectActivity::class.java)
     }
 
