@@ -298,10 +298,11 @@ object DoraFund {
      * Connect to a cold wallet from a Fragment.
      * @since 2.1
      */
-    fun connectWallet(fragment: Fragment, onResult: (WalletResult?) -> Unit) {
+    @JvmOverloads
+    fun connectWallet(fragment: Fragment, onResult: ((WalletResult?) -> Unit)? = null) {
         val connectWalletLauncher =
             fragment.registerForActivityResult(WalletContract()) { result ->
-                onResult(result)
+                onResult?.invoke(result)
             }
         connectWalletLauncher.launch(Unit)
     }
