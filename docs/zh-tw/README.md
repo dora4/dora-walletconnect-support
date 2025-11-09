@@ -57,7 +57,10 @@ DoraFund.connectWallet(this, requestCode)
 
 Fragment 連接錢包
 ```kotlin
-DoraFund.prepareConnectWallet(fragment, intArrayOf(requestCode), callback)
+// ⚠️注意：必須在 onCreate 中調用
+DoraFund.prepareConnectWallet(this, intArrayOf(requestCode)) {
+        requestCode, result ->
+}
 ```
 ```kotlin
 DoraFund.connectWallet(requestCode)

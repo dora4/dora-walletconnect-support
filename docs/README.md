@@ -58,7 +58,10 @@ Then, override the onActivityResult method.
 
 Connect Wallet from a Fragment
 ```kotlin
-DoraFund.prepareConnectWallet(fragment, intArrayOf(requestCode), callback)
+// ⚠️Note: Must be called in onCreate
+DoraFund.prepareConnectWallet(this, intArrayOf(requestCode)) {
+        requestCode, result ->
+}
 ```
 ```kotlin
 DoraFund.connectWallet(requestCode)

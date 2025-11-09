@@ -57,7 +57,10 @@ Luego, sobrescribe el método onActivityResult.
 
 Conexión de la cartera desde un Fragment
 ```kotlin
-DoraFund.prepareConnectWallet(fragment, intArrayOf(requestCode), callback)
+// ⚠️Atención: Debe llamarse en onCreate
+DoraFund.prepareConnectWallet(this, intArrayOf(requestCode)) {
+        requestCode, result -> 
+}
 ```
 ```kotlin
 DoraFund.connectWallet(requestCode)

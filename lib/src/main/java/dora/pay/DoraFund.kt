@@ -5,12 +5,10 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.annotation.ColorInt
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
