@@ -62,7 +62,7 @@ public class DisconnectVPN extends Activity implements DialogInterface.OnCancelL
     }
 
     private void showDisconnectDialog() {
-        DoraAlertDialog dialog = new DoraAlertDialog(this);
+        DoraAlertDialog dialog = DoraAlertDialog.create(this);
         dialog.title(getString(R.string.warm_prompt));
         dialog.message(getString(R.string.cancel_connection_query));
         dialog.themeColor(DoraFund.INSTANCE.getThemeColor());

@@ -280,6 +280,9 @@ object DoraFund {
 
     /**
      * Connect to a cold wallet.
+     * Launches the wallet connection screen from a given context without expecting a result.
+     *
+     * @param context The context used to start the wallet connection activity.
      * @since 2.0
      */
     fun connectWallet(context: Context) {
@@ -287,7 +290,12 @@ object DoraFund {
     }
 
     /**
-     * Connect to a cold wallet and pay immediately after connection.
+     * Connect to a cold wallet and perform a payment immediately after the connection succeeds.
+     * This method starts the wallet connection activity for a result,
+     * allowing the caller to handle the connection or payment outcome in onActivityResult.
+     *
+     * @param activity The activity used to start the wallet connection.
+     * @param requestCode The request code used to identify the result in onActivityResult.
      * @since 2.0
      */
     fun connectWallet(activity: Activity, requestCode: Int) {
@@ -295,7 +303,13 @@ object DoraFund {
     }
 
     /**
-     * Connect to a cold wallet from a Fragment.
+     * Connect to a cold wallet from a Fragment using the new Activity Result API.
+     * This method registers a launcher for the WalletContract and launches it immediately.
+     *
+     * @param fragment The Fragment from which the wallet connection is initiated.
+     * @param onResult Optional callback invoked when the wallet connection finishes.
+     *                 The WalletResult contains information about the connection status,
+     *                 or null if the operation was canceled or failed.
      * @since 2.1
      */
     @JvmOverloads
@@ -305,6 +319,28 @@ object DoraFund {
                 onResult?.invoke(result)
             }
         connectWalletLauncher.launch(Unit)
+    }
+
+    /**
+     * Ensures that a wallet is connected before performing an action.
+     * If a wallet is already connected, it immediately invokes the callback with null.
+     * Otherwise, it initiates the wallet connection process.
+     *
+     * @param fragment The Fragment from which the wallet connection is initiated.
+     * @param onResult Callback invoked after the connection attempt.
+     *                 If the wallet is already connected, the result will be null.
+     * @since 2.1
+     */
+    fun ensureConnectWallet(fragment: Fragment, onResult: (WalletResult) -> Unit) {
+        if (isWalletConnected()) {
+            onResult.invoke(WalletResult(getCurrentChain()?.id ?: "",
+                getCurrentChain()?.chainName ?: "", getCurrentAddress()))
+        } else {
+            connectWallet(fragment = fragment) {
+                onResult(WalletResult(it?.chainId ?: "", it?.chainName ?: "",
+                    it?.address ?: ""))
+            }
+        }
     }
 
     /**
@@ -722,7 +758,7 @@ object DoraFund {
         orderListener: OrderListener
     ) {
         if (payListener == null) throw PaymentException("No PayListener is set.")
-        DoraAlertDialog(context).show(
+        DoraAlertDialog.create(context).show(
             "$goodsDesc\n\n${
                 ContextCompat.getString(
                     context,
@@ -778,7 +814,7 @@ object DoraFund {
         orderListener: OrderListener
     ) {
         if (payListener == null) throw PaymentException("No PayListener is set.")
-        DoraAlertDialog(context).show(
+        DoraAlertDialog.create(context).show(
             "$goodsDesc\n\n${
                 ContextCompat.getString(
                     context,
@@ -843,7 +879,7 @@ object DoraFund {
         orderListener: OrderListener
     ) {
         if (payListener == null) throw PaymentException("No PayListener is set.")
-        DoraAlertDialog(context).show(
+        DoraAlertDialog.create(context).show(
             "$goodsDesc\n\n${
                 ContextCompat.getString(
                     context,
@@ -933,7 +969,7 @@ object DoraFund {
         }
 
         if (payListener == null) throw PaymentException("No PayListener is set.")
-        DoraAlertDialog(context).show(
+        DoraAlertDialog.create(context).show(
             "$goodsDesc\n\n${
                 ContextCompat.getString(
                     context,
