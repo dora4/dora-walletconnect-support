@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "dora.lifecycle.walletconnect"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 24
@@ -32,9 +32,6 @@ android {
     }
     buildFeatures {
         aidl = true
-    }
-    kotlinOptions {
-        jvmTarget = "17"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -78,7 +75,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.dora4"
                 artifactId = "dora-walletconnect-support"
-                version = "2.1.28"
+                version = "2.1.29"
             }
         }
     }

@@ -5,12 +5,15 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.util.Log
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.annotation.ColorInt
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.walletconnect.android.Core
 import com.walletconnect.web3.modal.client.Modal
 import com.walletconnect.web3.modal.client.Web3Modal
@@ -19,6 +22,8 @@ import de.blinkt.openvpn.core.OpenVPNService
 import dora.lifecycle.walletconnect.R
 import dora.pay.activity.WalletConnectActivity
 import dora.pay.token.Token
+import dora.pay.wallet.WalletContract
+import dora.pay.wallet.WalletResult
 import dora.util.IntentUtils
 import dora.util.ToastUtils
 import dora.widget.DoraAlertDialog
@@ -274,7 +279,7 @@ object DoraFund {
     }
 
     /**
-     * Connect to cold wallet.
+     * Connect to a cold wallet.
      * @since 2.0
      */
     fun connectWallet(context: Context) {
@@ -282,11 +287,23 @@ object DoraFund {
     }
 
     /**
-     * Connect to cold wallet and pay immediately after connection.
+     * Connect to a cold wallet and pay immediately after connection.
      * @since 2.0
      */
     fun connectWallet(activity: Activity, requestCode: Int) {
         IntentUtils.startActivityForResult(activity, WalletConnectActivity::class.java, requestCode)
+    }
+
+    /**
+     * Connect to a cold wallet from a Fragment.
+     * @since 2.1
+     */
+    fun connectWallet(fragment: Fragment, onResult: (WalletResult?) -> Unit) {
+        val connectWalletLauncher =
+            fragment.registerForActivityResult(WalletContract()) { result ->
+                onResult(result)
+            }
+        connectWalletLauncher.launch(Unit)
     }
 
     /**
