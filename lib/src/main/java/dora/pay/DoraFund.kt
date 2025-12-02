@@ -284,7 +284,7 @@ object DoraFund {
      * @since 2.0
      */
     fun isWalletConnected(): Boolean {
-        return Web3Modal.getAccount() != null
+        return initialized && Web3Modal.getAccount() != null
     }
 
     /**
@@ -317,6 +317,9 @@ object DoraFund {
      * @since 2.0
      */
     fun connectWallet(context: Context) {
+        if (!initialized) {
+            return
+        }
         IntentUtils.startActivity(context, WalletConnectActivity::class.java)
     }
 
@@ -330,6 +333,9 @@ object DoraFund {
      * @since 2.0
      */
     fun connectWallet(activity: Activity, requestCode: Int) {
+        if (!initialized) {
+            return
+        }
         IntentUtils.startActivityForResult(activity, WalletConnectActivity::class.java, requestCode)
     }
 
@@ -374,6 +380,9 @@ object DoraFund {
      * @since 2.1
      */
     fun connectWallet(requestCode: Int) {
+        if (!initialized) {
+            return
+        }
         connectWalletLaunchers[requestCode]?.launch(Unit)
     }
 
@@ -390,7 +399,7 @@ object DoraFund {
      * @since 2.0
      */
     fun disconnectWallet(onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
-        if (Web3Modal.getAccount() != null) {
+        if (initialized && Web3Modal.getAccount() != null) {
             Web3Modal.disconnect(onSuccess, onError)
         }
     }
