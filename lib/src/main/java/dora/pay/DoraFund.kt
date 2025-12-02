@@ -162,6 +162,25 @@ object DoraFund {
     private val connectWalletLaunchers = mutableMapOf<Int, ActivityResultLauncher<Unit>>()
 
     /**
+     * Indicates whether the SDK has completed the initialization process.
+     * This flag is set to true once `init()` finishes successfully.
+     * @since 2.1
+     */
+    @Volatile
+    private var initialized = false
+
+    /**
+     * Returns whether the DoraFund SDK has completed initialization.
+     * This should be checked when using lazy initialization scenarios.
+     *
+     * @return true if the SDK has been fully initialized, false otherwise.
+     * @since 2.1
+     */
+    fun isInitialized() : Boolean {
+        return initialized
+    }
+
+    /**
      * Initialize DoraFund with application metadata.
      * @see EVMChains
      * @since 2.0
@@ -187,6 +206,7 @@ object DoraFund {
             this.themeColor = themeColor
         }
         listener?.let { setPayListener(it) }
+        initialized = true
     }
 
     /**
