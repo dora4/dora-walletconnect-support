@@ -37,7 +37,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-
     // Read build parameter from gradle.properties or command line
     val buildNativeLibs: Boolean =
         project.findProperty("buildNativeLibs")?.toString()?.toBoolean() ?: false
@@ -59,8 +58,8 @@ android {
 }
 
 dependencies {
-    implementation("com.github.dora4:dora:1.3.43")
-    api("com.github.dora4:dview-alert-dialog:1.28")
+    implementation("com.github.dora4:dora:1.3.61")
+    api("com.github.dora4:dview-alert-dialog:1.35")
     // wallet connect
     api(platform("com.walletconnect:android-bom:1.31.4"))
     api("com.walletconnect:android-core")
@@ -75,7 +74,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.dora4"
                 artifactId = "dora-walletconnect-support"
-                version = "2.1.34"
+                version = "2.1.35"
             }
         }
     }
