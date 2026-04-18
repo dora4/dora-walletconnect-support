@@ -57,6 +57,10 @@ android {
     }
 }
 
+configurations.all {
+    exclude(group = "com.madgag.spongycastle", module = "core")
+}
+
 dependencies {
     implementation("com.github.dora4:dora:1.3.61")
     api("com.github.dora4:dview-alert-dialog:1.35")
@@ -64,8 +68,7 @@ dependencies {
     api(platform("com.walletconnect:android-bom:1.31.4"))
     api("com.walletconnect:android-core")
     api("com.walletconnect:web3modal")
-    api("org.web3j:core:4.10.3") {
-
+    implementation("org.web3j:core:4.10.3") {
         exclude(group = "org.bouncycastle")
     }
 }
@@ -77,7 +80,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.dora4"
                 artifactId = "dora-walletconnect-support"
-                version = "2.1.36"
+                version = "2.1.37"
             }
         }
     }
