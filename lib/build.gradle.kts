@@ -62,7 +62,7 @@ configurations.all {
 }
 
 dependencies {
-    implementation("com.github.dora4:dora:1.3.61")
+    implementation("com.github.dora4:dora:1.3.68")
     api("com.github.dora4:dview-alert-dialog:1.35")
     // wallet connect
     api(platform("com.walletconnect:android-bom:1.31.4"))
